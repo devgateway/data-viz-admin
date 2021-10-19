@@ -1,0 +1,128 @@
+<!--
+    Copyright (c) 2015 Development Gateway, Inc and others.
+
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the MIT License (MIT)
+    which accompanies this distribution, and is available at
+    https://opensource.org/licenses/MIT
+
+    Contributors:
+    Development Gateway - initial API and implementation
+-->
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add-default-group" author="mpostelnicu">
+        <validCheckSum>8:7abae053c67b929de53498ce1748868c</validCheckSum>
+        <preConditions onFail="CONTINUE">
+            <tableExists tableName="CATEGORY" />
+        </preConditions>
+        <insert tableName="CATEGORY">
+            <column name="ID" valueSequenceNext="HIBERNATE_SEQUENCE" />
+            <column name="LABEL" value="group1" />
+            <column name="DTYPE" value="Group" />
+        </insert>
+    </changeSet>
+
+    <changeSet id="add-default-roles" author="mpostelnicu">
+        <validCheckSum>8:e31dc23b29d942fe2815d82d5221b197</validCheckSum>
+        <preConditions onFail="CONTINUE">
+            <tableExists tableName="ROLE" />
+        </preConditions>
+        <insert tableName="ROLE">
+            <column name="ID" valueSequenceNext="HIBERNATE_SEQUENCE" />
+            <column name="AUTHORITY" value="ROLE_USER" />
+        </insert>
+        <insert tableName="ROLE">
+            <column name="ID" valueSequenceNext="HIBERNATE_SEQUENCE" />
+            <column name="AUTHORITY" value="ROLE_ADMIN" />
+        </insert>
+    </changeSet>
+
+    <changeSet id="7" author="mpostelnicu">
+        <validCheckSum>8:c87b74e91f02d5de1c84407a0e1c392b</validCheckSum>
+        <preConditions onFail="CONTINUE">
+            <tableExists tableName="PERSON_ROLES" />
+            <tableExists tableName="ROLE" />
+            <tableExists tableName="PERSON" />
+        </preConditions>
+        <sqlFile path="Person.sql" />
+    </changeSet>
+
+    <changeSet id="8" author="mpostelnicu">
+        <validCheckSum>8:49ef355fb7188ab0735af4045ca7bcf1</validCheckSum>
+        <preConditions onFail="CONTINUE">
+            <tableExists tableName="PERSON_ROLES" />
+            <tableExists tableName="ROLE" />
+            <tableExists tableName="PERSON" />
+        </preConditions>
+        <sqlFile path="Person_roles.sql" />
+    </changeSet>
+
+    <changeSet id="dgtkit-#291" author="mpostelnicu">
+        <preConditions onFail="CONTINUE">
+            <columnExists tableName="test_form" columnName="status"/>
+            <sqlCheck expectedResult="true">select count(*) > 0 from test_form</sqlCheck>
+        </preConditions>
+
+        <update tableName="test_form">
+            <column name="status" value="DRAFT"/>
+            <where>status is null</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="dgtkit-#291-autosave" author="mpostelnicu">
+        <preConditions onFail="CONTINUE">
+            <columnExists tableName="admin_settings" columnName="autosave_time"/>
+        </preConditions>
+
+        <update tableName="admin_settings">
+            <column name="autosave_time" valueNumeric="10"/>
+            <where>autosave_time is null</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="#325-optlock" author="mpostelnicu">
+        <preConditions onFail="CONTINUE">
+            <columnExists tableName="ADMIN_SETTINGS" columnName="optlock"/>
+            <columnExists tableName="CATEGORY" columnName="optlock"/>
+            <columnExists tableName="FILE_CONTENT" columnName="optlock"/>
+            <columnExists tableName="FILE_METADATA" columnName="optlock"/>
+            <columnExists tableName="PERSON" columnName="optlock"/>
+            <columnExists tableName="ROLE" columnName="optlock"/>
+            <columnExists tableName="STATUS_CHANGED_COMMENT" columnName="optlock"/>
+            <columnExists tableName="TEST_FORM" columnName="optlock"/>
+            <columnExists tableName="TEST_FORM_CHILD" columnName="optlock"/>
+        </preConditions>
+
+        <update tableName="ADMIN_SETTINGS">
+            <column name="optlock" valueNumeric="0"/>
+        </update>
+        <update tableName="CATEGORY">
+            <column name="optlock" valueNumeric="0"/>
+        </update>
+        <update tableName="FILE_CONTENT">
+            <column name="optlock" valueNumeric="0"/>
+        </update>
+        <update tableName="FILE_METADATA">
+            <column name="optlock" valueNumeric="0"/>
+        </update>
+        <update tableName="PERSON">
+            <column name="optlock" valueNumeric="0"/>
+        </update>
+        <update tableName="ROLE">
+            <column name="optlock" valueNumeric="0"/>
+        </update>
+        <update tableName="STATUS_CHANGED_COMMENT">
+            <column name="optlock" valueNumeric="0"/>
+        </update>
+        <update tableName="TEST_FORM">
+            <column name="optlock" valueNumeric="0"/>
+        </update>
+        <update tableName="TEST_FORM_CHILD">
+            <column name="optlock" valueNumeric="0"/>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

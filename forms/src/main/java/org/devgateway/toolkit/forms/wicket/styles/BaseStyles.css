@@ -1,0 +1,224 @@
+/**
+ * @file
+ * This file contains the basic style for any page.
+ */
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 50px !important;
+
+    /*
+     * Always show page scroll-bar to prevent side-movement when hovering over items that are extending their height and
+     * suddenly the content doesn't fit above the fold.
+     */
+    overflow-y: scroll;
+}
+
+.mainHeader.with-navbar-default .navbar-default {
+    /*
+     * The mainHeader navbar should not have rounded borders when it is not fixed.
+     *
+     * @see: Navbar.Position.DEFAULT
+     * @see: bootstrap::navbar.less
+     */
+    border-radius: 0;
+}
+
+.mainHeader.with-navbar-fixed-top {
+    /*
+     * The mainHeader doesn't have any height when the navbar is fixed, and other elements are behind it.
+     *
+     * HACK: The default bootstrap navbar is 50px height and has a bottom margin of 20px for the default font size.
+     *
+     * TODO: Convert to LESS and use Bootstrap variables.
+     * @see: Navbar.Position.TOP
+     * @see: bootstrap::navbar.less
+     */
+    min-height: 50px;
+    margin-bottom: 32px;
+}
+
+.rebootAlert {
+    position: fixed;
+    top: 50px;
+    padding: 6px;
+    text-align: center;
+    width: 100%;
+    border-width: 1px;
+    border-style: solid;
+    z-index: 1029;
+}
+
+.navbar-brand {
+    padding: 0px;
+}
+
+.mainContainer {
+    /*
+     * The main page content should have some height.
+     */
+    min-height: 20em;
+}
+
+.mainFooter {
+    /*
+     * Add some spacing around the footer.
+     */
+    margin-top: 2em;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 50px;
+    background-color: #222;
+}
+
+/* file upload
+-------------------------------------------------- */
+.file-preview.loading {
+    background: transparent url('./assets/img/ajax-loader.gif') no-repeat scroll center center content-box !important;
+}
+
+.revision-data-div {
+    width: 50em;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+/* Edit Entity Styles
+-------------------------------------------------- */
+.revision-data-div {
+    width: 50em;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.autosave {
+    display: block;
+    margin-bottom: 12px;
+    color: #ADADAD;
+}
+
+hr.edit-separator {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(220, 220, 220, 0), rgba(220, 220, 220, 0.75), rgba(220, 220, 220, 0));
+}
+
+.checkbox {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.sleep-mode .sleep-value {
+    padding-top: 5px;
+    font-weight: bold;
+    color: #00589e;
+    font-size: 0.9em;
+}
+
+.sleep-mode {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.sleep-label {
+  font-weight: bold;
+}
+
+/* List View Styles
+-------------------------------------------------- */
+.section-bordered {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px dashed #00589e;
+}
+
+.pane {
+    padding: 20px 0;
+    margin-bottom: 0;
+}
+
+.pane.title {
+    overflow: hidden;
+}
+
+.pane.title h4 {
+    font-weight: bold;
+    color: #00589e;
+    float: left;
+}
+
+.pane .count {
+    font-weight: bold;
+    color: #858585;
+    float: left;
+    padding-left: 10px;
+    line-height: 40px;
+}
+
+.pane .show-all {
+    float: right;
+    font-size: 12px;
+    line-height: 40px;
+    font-style: italic;
+    font-weight: bold;
+}
+
+.accordion-toggle .show-all {
+    font-size: 12px;
+    font-style: italic;
+    font-weight: bold;
+}
+
+.show-all:hover {
+    color: #66b558;
+}
+
+.select2.select2-container {
+    width: 100% !important;
+}
+
+.list-wrapper .accordion-toggle .form-group {
+    margin-bottom: 0;
+}
+
+.list-wrapper .list-number {
+    float: left;
+    color: #00589e;
+    font-size: 14px;
+    font-weight: bold;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
+
+.section-title {
+    color: #2e6da4;
+    font-size: 12pt;
+    font-weight: bold !important;
+}
+
+/*  Pageable table
+-------------------------------------------------- */
+
+.with-error {
+    color: #a94442;
+}
+.pagination > li.with-error > a {
+    color: #a94442;
+}
+.pagination > li.active.with-error > a {
+    background-color: #eeb9b8;
+    border-color: #a94442;
+}
+
+/*
+-------------------------------------------------- */

@@ -1,0 +1,7 @@
+/target/
+/.settings/
+/derby.log
+.classpath
+.project
+/.springBeans
+/.checkstyle
