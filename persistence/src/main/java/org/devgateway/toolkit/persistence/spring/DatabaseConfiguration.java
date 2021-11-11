@@ -46,9 +46,6 @@ import java.util.Properties;
 public class DatabaseConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(DatabaseConfiguration.class);
 
-    @Value("${dg-toolkit.derby.port}")
-    private int derbyPort;
-
     @Value("${dg-toolkit.datasource.jndi-name}")
     private String datasourceJndiName;
 
@@ -89,26 +86,10 @@ public class DatabaseConfiguration {
      */
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource")
-    @DependsOn(value = {"derbyServer"})
     public DataSource dataSource() {
         return DataSourceBuilder.create().build();
     }
 
-    /**
-     * Graciously starts a Derby Database Server when the application starts up
-     *
-     * @return
-     * @throws Exception
-     */
-    @Bean(destroyMethod = "shutdown")
-    public NetworkServerControl derbyServer() throws Exception {
-        Properties p = System.getProperties();
-        p.put("derby.storage.pageCacheSize", "30000");
-        p.put("derby.language.maxMemoryPerTable", "20000");
-        NetworkServerControl nsc = new NetworkServerControl(InetAddress.getByName("localhost"), derbyPort);
-        nsc.start(new PrintWriter(java.lang.System.out, true));
-        return nsc;
-    }
 
     @Bean
     public SpringLiquibaseRunner liquibaseAfterJPA(final SpringLiquibase springLiquibase,

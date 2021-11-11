@@ -23,15 +23,15 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <start-class>org.devgateway.toolkit.persistence.spring.PersistenceApplication</start-class>
+        <start-class>org.devgateway.tcdi.persistence.spring.PersistenceApplication</start-class>
         <java.version>1.8</java.version>
         <json.schema.validator.version>2.2.6</json.schema.validator.version>
         <json.patch.version>1.9</json.patch.version>
     </properties>
 
     <parent>
-        <groupId>org.devgateway.toolkit</groupId>
-        <artifactId>toolkit</artifactId>
+        <groupId>org.devgateway.tcdi</groupId>
+        <artifactId>admin</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 

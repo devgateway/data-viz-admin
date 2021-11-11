@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <name>JPA Persistence</name>
-    <description>DGToolkit Persistence</description>
+    <description>TCDI Admin Persistence</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -27,8 +27,8 @@
     </properties>
 
     <parent>
-        <groupId>org.devgateway.toolkit</groupId>
-        <artifactId>toolkit</artifactId>
+        <groupId>org.devgateway.tcdi</groupId>
+        <artifactId>admin</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
