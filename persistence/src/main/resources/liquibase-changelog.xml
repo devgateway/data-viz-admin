@@ -47,7 +47,13 @@
             <tableExists tableName="ROLE" />
             <tableExists tableName="PERSON" />
         </preConditions>
-        <sqlFile path="Person.sql" />
+        <insert tableName="person">
+            <column name="id" valueSequenceNext="hibernate_sequence" />
+            <column name="username" value="admin" />
+            <column name="email" value="admin-tcdi@developmentgateway.org" />
+            <column name="enabled" value="true" />
+            <column name="password" value="$2a$10$wvn/WOzcIGu.GGFGDhEzS.0KVIhHG3ypCNjH4ui1Xa8h3qgt2mdZ6" />
+        </insert>
     </changeSet>
 
     <changeSet id="8" author="mpostelnicu">
@@ -57,7 +63,13 @@
             <tableExists tableName="ROLE" />
             <tableExists tableName="PERSON" />
         </preConditions>
-        <sqlFile path="Person_roles.sql" />
+        <sql><![CDATA[
+            INSERT INTO PERSON_ROLES(PERSON_ID, ROLES_ID)
+                SELECT p.ID, r.ID
+                FROM PERSON p, ROLE r
+                WHERE p.USERNAME = 'admin'
+                AND r.AUTHORITY IN ('ROLE_ADMIN', 'ROLE_USER');
+        ]]></sql>
     </changeSet>
 
     <changeSet id="dgtkit-#291" author="mpostelnicu">

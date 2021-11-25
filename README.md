@@ -1,4 +1,4 @@
-# dg-toolkit
+# tcdi-admin based on dg-toolkit
 
 [![Build Status](https://travis-ci.org/devgateway/dg-toolkit.svg?branch=master)](https://travis-ci.org/devgateway/dg-toolkit)
 
@@ -113,7 +113,7 @@ frolvlad/alpine-oraclejdk8   slim                00d8610f052e        2 weeks ago
 The image can be started with
 
 ```
-$docker run -p 8090:8090 -t devgateway/toolkit/forms
+$docker run -p 8080:8080 -t devgateway/toolkit/forms
 ```
 
 That's it, congrats!

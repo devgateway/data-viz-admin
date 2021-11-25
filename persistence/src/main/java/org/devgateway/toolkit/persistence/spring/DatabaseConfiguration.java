@@ -16,7 +16,6 @@ package org.devgateway.toolkit.persistence.spring;
 
 import com.zaxxer.hikari.HikariDataSource;
 import liquibase.integration.spring.SpringLiquibase;
-import org.apache.derby.drda.NetworkServerControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,21 +26,24 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
 import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.util.Properties;
 
 /**
  * @author mpostelnicu
  *
  */
 @Configuration
-@PropertySource("classpath:/org/devgateway/toolkit/persistence/application.properties")
+@PropertySources({
+    @PropertySource("classpath:/org/devgateway/toolkit/persistence/application.properties"),
+    @PropertySource(
+            value = "classpath:/org/devgateway/toolkit/persistence/application-${spring.profiles.active}.properties",
+            ignoreResourceNotFound = true)
+})
 @Profile("!integration")
 public class DatabaseConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(DatabaseConfiguration.class);

@@ -9,7 +9,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>persistence</artifactId>
+    <artifactId>tcdi-admin-persistence</artifactId>
     <packaging>jar</packaging>
 
     <name>JPA Persistence</name>
@@ -28,7 +28,7 @@
 
     <parent>
         <groupId>org.devgateway.tcdi</groupId>
-        <artifactId>admin</artifactId>
+        <artifactId>tcdi-admin</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
@@ -147,14 +147,15 @@
 
         <dependency>
             <groupId>org.apache.derby</groupId>
-            <artifactId>derbyclient</artifactId>
+            <artifactId>derby</artifactId>
             <version>${derby.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derbynet</artifactId>
-            <version>${derby.version}</version>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${pgsql.version}</version>
         </dependency>
 
         <!-- This is used just in case we need bean validation -->
