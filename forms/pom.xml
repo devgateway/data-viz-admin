@@ -15,15 +15,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>forms</artifactId>
+    <artifactId>tcdi-admin-forms</artifactId>
     <packaging>jar</packaging>
 
     <name>Wicket Forms</name>
-    <description>DGToolkit Forms</description>
+    <description>TCDI Admin Forms</description>
 
     <parent>
-        <groupId>org.devgateway.toolkit</groupId>
-        <artifactId>toolkit</artifactId>
+        <groupId>org.devgateway.tcdi</groupId>
+        <artifactId>tcdi-admin</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
@@ -43,8 +43,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.devgateway.toolkit</groupId>
-            <artifactId>persistence</artifactId>
+            <groupId>org.devgateway.tcdi</groupId>
+            <artifactId>tcdi-admin-persistence</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
@@ -61,36 +61,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.devgateway.toolkit</groupId>
-            <artifactId>persistence-mongodb</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.devgateway.toolkit</groupId>
-            <artifactId>ui</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>org.devgateway.toolkit</groupId>-->
-<!--            <artifactId>reporting</artifactId>-->
-<!--            <version>0.0.1-SNAPSHOT</version>-->
-<!--            <exclusions>-->
-<!--                <exclusion>-->
-<!--                    <artifactId>bcprov-jdk14</artifactId>-->
-<!--                    <groupId>bouncycastle</groupId>-->
-<!--                </exclusion>-->
-<!--                <exclusion>-->
-<!--                    <artifactId>bcprov-jdk14</artifactId>-->
-<!--                    <groupId>org.bouncycastle</groupId>-->
-<!--                </exclusion>-->
-<!--            </exclusions>-->
-<!--        </dependency>-->
-
-        <dependency>
-            <groupId>org.devgateway.toolkit</groupId>
-            <artifactId>web</artifactId>
+            <groupId>org.devgateway.tcdi</groupId>
+            <artifactId>tcdi-admin-web</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

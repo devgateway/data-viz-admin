@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  admin:
+    build: .
+    depends_on:
+      - postgres
+    volumes:
+      - admin:/opt/tcdi/admin
+    ports:
+      - 8080:8080
+    logging: &json_file
+      driver: json-file
+
+  postgres:
+    image: mdillon/postgis
+    restart: unless-stopped
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: tcdi-admin
+    logging: *json_file
+
+volumes:
+  admin: null
+  postgres: null

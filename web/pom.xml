@@ -7,7 +7,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>web</artifactId>
+    <artifactId>tcdi-admin-web</artifactId>
     <packaging>jar</packaging>
 
     <name>Web</name>
@@ -22,8 +22,8 @@
     </properties>
 
     <parent>
-        <groupId>org.devgateway.toolkit</groupId>
-        <artifactId>toolkit</artifactId>
+        <groupId>org.devgateway.tcdi</groupId>
+        <artifactId>tcdi-admin</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
@@ -84,14 +84,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.devgateway.toolkit</groupId>
-            <artifactId>persistence</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.devgateway.toolkit</groupId>
-            <artifactId>persistence-mongodb</artifactId>
+            <groupId>org.devgateway.tcdi</groupId>
+            <artifactId>tcdi-admin-persistence</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 

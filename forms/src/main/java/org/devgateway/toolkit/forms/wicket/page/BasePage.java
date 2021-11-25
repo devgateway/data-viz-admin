@@ -283,20 +283,6 @@ public abstract class BasePage extends GenericWebPage<Void> {
                         new StringResourceModel("navbar.springendpoints", this, null))
                         .setIconType(FontAwesomeIconType.anchor));
 
-                final MenuBookmarkablePageLink<UIRedirectPage> uiBrowserLink =
-                        new MenuBookmarkablePageLink<UIRedirectPage>(
-                                UIRedirectPage.class, null, new StringResourceModel("navbar.ui", this, null)) {
-                            private static final long serialVersionUID = 1L;
-
-                            @Override
-                            protected void onComponentTag(final ComponentTag tag) {
-                                super.onComponentTag(tag);
-                                tag.put("target", "_blank");
-                            }
-                        };
-                uiBrowserLink.setIconType(FontAwesomeIconType.rocket).setEnabled(true);
-                list.add(uiBrowserLink);
-
                 list.add(new MenuDivider());
 
                 list.add(new MenuBookmarkablePageLink<Void>(EditAdminSettingsPage.class,
