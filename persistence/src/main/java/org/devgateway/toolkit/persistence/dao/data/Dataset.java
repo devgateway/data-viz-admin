@@ -19,11 +19,9 @@ import java.util.Collection;
 import java.util.Set;
 
 @Entity
-public class DataSet extends AbstractAuditableEntity implements Serializable, Labelable {
+public class Dataset extends AbstractAuditableEntity implements Serializable, Labelable {
 
     private String label;
-
-    private String source;
 
     @Column(length = 1024)
     private String description;

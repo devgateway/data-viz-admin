@@ -18,4 +18,6 @@
 
     <ehcache:cache alias="default-query-results-region" uses-template="template" />
 
+    <ehcache:cache alias="servicesCache" uses-template="template" />
+
 </ehcache:config>
