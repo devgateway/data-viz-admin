@@ -483,6 +483,8 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
         Fragment fragment = new Fragment("extraButtons", "noButtons", this);
         editForm.add(fragment);
 
+        pageTitle.setDefaultModel(getTitleModel());
+
     }
 
     protected void onDelete(final AjaxRequestTarget target) {
@@ -535,5 +537,13 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
     }
 
     protected void afterLoad(final IModel<T> model) {
+    }
+
+    protected StringResourceModel getTitleModel() {
+        if (entityId == null) {
+            return new StringResourceModel("page.title.add", this, null);
+        } else {
+            return new StringResourceModel("page.title.edit", this, null);
+        }
     }
 }

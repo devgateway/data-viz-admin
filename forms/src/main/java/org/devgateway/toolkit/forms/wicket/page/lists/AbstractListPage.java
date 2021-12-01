@@ -81,7 +81,7 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
 
     protected BaseJpaService<T> jpaService;
 
-    private SortableJpaServiceDataProvider<T> dataProvider;
+    protected SortableJpaServiceDataProvider<T> dataProvider;
 
     private BootstrapBookmarkablePageLink<T> editPageLink;
 
@@ -190,18 +190,21 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
 
 
             add(getPrintButton(pageParameters));
-
-            PageParameters revisionsPageParameters = new PageParameters();
-            revisionsPageParameters.set(WebConstants.PARAM_ID, entity.getId());
-            revisionsPageParameters.set(WebConstants.PARAM_ENTITY_CLASS, entity.getClass().getName());
-
-            BootstrapBookmarkablePageLink<Void> revisionsPageLink = new BootstrapBookmarkablePageLink<>("revisions",
-                    RevisionsPage.class, revisionsPageParameters, Buttons.Type.Info);
-            revisionsPageLink.setIconType(FontAwesomeIconType.clock_o).setSize(Size.Small)
-                    .setLabel(new StringResourceModel("revisions", AbstractListPage.this, null));
-            add(revisionsPageLink);
-
+            add(getRevisionsLink(entity));
         }
+    }
+
+    protected Component getRevisionsLink(final T entity) {
+        PageParameters revisionsPageParameters = new PageParameters();
+        revisionsPageParameters.set(WebConstants.PARAM_ID, entity.getId());
+        revisionsPageParameters.set(WebConstants.PARAM_ENTITY_CLASS, entity.getClass().getName());
+
+        BootstrapBookmarkablePageLink<Void> revisionsPageLink = new BootstrapBookmarkablePageLink<>("revisions",
+                RevisionsPage.class, revisionsPageParameters, Buttons.Type.Info);
+        revisionsPageLink.setIconType(FontAwesomeIconType.clock_o).setSize(Size.Small)
+                .setLabel(new StringResourceModel("revisions", AbstractListPage.this, null));
+
+        return revisionsPageLink;
     }
 
     /**
