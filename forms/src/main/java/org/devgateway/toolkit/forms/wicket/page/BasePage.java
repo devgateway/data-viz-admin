@@ -29,7 +29,6 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesomeIc
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.authroles.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
-import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
@@ -55,6 +54,7 @@ import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.security.SecurityUtil;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListGroupPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListTestFormPage;
+import org.devgateway.toolkit.forms.wicket.page.lists.ListTobaccoProductPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListUserPage;
 import org.devgateway.toolkit.forms.wicket.page.user.EditUserPage;
 import org.devgateway.toolkit.forms.wicket.page.user.LogoutPage;
@@ -199,7 +199,7 @@ public abstract class BasePage extends GenericWebPage<Void> {
 
     protected MetaDataHeaderItem getFavicon() {
         PackageResourceReference faviconRef =
-                new PackageResourceReference(BaseStyles.class, "assets/img/icons/toolkit-favicon.svg");
+                new PackageResourceReference(BaseStyles.class, "assets/img/icons/tcdi-favicon.svg");
         MetaDataHeaderItem icon = MetaDataHeaderItem.forLinkTag("icon",
                 urlFor(faviconRef, null).toString());
         icon.addTagAttribute("type", "image/svg+xml");
@@ -299,6 +299,61 @@ public abstract class BasePage extends GenericWebPage<Void> {
         return adminMenu;
     }
 
+    protected NavbarDropDownButton newDatasetsMenu() {
+        NavbarDropDownButton categoriesMenu = new NavbarDropDownButton(
+                new StringResourceModel("navbar.datasets", this, null)) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected List<AbstractLink> newSubMenuButtons(final String arg0) {
+                final List<AbstractLink> list = new ArrayList<>();
+                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTobaccoProductPage.class, null,
+                        new StringResourceModel("navbar.tetsim", this, null))
+                        .setIconType(FontAwesomeIconType.percent));
+
+                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTobaccoProductPage.class, null,
+                        new StringResourceModel("navbar.prevalence", this, null))
+                        .setIconType(FontAwesomeIconType.list_ul));
+
+                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTobaccoProductPage.class, null,
+                        new StringResourceModel("navbar.policy", this, null))
+                        .setIconType(FontAwesomeIconType.list_ul));
+
+                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTobaccoProductPage.class, null,
+                        new StringResourceModel("navbar.ecigarettes", this, null))
+                        .setIconType(FontAwesomeIconType.list_ul));
+
+                return list;
+            }
+        };
+
+        categoriesMenu.setIconType(FontAwesomeIconType.table);
+        MetaDataRoleAuthorizationStrategy.authorize(categoriesMenu, Component.RENDER, SecurityConstants.Roles.ROLE_USER);
+
+        return categoriesMenu;
+    }
+
+    protected NavbarDropDownButton newCategoriesMenu() {
+        NavbarDropDownButton categoriesMenu = new NavbarDropDownButton(
+                new StringResourceModel("navbar.categories", this, null)) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected List<AbstractLink> newSubMenuButtons(final String arg0) {
+                final List<AbstractLink> list = new ArrayList<>();
+                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTobaccoProductPage.class, null,
+                        new StringResourceModel("navbar.tobaccoproducts", this, null))
+                        .setIconType(FontAwesomeIconType.leaf));
+                return list;
+            }
+        };
+
+        categoriesMenu.setIconType(FontAwesomeIconType.list_ul);
+        MetaDataRoleAuthorizationStrategy.authorize(categoriesMenu, Component.RENDER, SecurityConstants.Roles.ROLE_USER);
+
+        return categoriesMenu;
+    }
+
     /**
      * creates a new {@link Navbar} instance
      *
@@ -315,14 +370,14 @@ public abstract class BasePage extends GenericWebPage<Void> {
          * @see org.devgateway.toolkit.forms.wicket.styles.BaseStyles
          */
         navbar.setPosition(Navbar.Position.TOP);
-        navbar.setBrandImage(new PackageResourceReference(BaseStyles.class, "assets/img/toolkit-logo-0048.png"),
+        navbar.setBrandImage(new PackageResourceReference(BaseStyles.class, "assets/img/tcdi-horizontal-logo.svg"),
                 new StringResourceModel("brandImageAltText", this, null));
-        navbar.setInverted(true);
 
         navbar.addComponents(NavbarComponents.transform(Navbar.ComponentPosition.RIGHT, newHomeMenu(), newAdminMenu(),
+                newDatasetsMenu(), newCategoriesMenu(),
                 newAccountMenu(), newLogoutMenu()));
 
-        navbar.addComponents(NavbarComponents.transform(Navbar.ComponentPosition.LEFT, newLanguageMenu()));
+//        navbar.addComponents(NavbarComponents.transform(Navbar.ComponentPosition.RIGHT, newLanguageMenu()));
 
         return navbar;
     }

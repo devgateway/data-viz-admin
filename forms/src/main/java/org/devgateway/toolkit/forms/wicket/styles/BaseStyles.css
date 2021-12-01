@@ -58,6 +58,10 @@ body {
     padding: 0px;
 }
 
+.navbar-brand > img {
+    height: 100%;
+}
+
 .mainContainer {
     /*
      * The main page content should have some height.
