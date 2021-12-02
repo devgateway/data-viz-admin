@@ -15,7 +15,7 @@
 package org.devgateway.toolkit.forms.wicket.components.form;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
-import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesomeIconType;
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.ladda.LaddaAjaxButton;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -37,12 +37,12 @@ public abstract class BootstrapSubmitButton extends LaddaAjaxButton {
      */
     public BootstrapSubmitButton(final String id, final IModel<String> model) {
         super(id, model, Buttons.Type.Primary);
-        setIconType(FontAwesomeIconType.save);
+        setIconType(FontAwesome5IconType.save_s);
     }
 
     public BootstrapSubmitButton(final String id, final Form<?> form, final IModel<String> model) {
         super(id, model, form, Buttons.Type.Primary);
-        setIconType(FontAwesomeIconType.save);
+        setIconType(FontAwesome5IconType.save_s);
     }
 
     @Override

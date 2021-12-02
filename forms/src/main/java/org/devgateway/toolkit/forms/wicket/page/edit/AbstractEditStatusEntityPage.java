@@ -14,7 +14,7 @@ package org.devgateway.toolkit.forms.wicket.page.edit;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.dialog.TextContentModal;
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapCheckbox;
-import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesomeIconType;
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.ladda.LaddaAjaxButton;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
@@ -514,7 +514,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
             }
         };
 
-        button.setIconType(FontAwesomeIconType.send);
+        button.setIconType(FontAwesome5IconType.envelope_s);
         return button;
     }
 
@@ -543,7 +543,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
             }
         };
 
-        button.setIconType(FontAwesomeIconType.tasks);
+        button.setIconType(FontAwesome5IconType.tasks_s);
         return button;
     }
 
@@ -590,7 +590,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
             }
         };
 
-        button.setIconType(FontAwesomeIconType.tasks);
+        button.setIconType(FontAwesome5IconType.tasks_s);
         return button;
     }
 
@@ -609,7 +609,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
                 super.onSubmit(target);
             }
         };
-        saveEditPageButton.setIconType(FontAwesomeIconType.thumbs_up);
+        saveEditPageButton.setIconType(FontAwesome5IconType.thumbs_up_s);
         return saveEditPageButton;
     }
 
@@ -631,7 +631,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
                 onAfterRevertToDraft(target);
             }
         };
-        saveEditPageButton.setIconType(FontAwesomeIconType.thumbs_down);
+        saveEditPageButton.setIconType(FontAwesome5IconType.thumbs_down_s);
         return saveEditPageButton;
     }
 

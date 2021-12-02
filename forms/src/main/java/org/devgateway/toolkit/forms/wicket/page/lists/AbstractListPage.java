@@ -14,7 +14,7 @@ package org.devgateway.toolkit.forms.wicket.page.lists;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapBookmarkablePageLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons.Size;
-import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesomeIconType;
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.ladda.LaddaAjaxButton;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -156,7 +156,7 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
         pageParameters.set(WebConstants.PARAM_ID, null);
 
         editPageLink = new BootstrapBookmarkablePageLink<T>("new", editPageClass, pageParameters, Buttons.Type.Success);
-        editPageLink.setIconType(FontAwesomeIconType.plus_circle).setSize(Size.Large)
+        editPageLink.setIconType(FontAwesome5IconType.plus_circle_s).setSize(Size.Large)
                 .setLabel(new StringResourceModel("new", AbstractListPage.this, null));
 
         add(editPageLink);
@@ -184,7 +184,7 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
 
             editItemPageLink =
                     new BootstrapBookmarkablePageLink<>("edit", editPageClass, pageParameters, Buttons.Type.Info);
-            editItemPageLink.setIconType(FontAwesomeIconType.edit).setSize(Size.Small)
+            editItemPageLink.setIconType(FontAwesome5IconType.edit_s).setSize(Size.Small)
                     .setLabel(new StringResourceModel("edit", AbstractListPage.this, null));
             add(editItemPageLink);
 
@@ -201,7 +201,7 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
 
         BootstrapBookmarkablePageLink<Void> revisionsPageLink = new BootstrapBookmarkablePageLink<>("revisions",
                 RevisionsPage.class, revisionsPageParameters, Buttons.Type.Info);
-        revisionsPageLink.setIconType(FontAwesomeIconType.clock_o).setSize(Size.Small)
+        revisionsPageLink.setIconType(FontAwesome5IconType.clock_s).setSize(Size.Small)
                 .setLabel(new StringResourceModel("revisions", AbstractListPage.this, null));
 
         return revisionsPageLink;
@@ -335,7 +335,7 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
                     download.initiate(target);
                 }
             };
-            excelButton.setIconType(FontAwesomeIconType.file_excel_o);
+            excelButton.setIconType(FontAwesome5IconType.file_excel_s);
             add(excelButton);
         }
     }
