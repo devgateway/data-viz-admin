@@ -310,19 +310,19 @@ public abstract class BasePage extends GenericWebPage<Void> {
                 final List<AbstractLink> list = new ArrayList<>();
                 list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTobaccoProductPage.class, null,
                         new StringResourceModel("navbar.tetsim", this, null))
-                        .setIconType(FontAwesome5IconType.percentage_s));
+                        .setIconType(FontAwesome5IconType.percent_s));
 
                 list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTobaccoProductPage.class, null,
                         new StringResourceModel("navbar.prevalence", this, null))
-                        .setIconType(FontAwesome5IconType.list_ul_s));
+                        .setIconType(FontAwesome5IconType.users_s));
 
                 list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTobaccoProductPage.class, null,
                         new StringResourceModel("navbar.policy", this, null))
-                        .setIconType(FontAwesome5IconType.list_ul_s));
+                        .setIconType(FontAwesome5IconType.tasks_s));
 
                 list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTobaccoProductPage.class, null,
                         new StringResourceModel("navbar.ecigarettes", this, null))
-                        .setIconType(FontAwesome5IconType.list_ul_s));
+                        .setIconType(FontAwesome5IconType.smoking_s));
 
                 return list;
             }
