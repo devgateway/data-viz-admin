@@ -2,7 +2,7 @@ package org.devgateway.toolkit.forms.wicket.components.modal;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.dialog.Modal;
-import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesomeIconType;
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -55,7 +55,7 @@ public class ConfirmationModal<T> extends Modal<T> {
             }
         };
         submitButton.setType(Buttons.Type.Success);
-        submitButton.setIconType(FontAwesomeIconType.check);
+        submitButton.setIconType(FontAwesome5IconType.check_s);
 
         return submitButton;
     }

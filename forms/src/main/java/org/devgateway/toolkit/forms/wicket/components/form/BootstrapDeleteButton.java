@@ -15,7 +15,7 @@
 package org.devgateway.toolkit.forms.wicket.components.form;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
-import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesomeIconType;
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.ladda.LaddaAjaxButton;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.attributes.AjaxCallListener;
@@ -55,7 +55,7 @@ public abstract class BootstrapDeleteButton extends LaddaAjaxButton {
         super.onInitialize();
         add(new AttributeAppender("onclick", new Model<String>("window.onbeforeunload = null;"), " "));
         setDefaultFormProcessing(false);
-        setIconType(FontAwesomeIconType.trash_o);
+        setIconType(FontAwesome5IconType.trash_s);
 
         if (ComponentUtil.isViewMode()) {
             setVisibilityAllowed(false);
