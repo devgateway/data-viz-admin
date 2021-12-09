@@ -1,45 +1,49 @@
 package org.devgateway.toolkit.persistence.dao.data;
 
 import org.devgateway.toolkit.persistence.dao.AbstractAuditableEntity;
-import org.devgateway.toolkit.persistence.dao.Labelable;
 import org.devgateway.toolkit.persistence.dao.Person;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @MappedSuperclass
-public abstract class Dataset extends AbstractAuditableEntity implements Serializable, Labelable {
+public abstract class Dataset extends AbstractAuditableEntity implements Serializable {
 
-    private String label;
-
-    @Column(length = 1024)
-    private String description;
-
+    @NotNull
+    @Audited
     private Integer year;
 
-    private boolean approved;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Person uploadedBy;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Person approvedBy;
+    @NotNull
+    @Audited
+    @Enumerated(EnumType.STRING)
+    private DatasetStatus status;
 
     @Override
     public AbstractAuditableEntity getParent() {
         return null;
     }
 
-    @Override
-    public void setLabel(final String label) {
-        this.label = label;
+    public Integer getYear() {
+        return year;
     }
 
-    @Override
-    public String getLabel() {
-        return label;
+    public void setYear(final Integer year) {
+        this.year = year;
     }
+
+    public DatasetStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(final DatasetStatus status) {
+        this.status = status;
+    }
+
 }
