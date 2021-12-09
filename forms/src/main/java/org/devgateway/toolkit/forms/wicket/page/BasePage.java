@@ -54,6 +54,7 @@ import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.security.SecurityUtil;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListGroupPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListTestFormPage;
+import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListTetsimDatasetPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListTobaccoProductPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListUserPage;
 import org.devgateway.toolkit.forms.wicket.page.user.EditUserPage;
@@ -308,7 +309,7 @@ public abstract class BasePage extends GenericWebPage<Void> {
             @Override
             protected List<AbstractLink> newSubMenuButtons(final String arg0) {
                 final List<AbstractLink> list = new ArrayList<>();
-                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTobaccoProductPage.class, null,
+                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTetsimDatasetPage.class, null,
                         new StringResourceModel("navbar.tetsim", this, null))
                         .setIconType(FontAwesome5IconType.percent_s));
 

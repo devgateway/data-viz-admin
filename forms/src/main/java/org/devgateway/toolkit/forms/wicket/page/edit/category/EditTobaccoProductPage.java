@@ -25,7 +25,7 @@ import org.devgateway.toolkit.persistence.service.category.TobaccoProductService
 import org.wicketstuff.annotation.mount.MountPath;
 
 /**
- * @author mpostelnicu
+ * @author vchihai
  */
 @MountPath(value = "/editTobaccoProduct")
 public class EditTobaccoProductPage extends AbstractEditPage<TobaccoProduct> {

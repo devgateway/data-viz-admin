@@ -14,48 +14,74 @@ import java.math.BigDecimal;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class TetsimDataset extends Dataset {
 
+    @Audited
     BigDecimal cigaretteConsumption;
 
+    @Audited
     BigDecimal vatRate;
 
+    @Audited
     BigDecimal cigaretteDeclaredCustomValue;
 
+    @Audited
     BigDecimal adultPopulation;
 
+    @Audited
     BigDecimal smokingPrevalence;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @Audited
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     TetsimPriceVariable retailPrice;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @Audited
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     TetsimPriceVariable marketShare;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @Audited
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     TetsimPriceVariable CIF;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @Audited
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     TetsimPriceVariable tobaccoLevy;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @Audited
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     TetsimPriceVariable exciseTax;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @Audited
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     TetsimPriceVariable customsDuty;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @Audited
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     TetsimPriceVariable elasticityOfDemandPrice;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @Audited
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     TetsimPriceVariable elasticityOfDemandCrossPrice;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @Audited
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     TetsimPriceVariable changeInIllicitNot;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @Audited
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     TetsimPriceVariable overShifting;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @Audited
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     TetsimPriceVariable underShifting;
 
     public BigDecimal getCigaretteConsumption() {
