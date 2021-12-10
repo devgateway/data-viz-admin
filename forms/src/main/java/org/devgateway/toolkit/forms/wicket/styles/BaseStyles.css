@@ -226,3 +226,45 @@ hr.edit-separator {
 
 /*
 -------------------------------------------------- */
+
+.bigLinkContainer .bigLinkItem {
+    padding: 15px;
+}
+
+button .btn-home-desc {
+    padding-top: 0;
+    width: 140px;
+    font-size: 12px;
+    text-transform: none;
+    white-space: normal;
+}
+
+button .btn-home-label {
+    white-space: normal;
+    line-height: 20px;
+}
+
+.btn-homepage {
+    width: 250px;
+    height: 250px;
+    margin: 0 auto;
+    padding: 10px;
+    display: inline-block;
+    line-height: 15px;
+    text-align: center;
+}
+
+div.parentElement{text-align: center;}
+
+button .btn-home-desc {
+    padding-top: 0;
+    width: 140px;
+    font-size: 12px;
+    text-transform: none;
+    white-space: normal;
+}
+
+button .btn-home-label {
+    white-space: normal;
+    line-height: 20px;
+}

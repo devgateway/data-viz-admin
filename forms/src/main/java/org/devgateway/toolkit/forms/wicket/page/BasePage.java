@@ -289,7 +289,7 @@ public abstract class BasePage extends GenericWebPage<Void> {
 
                 list.add(new MenuBookmarkablePageLink<Void>(EditAdminSettingsPage.class,
                         new StringResourceModel("navbar.adminSettings", BasePage.this, null))
-                        .setIconType(FontAwesome5IconType.briefcase_s));
+                        .setIconType(FontAwesome5IconType.cogs_s));
 
                 return list;
             }
@@ -302,7 +302,7 @@ public abstract class BasePage extends GenericWebPage<Void> {
     }
 
     protected NavbarDropDownButton newDatasetsMenu() {
-        NavbarDropDownButton categoriesMenu = new NavbarDropDownButton(
+        NavbarDropDownButton dataSetsMenu = new NavbarDropDownButton(
                 new StringResourceModel("navbar.datasets", this, null)) {
             private static final long serialVersionUID = 1L;
 
@@ -311,7 +311,7 @@ public abstract class BasePage extends GenericWebPage<Void> {
                 final List<AbstractLink> list = new ArrayList<>();
                 list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTetsimDatasetPage.class, null,
                         new StringResourceModel("navbar.tetsim", this, null))
-                        .setIconType(FontAwesome5IconType.percent_s));
+                        .setIconType(FontAwesome5IconType.percentage_s));
 
                 list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTobaccoProductPage.class, null,
                         new StringResourceModel("navbar.prevalence", this, null))
@@ -329,10 +329,10 @@ public abstract class BasePage extends GenericWebPage<Void> {
             }
         };
 
-        categoriesMenu.setIconType(FontAwesome5IconType.table_s);
-        MetaDataRoleAuthorizationStrategy.authorize(categoriesMenu, Component.RENDER, SecurityConstants.Roles.ROLE_USER);
+        dataSetsMenu.setIconType(FontAwesome5IconType.table_s);
+        MetaDataRoleAuthorizationStrategy.authorize(dataSetsMenu, Component.RENDER, SecurityConstants.Roles.ROLE_USER);
 
-        return categoriesMenu;
+        return dataSetsMenu;
     }
 
     protected NavbarDropDownButton newCategoriesMenu() {
@@ -345,12 +345,12 @@ public abstract class BasePage extends GenericWebPage<Void> {
                 final List<AbstractLink> list = new ArrayList<>();
                 list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTobaccoProductPage.class, null,
                         new StringResourceModel("navbar.tobaccoproducts", this, null))
-                        .setIconType(FontAwesome5IconType.leaf_s));
+                        .setIconType(FontAwesome5IconType.smoking_s));
                 return list;
             }
         };
 
-        categoriesMenu.setIconType(FontAwesome5IconType.list_ul_s);
+        categoriesMenu.setIconType(FontAwesome5IconType.list_alt_r);
         MetaDataRoleAuthorizationStrategy.authorize(categoriesMenu, Component.RENDER, SecurityConstants.Roles.ROLE_USER);
 
         return categoriesMenu;

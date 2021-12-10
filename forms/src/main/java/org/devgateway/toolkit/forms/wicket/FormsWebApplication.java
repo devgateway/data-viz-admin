@@ -17,11 +17,14 @@ import de.agilecoders.wicket.core.markup.html.RenderJavaScriptToFooterHeaderResp
 import de.agilecoders.wicket.core.request.resource.caching.version.Adler32ResourceVersion;
 import de.agilecoders.wicket.core.settings.BootstrapSettings;
 import de.agilecoders.wicket.core.settings.IBootstrapSettings;
+import de.agilecoders.wicket.core.settings.ThemeProvider;
 import de.agilecoders.wicket.extensions.javascript.GoogleClosureJavaScriptCompressor;
 import de.agilecoders.wicket.extensions.javascript.YuiCssCompressor;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.editor.SummernoteConfig;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.editor.SummernoteStoredImageResourceReference;
 import de.agilecoders.wicket.less.BootstrapLess;
+import de.agilecoders.wicket.themes.markup.html.bootswatch.BootswatchTheme;
+import de.agilecoders.wicket.themes.markup.html.bootswatch.BootswatchThemeProvider;
 import de.agilecoders.wicket.webjars.WicketWebjars;
 import nl.dries.wicket.hibernate.dozer.DozerRequestCycleListener;
 import nl.dries.wicket.hibernate.dozer.SessionFinderHolder;
@@ -152,6 +155,9 @@ public class FormsWebApplication extends AuthenticatedWebApplication {
 
         final IBootstrapSettings settings = new BootstrapSettings();
         settings.useCdnResources(false);
+
+        final ThemeProvider themeProvider = new BootswatchThemeProvider(BootswatchTheme.Paper);
+        settings.setThemeProvider(themeProvider);
 
         // use the default bootstrap theme
         Bootstrap.install(this, settings);

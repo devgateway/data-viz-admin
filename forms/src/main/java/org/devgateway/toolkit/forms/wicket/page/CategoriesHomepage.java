@@ -8,26 +8,24 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.wicket.components.BigLinkDefinition;
 import org.devgateway.toolkit.forms.wicket.components.BigLinksPanel;
+import org.devgateway.toolkit.forms.wicket.page.lists.ListTobaccoProductPage;
+import org.wicketstuff.annotation.mount.MountPath;
 
 import java.util.List;
 
 /**
- * @author mpostelnicu
- *
+ * @author Viorel Chihai
  */
 @AuthorizeInstantiation(SecurityConstants.Roles.ROLE_USER)
-public class Homepage extends BasePage {
+@MountPath
+public class CategoriesHomepage extends BasePage {
 
     private static final List<BigLinkDefinition> LINKS = new ImmutableList.Builder<BigLinkDefinition>()
-            .add(new BigLinkDefinition("datasets", DatasetsHomepage.class, FontAwesome5IconType.table_s))
-            .add(new BigLinkDefinition("categories", CategoriesHomepage.class, FontAwesome5IconType.list_alt_r))
-            .add(new BigLinkDefinition("settings", EditAdminSettingsPage.class, FontAwesome5IconType.cogs_s))
+            .add(new BigLinkDefinition("tobaccoProducts", ListTobaccoProductPage.class,
+                    FontAwesome5IconType.smoking_s))
             .build();
 
-    /**
-     * @param parameters
-     */
-    public Homepage(final PageParameters parameters) {
+    public CategoriesHomepage(final PageParameters parameters) {
         super(parameters);
 
         add(new BigLinksPanel("links", Model.ofList(LINKS)));
