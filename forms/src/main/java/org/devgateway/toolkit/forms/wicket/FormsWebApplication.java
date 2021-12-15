@@ -113,7 +113,6 @@ public class FormsWebApplication extends AuthenticatedWebApplication {
     @Override
     protected IConverterLocator newConverterLocator() {
         ConverterLocator locator = (ConverterLocator) super.newConverterLocator();
-        locator.set(BigDecimal.class, new NonNumericFilteredBigDecimalConverter(defaultDecimalFormatter));
         locator.set(Double.class, new FormattedDoubleConverter(defaultDecimalFormatter));
         locator.set(LocalDate.class, new LocalDateFormatter());
         locator.set(ZonedDateTime.class, new ZonedDateTimeFormatter());
@@ -156,8 +155,8 @@ public class FormsWebApplication extends AuthenticatedWebApplication {
         final IBootstrapSettings settings = new BootstrapSettings();
         settings.useCdnResources(false);
 
-        final ThemeProvider themeProvider = new BootswatchThemeProvider(BootswatchTheme.Paper);
-        settings.setThemeProvider(themeProvider);
+//        final ThemeProvider themeProvider = new BootswatchThemeProvider(BootswatchTheme.Paper);
+//        settings.setThemeProvider(themeProvider);
 
         // use the default bootstrap theme
         Bootstrap.install(this, settings);
