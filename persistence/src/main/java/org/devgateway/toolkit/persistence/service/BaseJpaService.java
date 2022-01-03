@@ -16,6 +16,8 @@ public interface BaseJpaService<T extends GenericPersistable & Serializable> {
 
     List<T> findAll(Sort sort);
 
+    List<T> findAllSorted();
+
     List<T> findAll(Specification<T> spec);
 
     Page<T> findAll(Specification<T> spec, Pageable pageable);

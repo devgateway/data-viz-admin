@@ -54,6 +54,8 @@ public final class WebConstants {
                 StringValidator.maximumLength(DBConstants.MAX_DEFAULT_TEXT_AREA);
     }
 
+    public static final int MAXIMUM_PERCENTAGE = 100;
+
     // add more languages here. It is pointless to make this dynamic because the
     // wicket i18n is in .properties files so we need
     // to change the src code anyway.

@@ -9,12 +9,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Audited
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class TetsimPriceVariable extends AbstractAuditableEntity  {
+public class TetsimPriceVariable extends AbstractAuditableEntity {
 
     @ManyToOne
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -22,11 +23,26 @@ public class TetsimPriceVariable extends AbstractAuditableEntity  {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<TetsimTobaccoProductValue> values;
+    private Set<TetsimTobaccoProductValue> values = new HashSet<>();
+
+    public TetsimPriceVariable() {
+    }
+
+    public TetsimPriceVariable(final TetsimDataset dataset) {
+        this.dataset = dataset;
+    }
 
     @Override
     public AbstractAuditableEntity getParent() {
         return dataset;
+    }
+
+    public TetsimDataset getDataset() {
+        return dataset;
+    }
+
+    public void setDataset(final TetsimDataset dataset) {
+        this.dataset = dataset;
     }
 
     public Set<TetsimTobaccoProductValue> getValues() {

@@ -41,6 +41,14 @@ public class TetsimTobaccoProductValue extends AbstractAuditableEntity {
         this.value = value;
     }
 
+    public TetsimPriceVariable getPriceVariable() {
+        return priceVariable;
+    }
+
+    public void setPriceVariable(final TetsimPriceVariable priceVariable) {
+        this.priceVariable = priceVariable;
+    }
+
     @Override
     public AbstractAuditableEntity getParent() {
         return priceVariable;
