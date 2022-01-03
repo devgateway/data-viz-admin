@@ -27,6 +27,7 @@ import static org.devgateway.toolkit.forms.WebConstants.MAXIMUM_PERCENTAGE;
 public class TetsimPriceAnalysisPanel extends Panel {
 
     protected final IModel<TetsimDataset> tetsimDatasetIModel;
+
     @SpringBean
     protected TobaccoProductService tobaccoProductService;
 
@@ -56,7 +57,7 @@ public class TetsimPriceAnalysisPanel extends Panel {
         return analysisHeaders;
     }
 
-    private Component getPriceAnalysisVariables() {
+    private RepeatingView getPriceAnalysisVariables() {
         RepeatingView variables = new RepeatingView("analysisVariables");
 
         variables.add(getRetailPriceVariable(variables.newChildId()));
@@ -80,19 +81,17 @@ public class TetsimPriceAnalysisPanel extends Panel {
      * @return TetsimTobaccoProductsVariable
      */
     private TetsimTobaccoProductsVariable getRetailPriceVariable(final String id) {
-        TetsimTobaccoProductsVariable variable = new TetsimTobaccoProductsVariable(id,
+        return new TetsimTobaccoProductsVariable(id,
                 new StringResourceModel("retailPrice.label"),
                 new StringResourceModel("retailPrice.unit"),
                 new PropertyModel<>(tetsimDatasetIModel, "retailPrice")) {
 
             @Override
-            protected void addBehavioursToTobaccoProductVariable(final TextFieldBootstrapFormComponent variable) {
-                super.addBehavioursToTobaccoProductVariable(variable);
-                variable.getField().add(new PositiveBigDecimalValidator());
+            protected void addBehavioursToTobaccoProductVariable(final TextFieldBootstrapFormComponent variable1) {
+                super.addBehavioursToTobaccoProductVariable(variable1);
+                variable1.getField().add(new PositiveBigDecimalValidator());
             }
         };
-
-        return variable;
     }
 
     /**
@@ -104,22 +103,18 @@ public class TetsimPriceAnalysisPanel extends Panel {
      * @return TetsimTobaccoProductsVariable
      */
     private TetsimTobaccoProductsVariable getMarketShareVariable(final String id) {
-        TetsimTobaccoProductsVariable variable = new TetsimTobaccoProductsVariable(id,
+        return new TetsimTobaccoProductsVariable(id,
                 new StringResourceModel("marketShare.label"),
                 new StringResourceModel("marketShare.unit"),
                 new PropertyModel<>(tetsimDatasetIModel, "marketShare")) {
 
             @Override
-            protected void addBehavioursToTobaccoProductVariable(final TextFieldBootstrapFormComponent variable) {
-                super.addBehavioursToTobaccoProductVariable(variable);
-                variable.getField().add(new PositiveBigDecimalValidator(true));
-                variable.getField().add(RangeValidator.maximum(BigDecimal.valueOf(MAXIMUM_PERCENTAGE)));
+            protected void addBehavioursToTobaccoProductVariable(final TextFieldBootstrapFormComponent variable1) {
+                super.addBehavioursToTobaccoProductVariable(variable1);
+                variable1.getField().add(new PositiveBigDecimalValidator(true));
+                variable1.getField().add(RangeValidator.maximum(BigDecimal.valueOf(MAXIMUM_PERCENTAGE)));
             }
         };
-
-        //TODO add sum of all percentages validator based on inputs values
-
-        return variable;
     }
 
     /**
@@ -130,19 +125,17 @@ public class TetsimPriceAnalysisPanel extends Panel {
      * @return TetsimTobaccoProductsVariable
      */
     private TetsimTobaccoProductsVariable getCifVariable(final String id) {
-        TetsimTobaccoProductsVariable variable = new TetsimTobaccoProductsVariable(id,
+        return new TetsimTobaccoProductsVariable(id,
                 new StringResourceModel("cif.label"),
                 new StringResourceModel("cif.unit"),
                 new PropertyModel<>(tetsimDatasetIModel, "cif")) {
 
             @Override
-            protected void addBehavioursToTobaccoProductVariable(final TextFieldBootstrapFormComponent variable) {
-                super.addBehavioursToTobaccoProductVariable(variable);
-                variable.getField().add(new PositiveBigDecimalValidator(true));
+            protected void addBehavioursToTobaccoProductVariable(final TextFieldBootstrapFormComponent variable1) {
+                super.addBehavioursToTobaccoProductVariable(variable1);
+                variable1.getField().add(new PositiveBigDecimalValidator(true));
             }
         };
-
-        return variable;
     }
 
     /**
@@ -153,20 +146,18 @@ public class TetsimPriceAnalysisPanel extends Panel {
      * @return TetsimTobaccoProductsVariable
      */
     private TetsimTobaccoProductsVariable getTobaccoLevy(final String id) {
-        TetsimTobaccoProductsVariable variable = new TetsimTobaccoProductsVariable(id,
+        return new TetsimTobaccoProductsVariable(id,
                 new StringResourceModel("tobaccoLevy.label"),
                 new StringResourceModel("tobaccoLevy.unit"),
                 new PropertyModel<>(tetsimDatasetIModel, "tobaccoLevy")) {
 
             @Override
-            protected void addBehavioursToTobaccoProductVariable(final TextFieldBootstrapFormComponent variable) {
-                super.addBehavioursToTobaccoProductVariable(variable);
-                variable.getField().add(new PositiveBigDecimalValidator(true));
-                variable.getField().add(RangeValidator.maximum(BigDecimal.valueOf(MAXIMUM_PERCENTAGE)));
+            protected void addBehavioursToTobaccoProductVariable(final TextFieldBootstrapFormComponent variable1) {
+                super.addBehavioursToTobaccoProductVariable(variable1);
+                variable1.getField().add(new PositiveBigDecimalValidator(true));
+                variable1.getField().add(RangeValidator.maximum(BigDecimal.valueOf(MAXIMUM_PERCENTAGE)));
             }
         };
-
-        return variable;
     }
 
     /**
@@ -177,19 +168,17 @@ public class TetsimPriceAnalysisPanel extends Panel {
      * @return TetsimTobaccoProductsVariable
      */
     private TetsimTobaccoProductsVariable getExciseTax(final String id) {
-        TetsimTobaccoProductsVariable variable = new TetsimTobaccoProductsVariable(id,
+        return new TetsimTobaccoProductsVariable(id,
                 new StringResourceModel("exciseTax.label"),
                 new StringResourceModel("exciseTax.unit"),
                 new PropertyModel<>(tetsimDatasetIModel, "exciseTax")) {
 
             @Override
-            protected void addBehavioursToTobaccoProductVariable(final TextFieldBootstrapFormComponent variable) {
-                super.addBehavioursToTobaccoProductVariable(variable);
-                variable.getField().add(new PositiveBigDecimalValidator(true));
+            protected void addBehavioursToTobaccoProductVariable(final TextFieldBootstrapFormComponent variable1) {
+                super.addBehavioursToTobaccoProductVariable(variable1);
+                variable1.getField().add(new PositiveBigDecimalValidator(true));
             }
         };
-
-        return variable;
     }
 
     /**
@@ -200,19 +189,17 @@ public class TetsimPriceAnalysisPanel extends Panel {
      * @return TetsimTobaccoProductsVariable
      */
     private TetsimTobaccoProductsVariable getCustomsDuty(final String id) {
-        TetsimTobaccoProductsVariable variable = new TetsimTobaccoProductsVariable(id,
+        return new TetsimTobaccoProductsVariable(id,
                 new StringResourceModel("customsDuty.label"),
                 new StringResourceModel("customsDuty.unit"),
                 new PropertyModel<>(tetsimDatasetIModel, "customsDuty"), false) {
 
             @Override
-            protected void addBehavioursToTobaccoProductVariable(final TextFieldBootstrapFormComponent variable) {
-                super.addBehavioursToTobaccoProductVariable(variable);
-                variable.getField().add(new PositiveBigDecimalValidator(true));
+            protected void addBehavioursToTobaccoProductVariable(final TextFieldBootstrapFormComponent variable1) {
+                super.addBehavioursToTobaccoProductVariable(variable1);
+                variable1.getField().add(new PositiveBigDecimalValidator(true));
             }
         };
-
-        return variable;
     }
 
     /**
@@ -223,19 +210,17 @@ public class TetsimPriceAnalysisPanel extends Panel {
      * @return TetsimTobaccoProductsVariable
      */
     private TetsimTobaccoProductsVariable getElasticityOfDemandPrice(final String id) {
-        TetsimTobaccoProductsVariable variable = new TetsimTobaccoProductsVariable(id,
+        return new TetsimTobaccoProductsVariable(id,
                 new StringResourceModel("elasticityOfDemandPrice.label"),
                 new StringResourceModel("elasticityOfDemandPrice.unit"),
                 new PropertyModel<>(tetsimDatasetIModel, "elasticityOfDemandPrice")) {
 
             @Override
-            protected void addBehavioursToTobaccoProductVariable(final TextFieldBootstrapFormComponent variable) {
-                super.addBehavioursToTobaccoProductVariable(variable);
-                variable.getField().add(RangeValidator.range(BigDecimal.valueOf(-1), BigDecimal.ONE));
+            protected void addBehavioursToTobaccoProductVariable(final TextFieldBootstrapFormComponent variable1) {
+                super.addBehavioursToTobaccoProductVariable(variable1);
+                variable1.getField().add(RangeValidator.range(BigDecimal.valueOf(-1), BigDecimal.ONE));
             }
         };
-
-        return variable;
     }
 
     /**
@@ -246,19 +231,17 @@ public class TetsimPriceAnalysisPanel extends Panel {
      * @return TetsimTobaccoProductsVariable
      */
     private TetsimTobaccoProductsVariable getElasticityOfDemandCrossPrice(final String id) {
-        TetsimTobaccoProductsVariable variable = new TetsimTobaccoProductsVariable(id,
+        return new TetsimTobaccoProductsVariable(id,
                 new StringResourceModel("elasticityOfDemandCrossPrice.label"),
                 new StringResourceModel("elasticityOfDemandCrossPrice.unit"),
                 new PropertyModel<>(tetsimDatasetIModel, "elasticityOfDemandPrice")) {
 
             @Override
-            protected void addBehavioursToTobaccoProductVariable(final TextFieldBootstrapFormComponent variable) {
-                super.addBehavioursToTobaccoProductVariable(variable);
-                variable.getField().add(RangeValidator.range(BigDecimal.valueOf(-1), BigDecimal.ONE));
+            protected void addBehavioursToTobaccoProductVariable(final TextFieldBootstrapFormComponent variable1) {
+                super.addBehavioursToTobaccoProductVariable(variable1);
+                variable1.getField().add(RangeValidator.range(BigDecimal.valueOf(-1), BigDecimal.ONE));
             }
         };
-
-        return variable;
     }
 
     /**
@@ -270,13 +253,11 @@ public class TetsimPriceAnalysisPanel extends Panel {
      * @return TetsimTobaccoProductsVariable
      */
     private TetsimTobaccoProductsVariable getChangeInIllicitNot(final String id) {
-        TetsimTobaccoProductsVariable variable = new TetsimTobaccoProductsVariable(id,
+        return new TetsimTobaccoProductsVariable(id,
                 new StringResourceModel("changeInIllicitNot.label"),
                 new StringResourceModel("changeInIllicitNot.unit"),
                 new PropertyModel<>(tetsimDatasetIModel, "changeInIllicitNot"), false, true) {
         };
-
-        return variable;
     }
 
 }
