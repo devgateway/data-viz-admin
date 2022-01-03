@@ -31,6 +31,11 @@ public abstract class BaseJpaServiceImpl<T extends GenericPersistable & Serializ
     }
 
     @Override
+    public List<T> findAllSorted() {
+        return repository().findAll(getSort());
+    }
+
+    @Override
     public List<T> findAll(final Specification<T> spec) {
         return repository().findAll(spec);
     }
@@ -87,6 +92,10 @@ public abstract class BaseJpaServiceImpl<T extends GenericPersistable & Serializ
     @Transactional
     public void delete(final T entity) {
         repository().delete(entity);
+    }
+
+    public Sort getSort() {
+        return Sort.by(Sort.Direction.ASC, "id");
     }
 
     protected abstract BaseJpaRepository<T, Long> repository();

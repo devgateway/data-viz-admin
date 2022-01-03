@@ -9,6 +9,7 @@ import org.devgateway.toolkit.persistence.repository.norepository.UniqueProperty
 import org.devgateway.toolkit.persistence.service.BaseJpaServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,5 +39,10 @@ public class TobaccoProductServiceImpl extends BaseJpaServiceImpl<TobaccoProduct
     @Override
     public UniquePropertyRepository<TobaccoProduct, Long> uniquePropertyRepository() {
         return tobaccoProductRepository;
+    }
+
+    @Override
+    public Sort getSort() {
+        return Sort.by(Sort.Direction.ASC, "label");
     }
 }
