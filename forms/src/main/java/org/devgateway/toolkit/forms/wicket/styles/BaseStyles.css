@@ -268,3 +268,7 @@ button .btn-home-label {
     white-space: normal;
     line-height: 20px;
 }
+
+.feedbackPanel, .form-wrapper {
+    margin: 10px 5px 10px 10px;
+}
