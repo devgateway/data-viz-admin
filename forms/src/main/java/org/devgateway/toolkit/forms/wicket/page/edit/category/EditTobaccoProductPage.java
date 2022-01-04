@@ -16,6 +16,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.string.StringValue;
 import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.validators.UniquePropertyValidator;
+import org.devgateway.toolkit.forms.validators.UniqueTobaccoProductIllicitValidator;
 import org.devgateway.toolkit.forms.wicket.components.form.CheckBoxYesNoToggleBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.page.edit.AbstractEditPage;
@@ -44,15 +45,20 @@ public class EditTobaccoProductPage extends AbstractEditPage<TobaccoProduct> {
     @Override
     protected void onInitialize() {
         super.onInitialize();
+        final StringValue id = getPageParameters().get(WebConstants.PARAM_ID);
 
         final TextFieldBootstrapFormComponent<String> name = new TextFieldBootstrapFormComponent<>("label");
         name.required();
-        final StringValue id = getPageParameters().get(WebConstants.PARAM_ID);
+
         name.getField().add(new UniquePropertyValidator<>(tobaccoProductService, id.toLong(-1L),
                 "label", this));
         name.getField().add(WebConstants.StringValidators.MAXIMUM_LENGTH_VALIDATOR_STD_DEFAULT_TEXT);
         editForm.add(name);
 
-        editForm.add(new CheckBoxYesNoToggleBootstrapFormComponent("illicit"));
+        final CheckBoxYesNoToggleBootstrapFormComponent illicit =
+                new CheckBoxYesNoToggleBootstrapFormComponent("illicit");
+        illicit.getField().add(new UniqueTobaccoProductIllicitValidator(tobaccoProductService, id.toLong(-1L),
+                "illicit", this));
+        editForm.add(illicit);
     }
 }
