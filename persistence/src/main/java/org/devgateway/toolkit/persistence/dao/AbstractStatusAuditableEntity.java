@@ -17,11 +17,16 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DELETED;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DRAFT;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHED;
+
 @MappedSuperclass
 public abstract class AbstractStatusAuditableEntity extends AbstractAuditableEntity implements Statusable {
+
     @NotNull
     @Audited
-    private String status = DBConstants.Status.DRAFT;
+    private String status = DRAFT;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -50,6 +55,11 @@ public abstract class AbstractStatusAuditableEntity extends AbstractAuditableEnt
     @ManyToOne(fetch = FetchType.LAZY)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Person checkedOutUser;
+
+    @JsonIgnore
+    public boolean isDeleted() {
+        return DELETED.equals(getStatus());
+    }
 
     @Override
     public String getStatus() {

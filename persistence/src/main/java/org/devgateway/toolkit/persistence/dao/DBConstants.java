@@ -23,10 +23,11 @@ public final class DBConstants {
 
     public static final class Status {
         public static final String DRAFT = "DRAFT";
-        public static final String SUBMITTED = "SUBMITTED";
-        public static final String APPROVED = "APPROVED";
+        public static final String SAVED = "SAVED";
+        public static final String PUBLISHED = "PUBLISHED";
+        public static final String DELETED = "DELETED";
 
-        public static final String[] ALL = {DRAFT, SUBMITTED, APPROVED};
+        public static final String[] ALL = {DRAFT, SAVED, PUBLISHED};
         public static final List<String> ALL_LIST = Collections.unmodifiableList(Arrays.asList(ALL));
     }
 
