@@ -63,6 +63,10 @@ import org.springframework.util.ObjectUtils;
 import org.wicketstuff.datetime.markup.html.basic.DateLabel;
 import org.wicketstuff.select2.Select2Choice;
 
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DRAFT;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHED;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.SAVED;
+
 /**
  * @author mpostelnicu
  * Page used to make editing easy, extend to get easy access to one entity for editing
@@ -78,9 +82,15 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
     private SaveEditPageButton saveApproveButton;
 
+    private SaveEditPageButton approveButton;
+
     private SaveEditPageButton saveDraftContinueButton;
 
     protected SaveEditPageButton revertToDraftPageButton;
+
+    protected TextContentModal approveModal;
+
+    protected TextContentModal unpublishModal;
 
     private CheckBoxYesNoToggleBootstrapFormComponent visibleStatusComments;
 
@@ -109,7 +119,6 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
     public AbstractEditStatusEntityPage(final PageParameters parameters) {
         super(parameters);
-
     }
 
 
@@ -150,6 +159,59 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
             button.setDefaultFormProcessing(false);
             button.setLabel(buttonModel);
         }
+    }
+
+    protected TextContentModal createApproveModal() {
+        final TextContentModal modal = new TextContentModal("approveModal",
+                Model.of(" Are you sure you want to Publish? This information will be visible in the website. "
+                        + "Please remember to check if the text content needs to be updated too."));
+
+        final SaveEditPageButton publishButton = new SaveEditPageButton("button", Model.of("Yes")) {
+            @Override
+            protected String getOnClickScript() {
+                return WebConstants.DISABLE_FORM_LEAVING_JS;
+            }
+
+            @Override
+            protected void onSubmit(final AjaxRequestTarget target) {
+                setStatusAppendComment(PUBLISHED);
+                super.onSubmit(target);
+            }
+        };
+        publishButton.setType(Buttons.Type.Success);
+        publishButton.setIconType(FontAwesome5IconType.thumbs_up_s);
+        modal.addButton(publishButton);
+        modal.addCloseButton(Model.of("No"));
+
+        return modal;
+    }
+
+    protected TextContentModal createUnpublishModal() {
+        final TextContentModal modal = new TextContentModal("unpublishModal",
+                Model.of("Are you sure you want to Unpublish? This information will be removed from the website."));
+
+        final SaveEditPageButton unpublishButton = new SaveEditPageButton("button", Model.of("Yes")) {
+            @Override
+            protected String getOnClickScript() {
+                return WebConstants.DISABLE_FORM_LEAVING_JS;
+            }
+
+            @Override
+            protected void onSubmit(final AjaxRequestTarget target) {
+                setStatusAppendComment(DRAFT);
+                editForm.getModelObject().setRemoveLock(true);
+                super.onSubmit(target);
+                target.add(editForm);
+                setButtonsPermissions();
+                onAfterRevertToDraft(target);
+            }
+        };
+        unpublishButton.setType(Buttons.Type.Warning);
+        unpublishButton.setIconType(FontAwesome5IconType.thumbs_down_s);
+        modal.addButton(unpublishButton);
+        modal.addCloseButton(Model.of("No"));
+
+        return modal;
     }
 
     protected ButtonContentModal createTerminateModal() {
@@ -197,7 +259,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     protected void onInitialize() {
         super.onInitialize();
 
-        if (!canEditLockableResource()) {
+        if (editForm.getModelObject().isDeleted() || !canEditLockableResource()) {
             setResponsePage(listPageClass);
         }
 
@@ -239,11 +301,20 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         saveApproveButton = getSaveApprovePageButton();
         entityButtonsFragment.add(saveApproveButton);
 
+        approveButton = getApprovePageButton();
+        entityButtonsFragment.add(approveButton);
+
+        approveModal = createApproveModal();
+        editForm.add(approveModal);
+
         saveDraftContinueButton = getSaveDraftAndContinueButton();
         entityButtonsFragment.add(saveDraftContinueButton);
 
         revertToDraftPageButton = getRevertToDraftPageButton();
         entityButtonsFragment.add(revertToDraftPageButton);
+
+        unpublishModal = createUnpublishModal();
+        editForm.add(unpublishModal);
 
         applyDraftSaveBehavior(saveButton);
         applyDraftSaveBehavior(saveDraftContinueButton);
@@ -284,7 +355,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     }
 
     public boolean isDisableEditingEvent() {
-        return !Strings.isEqual(editForm.getModelObject().getStatus(), DBConstants.Status.DRAFT) || isViewMode();
+        return !Strings.isEqual(editForm.getModelObject().getStatus(), DRAFT) || isViewMode();
     }
 
 
@@ -309,7 +380,8 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
     private void addRemoveLock() {
         removeLock = new CheckBoxBootstrapFormComponent("removeLock");
-        removeLock.setVisibilityAllowed(getLockableResource().getCheckedOutUser() != null);
+//        removeLock.setVisibilityAllowed(getLockableResource().getCheckedOutUser() != null);
+        removeLock.setVisibilityAllowed(false);
         editForm.add(removeLock);
         MetaDataRoleAuthorizationStrategy.authorize(removeLock, Component.RENDER, SecurityConstants.Roles.ROLE_ADMIN);
     }
@@ -350,7 +422,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     private void addAutosaveBehavior(final AjaxRequestTarget target) {
         // enable autosave
         if (!ComponentUtil.isPrintMode() && adminSettingsService.getAutosaveTime() > 0
-                && Strings.isEqual(editForm.getModelObject().getStatus(), DBConstants.Status.DRAFT)) {
+                && Strings.isEqual(editForm.getModelObject().getStatus(), DRAFT)) {
             saveDraftContinueButton.add(getAutosaveBehavior());
             autoSaveLabel.setVisibilityAllowed(true);
             if (target != null) {
@@ -396,11 +468,11 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         }
 
         switch (editForm.getModelObject().getStatus()) {
-            case DBConstants.Status.APPROVED:
+            case PUBLISHED:
                 return "label-success";
-            case DBConstants.Status.DRAFT:
+            case DRAFT:
                 return "label-danger";
-            case DBConstants.Status.SUBMITTED:
+            case SAVED:
                 return "label-warning";
             default:
                 return "";
@@ -423,6 +495,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
                     }
                 };
         checkBoxBootstrapFormComponent.setVisibilityAllowed(!isViewMode());
+        checkBoxBootstrapFormComponent.setVisibilityAllowed(false);
         return checkBoxBootstrapFormComponent;
     }
 
@@ -436,6 +509,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
                     }
                 };
         comment.setShowTooltip(true);
+        comment.setVisibilityAllowed(false);
         return comment;
     }
 
@@ -491,7 +565,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
             protected void onSubmit(final AjaxRequestTarget target) {
                 editForm.visitChildren(GenericBootstrapFormComponent.class,
                         new AllowNullForCertainInvalidFieldsVisitor());
-                setStatusAppendComment(DBConstants.Status.DRAFT);
+                setStatusAppendComment(DRAFT);
                 super.onSubmit(target);
             }
         };
@@ -509,7 +583,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
-                setStatusAppendComment(DBConstants.Status.SUBMITTED);
+                setStatusAppendComment(SAVED);
                 super.onSubmit(target);
             }
         };
@@ -528,7 +602,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
-                setStatusAppendComment(DBConstants.Status.SUBMITTED);
+                setStatusAppendComment(SAVED);
                 super.onSubmit(target);
             }
 
@@ -575,7 +649,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
             protected void onSubmit(final AjaxRequestTarget target) {
                 editForm.visitChildren(GenericBootstrapFormComponent.class,
                         new AllowNullForCertainInvalidFieldsVisitor());
-                setStatusAppendComment(DBConstants.Status.DRAFT);
+                setStatusAppendComment(DRAFT);
                 super.onSubmit(target);
             }
 
@@ -595,8 +669,8 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     }
 
     private SaveEditPageButton getSaveApprovePageButton() {
-        final SaveEditPageButton saveEditPageButton = new SaveEditPageButton("approve",
-                new StringResourceModel("approve", this, null)) {
+        final SaveEditPageButton saveEditPageButton = new SaveEditPageButton("saveApprove",
+                new StringResourceModel("saveApprove", this, null)) {
 
             @Override
             protected String getOnClickScript() {
@@ -605,8 +679,28 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
-                setStatusAppendComment(DBConstants.Status.APPROVED);
+                setStatusAppendComment(PUBLISHED);
                 super.onSubmit(target);
+            }
+        };
+        saveEditPageButton.setIconType(FontAwesome5IconType.thumbs_up_s);
+        return saveEditPageButton;
+    }
+
+    private SaveEditPageButton getApprovePageButton() {
+        final SaveEditPageButton saveEditPageButton = new SaveEditPageButton("approve",
+                new StringResourceModel("approve", this, null)) {
+
+            @Override
+            protected void onSubmit(final AjaxRequestTarget target) {
+                approveModal.show(true);
+                target.add(approveModal);
+            }
+
+            @Override
+            protected void onError(final AjaxRequestTarget target) {
+                super.onError(target);
+                target.add(feedbackPanel);
             }
         };
         saveEditPageButton.setIconType(FontAwesome5IconType.thumbs_up_s);
@@ -616,20 +710,19 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     protected SaveEditPageButton getRevertToDraftPageButton() {
         final SaveEditPageButton saveEditPageButton = new SaveEditPageButton("revertToDraft",
                 new StringResourceModel("revertToDraft", this, null)) {
-            @Override
-            protected String getOnClickScript() {
-                return WebConstants.DISABLE_FORM_LEAVING_JS;
-            }
 
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
-                setStatusAppendComment(DBConstants.Status.DRAFT);
-                editForm.getModelObject().setRemoveLock(true);
-                super.onSubmit(target);
-                target.add(editForm);
-                setButtonsPermissions();
-                onAfterRevertToDraft(target);
+                unpublishModal.show(true);
+                target.add(unpublishModal);
             }
+
+            @Override
+            protected void onError(final AjaxRequestTarget target) {
+                super.onError(target);
+                target.add(feedbackPanel);
+            }
+
         };
         saveEditPageButton.setIconType(FontAwesome5IconType.thumbs_down_s);
         return saveEditPageButton;
@@ -660,7 +753,8 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         addSaveButtonsPermissions(saveDraftContinueButton);
         addSaveButtonsPermissions(submitAndNext);
         addSaveButtonsPermissions(saveSubmitButton);
-        addApproveButtonPermissions(saveApproveButton);
+        addSaveApproveButtonPermissions(saveApproveButton);
+        addApproveButtonPermissions(approveButton);
         addSaveRevertButtonPermissions(revertToDraftPageButton);
         addDeleteButtonPermissions(deleteButton);
 
@@ -670,6 +764,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
             submitAndNext.setVisibilityAllowed(false);
             saveSubmitButton.setVisibilityAllowed(false);
             saveApproveButton.setVisibilityAllowed(false);
+            approveButton.setVisibilityAllowed(false);
             revertToDraftPageButton.setVisibilityAllowed(false);
         }
     }
@@ -686,19 +781,15 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, getValidatorRole());
         MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, getCommaCombinedRoles());
         button.setVisibilityAllowed(button.isVisibilityAllowed()
-                && !DBConstants.Status.DRAFT.equals(editForm.getModelObject().getStatus()));
+                && PUBLISHED.equals(editForm.getModelObject().getStatus()));
+    }
 
-        // additionally normal users should not revert anything that was already validated
-        if (FormSecurityUtil.isCurrentRoleOnlyUser(getUserRole(), getValidatorRole())
-                && DBConstants.Status.APPROVED.equals(editForm.getModelObject().getStatus())) {
-            button.setVisibilityAllowed(false);
-        } else
-
-            //admins can revert anything
-            if (FormSecurityUtil.isCurrentUserAdmin()
-                    && DBConstants.Status.APPROVED.equals(editForm.getModelObject().getStatus())) {
-                button.setVisibilityAllowed(true);
-            }
+    protected void addSaveApproveButtonPermissions(final Component button) {
+        addDefaultAllButtonsPermissions(button);
+        MetaDataRoleAuthorizationStrategy.authorize(
+                button, Component.RENDER, getValidatorRole());
+        button.setVisibilityAllowed(button.isVisibilityAllowed()
+                && DRAFT.equals(editForm.getModelObject().getStatus()));
     }
 
     protected void addApproveButtonPermissions(final Component button) {
@@ -706,14 +797,14 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         MetaDataRoleAuthorizationStrategy.authorize(
                 button, Component.RENDER, getValidatorRole());
         button.setVisibilityAllowed(button.isVisibilityAllowed()
-                && DBConstants.Status.SUBMITTED.equals(editForm.getModelObject().getStatus()));
+                && SAVED.equals(editForm.getModelObject().getStatus()));
     }
 
     protected void addSaveButtonsPermissions(final Component button) {
         addDefaultAllButtonsPermissions(button);
         MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, getCommaCombinedRoles());
         button.setVisibilityAllowed(button.isVisibilityAllowed()
-                && DBConstants.Status.DRAFT.equals(editForm.getModelObject().getStatus()));
+                && DRAFT.equals(editForm.getModelObject().getStatus()));
     }
 
 

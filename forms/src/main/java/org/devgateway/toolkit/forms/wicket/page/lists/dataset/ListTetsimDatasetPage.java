@@ -23,6 +23,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.wicket.components.table.filter.JpaFilterState;
+import org.devgateway.toolkit.forms.wicket.components.table.filter.TetsimDatasetFilterState;
 import org.devgateway.toolkit.forms.wicket.page.edit.dataset.EditTetsimDatasetPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.AbstractListPage;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
@@ -81,6 +82,6 @@ public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
 
     @Override
     public JpaFilterState<TetsimDataset> newFilterState() {
-        return new JpaFilterState<>();
+        return new TetsimDatasetFilterState();
     }
 }

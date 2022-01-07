@@ -23,10 +23,11 @@ public final class DBConstants {
 
     public static final class Status {
         public static final String DRAFT = "DRAFT";
-        public static final String SUBMITTED = "SUBMITTED";
-        public static final String APPROVED = "APPROVED";
+        public static final String SAVED = "SAVED";
+        public static final String PUBLISHED = "PUBLISHED";
+        public static final String DELETED = "DELETED";
 
-        public static final String[] ALL = {DRAFT, SUBMITTED, APPROVED};
+        public static final String[] ALL = {DRAFT, SAVED, PUBLISHED};
         public static final List<String> ALL_LIST = Collections.unmodifiableList(Arrays.asList(ALL));
     }
 
@@ -34,4 +35,7 @@ public final class DBConstants {
     public static final int STD_DEFAULT_TEXT_LENGTH = 255;
     public static final int MAX_DEFAULT_TEXT_LENGTH_ONE_LINE = 3000;
     public static final int MAX_DEFAULT_TEXT_AREA = 10000;
+
+    public static final int MIN_YEAR_DATASET = 1900;
+    public static final int MAX_YEAR_DATASET = 2100;
 }

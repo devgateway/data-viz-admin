@@ -115,12 +115,14 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
 
     protected TextContentModal deleteModal;
 
+    protected TextContentModal cancelModal;
+
     protected TextContentModal deleteFailedModal;
 
     protected TextContentModal saveFailedModal;
 
     @SpringBean
-    private EntityManager entityManager;
+    protected EntityManager entityManager;
 
     @SpringBean(required = false)
     private MarkupCacheService markupCacheService;
@@ -152,8 +154,7 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
 
     protected TextContentModal createDeleteModal() {
         final TextContentModal modal = new TextContentModal("deleteModal",
-                Model.of("DELETE is an irreversible operation. Are you sure?"));
-        modal.addCloseButton();
+                Model.of("Are you sure you want to delete? You will no longer be able to access this data."));
 
         final LaddaAjaxButton deleteButton = new LaddaAjaxButton("button", Buttons.Type.Danger) {
             @Override
@@ -166,10 +167,32 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
             }
         };
         deleteButton.setDefaultFormProcessing(false);
-        deleteButton.setLabel(Model.of("DELETE"));
+        deleteButton.setLabel(Model.of("Yes"));
+        modal.addCloseButton(Model.of("No"));
         modal.addButton(deleteButton);
 
         return modal;
+    }
+
+    protected TextContentModal createCancelModal() {
+        final TextContentModal cancelModal = new TextContentModal("cancelModal",
+                Model.of("Are you sure you want to cancel? Any changes made will be lost."));
+
+        final LaddaAjaxButton cancelButton = new BootstrapCancelButton("button", Model.of("Yes")) {
+            private static final long serialVersionUID = -9144254663723097155L;
+
+            @Override
+            protected void onSubmit(final AjaxRequestTarget target) {
+                cancelModal.appendCloseDialogJavaScript(target);
+                setResponsePage(listPageClass);
+            }
+        };
+
+        cancelButton.setType(Buttons.Type.Success);
+        cancelModal.addButton(cancelButton);
+        cancelModal.addCloseButton(Model.of("No"));
+
+        return cancelModal;
     }
 
     protected TextContentModal createDeleteFailedModal() {
@@ -256,6 +279,9 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
             deleteModal = createDeleteModal();
             add(deleteModal);
 
+            cancelModal = createCancelModal();
+            add(cancelModal);
+
             deleteFailedModal = createDeleteFailedModal();
             add(deleteFailedModal);
 
@@ -272,14 +298,21 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
     }
 
     protected BootstrapCancelButton getCancelButton(final String id) {
-        return new BootstrapCancelButton(id, new StringResourceModel("cancelButton", this, null)) {
-            private static final long serialVersionUID = -249084359200507749L;
+        return new CancelEditPageButton(id, new StringResourceModel("cancelButton", this, null));
+    }
 
-            @Override
-            protected void onSubmit(final AjaxRequestTarget target) {
-                setResponsePage(listPageClass);
-            }
-        };
+    public class CancelEditPageButton extends BootstrapCancelButton {
+        private static final long serialVersionUID = -1474498211555760931L;
+
+        public CancelEditPageButton(final String id, final IModel<String> model) {
+            super(id, model);
+        }
+
+        @Override
+        protected void onSubmit(final AjaxRequestTarget target) {
+            cancelModal.show(true);
+            target.add(cancelModal);
+        }
     }
 
     /**
