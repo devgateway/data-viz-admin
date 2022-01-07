@@ -6,6 +6,10 @@ import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.string.StringValue;
+import org.apache.wicket.validation.validator.RangeValidator;
+import org.devgateway.toolkit.forms.WebConstants;
+import org.devgateway.toolkit.forms.validators.UniquePropertyValidator;
 import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.page.edit.AbstractEditStatusEntityPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListTetsimDatasetPage;
@@ -17,8 +21,12 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.wicketstuff.annotation.mount.MountPath;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.devgateway.toolkit.forms.WebConstants.MAXIMUM_PERCENTAGE;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.MAX_YEAR_DATASET;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.MIN_YEAR_DATASET;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DELETED;
 
 /**
@@ -54,6 +62,15 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
         final TextFieldBootstrapFormComponent<Integer> year = new TextFieldBootstrapFormComponent<>("year");
         year.required();
         year.integer();
+        year.getField().add(RangeValidator.range(MIN_YEAR_DATASET, MAX_YEAR_DATASET));
+
+        final StringValue id = getPageParameters().get(WebConstants.PARAM_ID);
+        List<Long> deletedIds = tetsimDatasetService.findAllDeleted().stream()
+                .map(TetsimDataset::getId)
+                .collect(Collectors.toList());
+        deletedIds.add(id.toLong(-1L));
+        year.getField().add(new UniquePropertyValidator<>(tetsimDatasetService, deletedIds,"year", this));
+
         return year;
     }
 
@@ -105,6 +122,7 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
             TetsimPriceVariable marketShare = editForm.getModelObject().getMarketShare();
             BigDecimal sum = marketShare.getValues().stream()
                     .map(TetsimTobaccoProductValue::getValue)
+                    .filter(v -> v != null)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
 
             if (sum.intValue() > MAXIMUM_PERCENTAGE) {
