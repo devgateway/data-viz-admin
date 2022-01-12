@@ -1,6 +1,10 @@
 version: '3'
 
 services:
+  admin:
+    build:
+      context: forms
+
   postgres:
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
