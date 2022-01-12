@@ -13,7 +13,8 @@ pipeline {
         script {
           def args = "-e JAVA_TOOL_OPTIONS=-Duser.home=$WORKSPACE_TMP"
           withDockerContainer(image: env.MAVEN_IMAGE, args: args) {
-            sh 'mvn -B clean package -DskipTests && mkdir forms/target/deps'
+            // TODO
+            sh 'mvn -B clean package -DskipTests -Dcheckstyle.skip && mkdir forms/target/deps'
             dir('forms/target/deps') {
               sh 'jar -xf ../*.jar'
             }
