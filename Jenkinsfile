@@ -25,12 +25,14 @@ pipeline {
 
     stage('Build Image') {
       steps {
-        script {
-          def image = 'registry.developmentgateway.org/tcdi/admin'
-          def tag = ['main', 'master'].contains(env.BRANCH_NAME) ?
-            'latest' :
-            env.BRANCH_NAME.replaceAll('[^\\p{Alnum}-_]', '_').toLowerCase()
-          sh "docker build -t $image:$tag ."
+        dir('forms') {
+          script {
+            def image = 'registry.developmentgateway.org/tcdi/admin'
+            def tag = ['main', 'master'].contains(env.BRANCH_NAME) ?
+              'latest' :
+              env.BRANCH_NAME.replaceAll('[^\\p{Alnum}-_]', '_').toLowerCase()
+            sh "docker build -t $image:$tag ."
+          }
         }
       }
     } // Build Image
