@@ -8,7 +8,7 @@ RUN mkdir -p /opt/tcdi/admin
 RUN mv */target/*-0.0.1-SNAPSHOT.jar /opt/tcdi/admin
 
 FROM openjdk:11-jre-slim
-WORKDIR /opt/tcdi/admin
+WORKDIR /opt/devgateway/tcdi/admin
 COPY --from=build /opt/tcdi/admin ./
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/opt/tcdi/admin/tcdi-admin-forms-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["/opt/devgateway/tcdi/admin/entrypoint.sh"]
