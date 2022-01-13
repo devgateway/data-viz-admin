@@ -1,0 +1,84 @@
+---
+- name: Deploy
+  hosts:
+    - "{{ project_title | regex_replace('[^\\w_]', '_') | lower }}_{{ tag }}"
+  vars:
+    product: "{{ project_title | regex_replace('[^\\w_]', '_') | lower }}"
+    systemd_service:
+      Unit.Description: "{{ project_title }}"
+      Unit.After: docker.socket docker.service
+      Unit.BindsTo: docker.socket docker.service
+      Install.WantedBy: multi-user.target
+      Service.Type: exec
+      Service.ExecStart: /usr/bin/docker-compose --no-ansi up
+      Service.WorkingDirectory: "/opt/devgateway/{{ product }}"
+      Service.Environment: "TAG={{ tag }} REPO={{ repo }}"
+
+  tasks:
+
+    - name: Install packages
+      ansible.builtin.package:
+        name:
+          - firewalld
+          - docker-compose
+      tags:
+        - provision
+
+    - name: Open firewall ports
+      ansible.posix.firewalld:
+        service: http
+        state: enabled
+        permanent: true
+        immediate: true
+        zone: public
+      tags:
+        - provision
+
+    - name: Configure Systemd unit
+      community.general.ini_file:
+        path: /etc/systemd/system/{{ product }}.service
+        create: true
+        no_extra_spaces: true
+        section: "{{ item.key.split('.')[0] }}"
+        option: "{{ item.key.split('.')[1] }}"
+        value: "{{ item.value }}"
+      loop: "{{ systemd_service | dict2items }}"
+      loop_control:
+        label: "{{ item.key }}"
+      notify:
+        - Reload Systemd
+
+    - name: Install Compose file
+      ansible.builtin.copy:
+        src: docker-compose.yml
+        dest: "{{ systemd_service['Service.WorkingDirectory'] }}/"
+      notify:
+        - Restart stack
+
+    - name: Update images
+      ansible.builtin.command:
+        chdir: "{{ systemd_service['Service.WorkingDirectory'] }}"
+        cmd: /usr/bin/docker-compose pull --quiet
+      environment:
+        TAG: "{{ tag }}"
+        REPO: "{{ repo }}"
+      notify:
+        - Restart stack
+      when: pull | default(false)
+
+    - name: Enable Compose service
+      ansible.builtin.service:
+        name: "{{ product }}"
+        enabled: true
+        state: started
+
+  handlers:
+
+    - name: Reload Systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
+
+    - name: Restart stack
+      ansible.builtin.service:
+        name: "{{ product }}"
+        state: restarted

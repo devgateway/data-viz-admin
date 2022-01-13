@@ -5,6 +5,7 @@ pipeline {
   environment {
     MAVEN_IMAGE = 'maven:3.8-jdk-11'
     DOCKER_BUILDKIT = '1'
+    PROJECT_TITLE = 'TCDI Admin'
     REPO = 'registry.developmentgateway.org/'
   }
 
@@ -38,6 +39,30 @@ pipeline {
         }
       }
     } // Package & Publish
+
+    stage('Deploy') {
+      when { branch 'develop' }
+      agent { label 'ansible' }
+      steps {
+        script {
+          def tag = ['main', 'master'].contains(env.BRANCH_NAME) ?
+            'latest' :
+            env.BRANCH_NAME.replaceAll('[^\\p{Alnum}-_]', '_').toLowerCase()
+          ansiblePlaybook(
+            credentialsId: 'Deploy',
+            become: true,
+            playbook: 'deploy.yml',
+            skippedTags: 'provision',
+            extraVars: [
+              project_title: env.PROJECT_TITLE,
+              repo: env.REPO,
+              tag: tag,
+              pull: "true"
+            ]
+          )
+        } // script
+      } // steps
+    }
 
   } // stages
 }
