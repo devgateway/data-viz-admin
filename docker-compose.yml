@@ -1,11 +1,10 @@
-version: '3'
+version: '3.4'
 
 services:
   admin:
+    image: ${REPO}tcdi-admin/admin:${TAG-local}
     depends_on:
       - postgres
-    volumes:
-      - admin:/opt/tcdi/admin
     ports:
       - 8080:8080
     logging: &json_file
@@ -23,5 +22,4 @@ services:
     logging: *json_file
 
 volumes:
-  admin: null
   postgres: null
