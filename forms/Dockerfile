@@ -7,3 +7,4 @@ COPY target/deps/BOOT-INF/classes .
 USER nobody
 EXPOSE 8080
 ENTRYPOINT ["/opt/devgateway/tcdi/admin/entrypoint.sh"]
+CMD ["admin"]
