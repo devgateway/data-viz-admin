@@ -261,30 +261,30 @@ public abstract class BasePage extends GenericWebPage<Void> {
                         new StringResourceModel("navbar.groups", this, null))
                         .setIconType(FontAwesome5IconType.tags_s));
 
-                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTestFormPage.class, null,
-                        new StringResourceModel("navbar.testcomponents", this, null))
-                        .setIconType(FontAwesome5IconType.android));
+//                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTestFormPage.class, null,
+//                        new StringResourceModel("navbar.testcomponents", this, null))
+//                        .setIconType(FontAwesome5IconType.android));
 
-                list.add(new MenuDivider());
-
-                final BootstrapBookmarkablePageLink swagger = new MenuBookmarkablePageLink<Void>(SwaggerPage.class,
-                        new StringResourceModel("navbar.swagger", BasePage.this, null))
-                        .setIconType(FontAwesome5IconType.code_s);
-                MetaDataRoleAuthorizationStrategy.authorize(swagger, Component.RENDER,
-                        SecurityConstants.Roles.ROLE_ADMIN);
-                list.add(swagger);
-
-                final BootstrapBookmarkablePageLink javamelody = new MenuBookmarkablePageLink<Void>(
-                        JavamelodyPage.class, new StringResourceModel("navbar.javamelody",
-                        BasePage.this, null)).setIconType(FontAwesome5IconType.eye_s);
-                MetaDataRoleAuthorizationStrategy.authorize(javamelody, Component.RENDER,
-                        SecurityConstants.Roles.ROLE_ADMIN);
-                list.add(javamelody);
-
-                list.add(new MenuBookmarkablePageLink<SpringEndpointsPage>(SpringEndpointsPage.class, null,
-                        new StringResourceModel("navbar.springendpoints", this, null))
-                        .setIconType(FontAwesome5IconType.anchor_s));
-
+//                list.add(new MenuDivider());
+//
+//                final BootstrapBookmarkablePageLink swagger = new MenuBookmarkablePageLink<Void>(SwaggerPage.class,
+//                        new StringResourceModel("navbar.swagger", BasePage.this, null))
+//                        .setIconType(FontAwesome5IconType.code_s);
+//                MetaDataRoleAuthorizationStrategy.authorize(swagger, Component.RENDER,
+//                        SecurityConstants.Roles.ROLE_ADMIN);
+//                list.add(swagger);
+//
+//                final BootstrapBookmarkablePageLink javamelody = new MenuBookmarkablePageLink<Void>(
+//                        JavamelodyPage.class, new StringResourceModel("navbar.javamelody",
+//                        BasePage.this, null)).setIconType(FontAwesome5IconType.eye_s);
+//                MetaDataRoleAuthorizationStrategy.authorize(javamelody, Component.RENDER,
+//                        SecurityConstants.Roles.ROLE_ADMIN);
+//                list.add(javamelody);
+//
+//                list.add(new MenuBookmarkablePageLink<SpringEndpointsPage>(SpringEndpointsPage.class, null,
+//                        new StringResourceModel("navbar.springendpoints", this, null))
+//                        .setIconType(FontAwesome5IconType.anchor_s));
+//
                 list.add(new MenuDivider());
 
                 list.add(new MenuBookmarkablePageLink<Void>(EditAdminSettingsPage.class,
@@ -313,15 +313,15 @@ public abstract class BasePage extends GenericWebPage<Void> {
                         new StringResourceModel("navbar.tetsim", this, null))
                         .setIconType(FontAwesome5IconType.percentage_s));
 
-                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTobaccoProductPage.class, null,
+                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(DatasetsHomepage.class, null,
                         new StringResourceModel("navbar.prevalence", this, null))
                         .setIconType(FontAwesome5IconType.users_s));
 
-                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTobaccoProductPage.class, null,
+                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(DatasetsHomepage.class, null,
                         new StringResourceModel("navbar.policy", this, null))
                         .setIconType(FontAwesome5IconType.tasks_s));
 
-                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTobaccoProductPage.class, null,
+                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(DatasetsHomepage.class, null,
                         new StringResourceModel("navbar.ecigarettes", this, null))
                         .setIconType(FontAwesome5IconType.smoking_s));
 
