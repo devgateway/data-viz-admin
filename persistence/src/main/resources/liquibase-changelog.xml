@@ -137,4 +137,17 @@
         </update>
     </changeSet>
 
+    <changeSet id="TOBACCO-809-USD-currency" author="vchihai">
+        <preConditions onFail="CONTINUE">
+            <tableExists tableName="CATEGORY" />
+        </preConditions>
+        <insert tableName="CATEGORY">
+            <column name="ID" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="DTYPE" value="Currency" />
+            <column name="LABEL" value="USD" />
+            <column name="CREATED_BY" value="liquibase" />
+            <column name="CREATED_DATE" value="NOW()" />
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>
