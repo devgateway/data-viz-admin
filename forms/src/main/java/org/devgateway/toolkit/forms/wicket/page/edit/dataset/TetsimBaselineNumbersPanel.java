@@ -5,13 +5,18 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.validators.PositiveBigDecimalValidator;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
+import org.devgateway.toolkit.persistence.service.AdminSettingsService;
 
 /**
  * @author Viorel Chihai
  */
 public class TetsimBaselineNumbersPanel extends Panel {
+
+    @SpringBean
+    AdminSettingsService adminSettingsService;
 
     protected final IModel<TetsimDataset> tetsimDatasetIModel;
 
@@ -62,7 +67,7 @@ public class TetsimBaselineNumbersPanel extends Panel {
     private TetsimBaselineDecimalVariable getCigaretteDeclaredCustomValueVariable(final String id) {
         TetsimBaselineDecimalVariable variable = new TetsimBaselineDecimalVariable(id,
                 new StringResourceModel("cigaretteDeclaredCustomValue.label"),
-                new StringResourceModel("cigaretteDeclaredCustomValue.unit"),
+                new StringResourceModel("cigaretteDeclaredCustomValue.unit").setParameters(getDefaultCurrency()),
                 new PropertyModel<>(tetsimDatasetIModel, "cigaretteDeclaredCustomValue"));
         variable.getInputField().getField().add(new PositiveBigDecimalValidator(true));
 
@@ -89,6 +94,10 @@ public class TetsimBaselineNumbersPanel extends Panel {
         variable.getInputField().getField().add(new PositiveBigDecimalValidator());
 
         return variable;
+    }
+
+    private String getDefaultCurrency() {
+        return adminSettingsService.get().getDefaultCurrency().getLabel();
     }
 }
 

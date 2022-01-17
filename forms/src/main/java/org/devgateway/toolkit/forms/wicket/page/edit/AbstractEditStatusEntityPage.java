@@ -76,15 +76,15 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
     protected Fragment entityButtonsFragment;
 
-    private SaveEditPageButton saveSubmitButton;
+    protected SaveEditPageButton saveSubmitButton;
 
     protected SaveEditPageButton submitAndNext;
 
-    private SaveEditPageButton saveApproveButton;
+    protected SaveEditPageButton saveApproveButton;
 
-    private SaveEditPageButton approveButton;
+    protected SaveEditPageButton approveButton;
 
-    private SaveEditPageButton saveDraftContinueButton;
+    protected SaveEditPageButton saveDraftContinueButton;
 
     protected SaveEditPageButton revertToDraftPageButton;
 
