@@ -298,21 +298,14 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
     }
 
     protected BootstrapCancelButton getCancelButton(final String id) {
-        return new CancelEditPageButton(id, new StringResourceModel("cancelButton", this, null));
-    }
+        return new BootstrapCancelButton(id, new StringResourceModel("cancelButton", this, null)) {
+            private static final long serialVersionUID = -249084359200507749L;
 
-    public class CancelEditPageButton extends BootstrapCancelButton {
-        private static final long serialVersionUID = -1474498211555760931L;
-
-        public CancelEditPageButton(final String id, final IModel<String> model) {
-            super(id, model);
-        }
-
-        @Override
-        protected void onSubmit(final AjaxRequestTarget target) {
-            cancelModal.show(true);
-            target.add(cancelModal);
-        }
+            @Override
+            protected void onSubmit(final AjaxRequestTarget target) {
+                setResponsePage(listPageClass);
+            }
+        };
     }
 
     /**

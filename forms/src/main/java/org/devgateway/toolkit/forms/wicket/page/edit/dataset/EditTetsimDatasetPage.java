@@ -1,21 +1,26 @@
 package org.devgateway.toolkit.forms.wicket.page.edit.dataset;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.string.StringValue;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.validators.UniquePropertyValidator;
+import org.devgateway.toolkit.forms.wicket.components.form.BootstrapCancelButton;
 import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.page.edit.AbstractEditStatusEntityPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListTetsimDatasetPage;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
 import org.devgateway.toolkit.persistence.dao.data.TetsimPriceVariable;
 import org.devgateway.toolkit.persistence.dao.data.TetsimTobaccoProductValue;
+import org.devgateway.toolkit.persistence.service.category.TobaccoProductService;
 import org.devgateway.toolkit.persistence.service.data.TetsimDatasetService;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.wicketstuff.annotation.mount.MountPath;
@@ -39,6 +44,9 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
 
     @SpringBean
     protected TetsimDatasetService tetsimDatasetService;
+
+    @SpringBean
+    protected TobaccoProductService tobaccoProductService;
 
     public EditTetsimDatasetPage(final PageParameters parameters) {
         super(parameters);
@@ -98,15 +106,41 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
         setResponsePage(listPageClass);
     }
 
+    protected BootstrapCancelButton getCancelButton(final String id) {
+        return new CancelEditPageButton(id, new StringResourceModel("cancelButton", this, null));
+    }
+
+    public class CancelEditPageButton extends BootstrapCancelButton {
+        private static final long serialVersionUID = -1474498211555760931L;
+
+        public CancelEditPageButton(final String id, final IModel<String> model) {
+            super(id, model);
+        }
+
+        @Override
+        protected void onSubmit(final AjaxRequestTarget target) {
+            cancelModal.show(true);
+            target.add(cancelModal);
+        }
+    }
+
     private TetsimBaselineNumbersPanel getBaseLineNumbers() {
         return new TetsimBaselineNumbersPanel("baseLineNumbers", editForm.getModel());
     }
 
-    private TetsimPriceAnalysisPanel getPriceAnalysisNumbers() {
+    private Component getPriceAnalysisNumbers() {
+        if (tobaccoProductsNotDefined()) {
+            return new NoTobaccoProductsPanel("priceAnalysisNumbers");
+        }
+
         return new TetsimPriceAnalysisPanel("priceAnalysisNumbers", editForm.getModel());
     }
 
-    private TetsimIndustryResponsesPanel getIndustryResponsesNumbers() {
+    private Component getIndustryResponsesNumbers() {
+        if (tobaccoProductsNotDefined()) {
+            return new NoTobaccoProductsPanel("industryResponsesNumbers");
+        }
+
         return new TetsimIndustryResponsesPanel("industryResponsesNumbers", editForm.getModel());
     }
 
@@ -128,6 +162,25 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
             if (sum.intValue() > MAXIMUM_PERCENTAGE) {
                 editForm.error(getString("error.form.validation.marketShare.percentage"));
             }
+        }
+    }
+
+    private boolean tobaccoProductsNotDefined() {
+        return tobaccoProductService.count() == 0;
+    }
+
+    @Override
+    protected void enableDisableAutosaveFields(final AjaxRequestTarget target) {
+        super.enableDisableAutosaveFields(target);
+
+        if (tobaccoProductsNotDefined()) {
+            saveDraftContinueButton.setEnabled(false);
+            saveButton.setEnabled(false);
+            submitAndNext.setEnabled(false);
+            saveSubmitButton.setEnabled(false);
+            saveApproveButton.setEnabled(false);
+            approveButton.setEnabled(false);
+            revertToDraftPageButton.setEnabled(false);
         }
     }
 }
