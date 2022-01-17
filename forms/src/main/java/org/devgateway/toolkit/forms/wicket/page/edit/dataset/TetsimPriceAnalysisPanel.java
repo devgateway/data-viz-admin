@@ -14,6 +14,7 @@ import org.devgateway.toolkit.forms.validators.PositiveBigDecimalValidator;
 import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
 import org.devgateway.toolkit.persistence.dao.categories.TobaccoProduct;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
+import org.devgateway.toolkit.persistence.service.AdminSettingsService;
 import org.devgateway.toolkit.persistence.service.category.TobaccoProductService;
 
 import java.math.BigDecimal;
@@ -30,6 +31,9 @@ public class TetsimPriceAnalysisPanel extends Panel {
 
     @SpringBean
     protected TobaccoProductService tobaccoProductService;
+
+    @SpringBean
+    protected AdminSettingsService adminSettingsService;
 
     public TetsimPriceAnalysisPanel(final String id, final IModel<TetsimDataset> tetsimDatasetIModel) {
         super(id);
@@ -83,7 +87,7 @@ public class TetsimPriceAnalysisPanel extends Panel {
     private TetsimTobaccoProductsVariable getRetailPriceVariable(final String id) {
         return new TetsimTobaccoProductsVariable(id,
                 new StringResourceModel("retailPrice.label"),
-                new StringResourceModel("retailPrice.unit"),
+                new StringResourceModel("retailPrice.unit").setParameters(getDefaultCurrency()),
                 new PropertyModel<>(tetsimDatasetIModel, "retailPrice")) {
 
             @Override
@@ -127,7 +131,7 @@ public class TetsimPriceAnalysisPanel extends Panel {
     private TetsimTobaccoProductsVariable getCifVariable(final String id) {
         return new TetsimTobaccoProductsVariable(id,
                 new StringResourceModel("cif.label"),
-                new StringResourceModel("cif.unit"),
+                new StringResourceModel("cif.unit").setParameters(getDefaultCurrency()),
                 new PropertyModel<>(tetsimDatasetIModel, "cif")) {
 
             @Override
@@ -170,7 +174,7 @@ public class TetsimPriceAnalysisPanel extends Panel {
     private TetsimTobaccoProductsVariable getExciseTax(final String id) {
         return new TetsimTobaccoProductsVariable(id,
                 new StringResourceModel("exciseTax.label"),
-                new StringResourceModel("exciseTax.unit"),
+                new StringResourceModel("exciseTax.unit").setParameters(getDefaultCurrency()),
                 new PropertyModel<>(tetsimDatasetIModel, "exciseTax")) {
 
             @Override
@@ -258,6 +262,10 @@ public class TetsimPriceAnalysisPanel extends Panel {
                 new StringResourceModel("changeInIllicitNot.unit"),
                 new PropertyModel<>(tetsimDatasetIModel, "changeInIllicitNot"), false, true) {
         };
+    }
+
+    private String getDefaultCurrency() {
+        return adminSettingsService.get().getDefaultCurrency().getLabel();
     }
 
 }

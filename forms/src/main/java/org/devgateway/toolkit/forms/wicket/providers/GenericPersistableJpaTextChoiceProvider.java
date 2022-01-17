@@ -84,6 +84,15 @@ public class GenericPersistableJpaTextChoiceProvider<T extends GenericPersistabl
         this.excludedIds = excludedIds;
     }
 
+    public GenericPersistableJpaTextChoiceProvider<T> setSort(final Sort sort) {
+        this.sort = sort;
+        return this;
+    }
+
+    public GenericPersistableJpaTextChoiceProvider<T> setSort(final Sort.Direction direction, final String... properties) {
+        return this.setSort(Sort.by(direction, properties));
+    }
+
     @Override
     public String getIdValue(final T choice) {
         // if the object is not null but it hasn't an ID return 0

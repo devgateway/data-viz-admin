@@ -14,6 +14,7 @@ import org.devgateway.toolkit.persistence.dao.data.TetsimPriceVariable;
 import org.devgateway.toolkit.persistence.dao.data.TetsimTobaccoProductValue;
 import org.devgateway.toolkit.persistence.service.category.TobaccoProductService;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -99,7 +100,8 @@ public class TetsimTobaccoProductsVariable extends Panel {
 
     public TetsimTobaccoProductValue getTobaccoProductValue(final TetsimPriceVariable priceVariable,
                                                             final TobaccoProduct product) {
-        Set<TetsimTobaccoProductValue> tobaccoProductValues = priceVariable.getValues();
+        Set<TetsimTobaccoProductValue> tobaccoProductValues = priceVariable == null ? new HashSet<>()
+                : priceVariable.getValues();
 
         TetsimTobaccoProductValue productValue = tobaccoProductValues.stream()
                 .filter(t -> t.getProduct().getId().equals(product.getId())).findAny()

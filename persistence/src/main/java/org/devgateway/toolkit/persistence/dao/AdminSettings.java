@@ -1,5 +1,6 @@
 package org.devgateway.toolkit.persistence.dao;
 
+import org.devgateway.toolkit.persistence.dao.categories.Currency;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.envers.Audited;
@@ -26,6 +27,8 @@ public class AdminSettings extends AbstractAuditableEntity {
     private LocalDateTime rebootAlertSince;
 
     private Integer autosaveTime = AUTOSAVE_TIME_DEFAULT;
+
+    private Currency defaultCurrency;
 
     @Override
     public AbstractAuditableEntity getParent() {
@@ -58,5 +61,13 @@ public class AdminSettings extends AbstractAuditableEntity {
 
     public void setAutosaveTime(Integer autosaveTime) {
         this.autosaveTime = autosaveTime;
+    }
+
+    public Currency getDefaultCurrency() {
+        return defaultCurrency;
+    }
+
+    public void setDefaultCurrency(final Currency defaultCurrency) {
+        this.defaultCurrency = defaultCurrency;
     }
 }
