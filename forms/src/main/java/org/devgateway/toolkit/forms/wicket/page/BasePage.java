@@ -301,33 +301,10 @@ public abstract class BasePage extends GenericWebPage<Void> {
         return adminMenu;
     }
 
-    protected NavbarDropDownButton newDatasetsMenu() {
-        NavbarDropDownButton dataSetsMenu = new NavbarDropDownButton(
-                new StringResourceModel("navbar.datasets", this, null)) {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected List<AbstractLink> newSubMenuButtons(final String arg0) {
-                final List<AbstractLink> list = new ArrayList<>();
-                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTetsimDatasetPage.class, null,
-                        new StringResourceModel("navbar.tetsim", this, null))
-                        .setIconType(FontAwesome5IconType.percentage_s));
-
-                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(DatasetsHomepage.class, null,
-                        new StringResourceModel("navbar.prevalence", this, null))
-                        .setIconType(FontAwesome5IconType.users_s));
-
-                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(DatasetsHomepage.class, null,
-                        new StringResourceModel("navbar.policy", this, null))
-                        .setIconType(FontAwesome5IconType.tasks_s));
-
-                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(DatasetsHomepage.class, null,
-                        new StringResourceModel("navbar.ecigarettes", this, null))
-                        .setIconType(FontAwesome5IconType.smoking_s));
-
-                return list;
-            }
-        };
+    protected NavbarButton newDatasetsMenu() {
+        NavbarButton dataSetsMenu = new NavbarButton(DatasetsHomepage.class,
+                new StringResourceModel("navbar.datasets", this, null))
+                .setIconType(FontAwesome5IconType.table_s);
 
         dataSetsMenu.setIconType(FontAwesome5IconType.table_s);
         MetaDataRoleAuthorizationStrategy.authorize(dataSetsMenu, Component.RENDER, SecurityConstants.Roles.ROLE_USER);
