@@ -59,7 +59,7 @@ public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
             public IModel<?> getDataModel(final IModel<TetsimDataset> rowModel) {
                 IModel<?> model = super.getDataModel(rowModel);
                 ZonedDateTime modifiedDate = (ZonedDateTime) model.getObject();
-                return  Model.of(modifiedDate.format(DateTimeFormatter.ofPattern("dd/MM/yy")));
+                return  Model.of(modifiedDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
             }
         });
         columns.add(new PropertyColumn<>(new StringResourceModel("status"), "status", "status"));
