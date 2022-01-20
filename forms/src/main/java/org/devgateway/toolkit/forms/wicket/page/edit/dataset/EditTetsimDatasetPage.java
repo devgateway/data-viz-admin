@@ -9,29 +9,24 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.string.StringValue;
-import org.apache.wicket.validation.validator.RangeValidator;
-import org.devgateway.toolkit.forms.WebConstants;
-import org.devgateway.toolkit.forms.validators.UniquePropertyValidator;
 import org.devgateway.toolkit.forms.wicket.components.form.BootstrapCancelButton;
-import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
+import org.devgateway.toolkit.forms.wicket.components.form.Select2ChoiceBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.page.edit.AbstractEditStatusEntityPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListTetsimDatasetPage;
+import org.devgateway.toolkit.forms.wicket.providers.GenericChoiceProvider;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
 import org.devgateway.toolkit.persistence.dao.data.TetsimPriceVariable;
 import org.devgateway.toolkit.persistence.dao.data.TetsimTobaccoProductValue;
 import org.devgateway.toolkit.persistence.service.category.TobaccoProductService;
 import org.devgateway.toolkit.persistence.service.data.TetsimDatasetService;
+import org.devgateway.toolkit.web.util.SettingsUtils;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.wicketstuff.annotation.mount.MountPath;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.devgateway.toolkit.forms.WebConstants.MAXIMUM_PERCENTAGE;
-import static org.devgateway.toolkit.persistence.dao.DBConstants.MAX_YEAR_DATASET;
-import static org.devgateway.toolkit.persistence.dao.DBConstants.MIN_YEAR_DATASET;
+import static org.devgateway.toolkit.forms.WebConstants.PARAM_YEAR;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DELETED;
 
 /**
@@ -42,8 +37,13 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
 
     private static final long serialVersionUID = -8460878260874111506L;
 
+    protected Select2ChoiceBootstrapFormComponent<Integer> year;
+
     @SpringBean
     protected TetsimDatasetService tetsimDatasetService;
+
+    @SpringBean
+    protected SettingsUtils settingsUtils;
 
     @SpringBean
     protected TobaccoProductService tobaccoProductService;
@@ -64,20 +64,18 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
         editForm.add(getIndustryResponsesNumbers());
 
         editForm.add(new TetsimMarketSharePercentageValidator());
+
+        if (editForm.getModelObject().isNew() && getYearParam() != null) {
+            editForm.getModelObject().setYear(getYearParam());
+        }
     }
 
-    private TextFieldBootstrapFormComponent<Integer> getYear() {
-        final TextFieldBootstrapFormComponent<Integer> year = new TextFieldBootstrapFormComponent<>("year");
+    private Select2ChoiceBootstrapFormComponent<Integer> getYear() {
+        year = new Select2ChoiceBootstrapFormComponent<>("year",
+                new GenericChoiceProvider<>(settingsUtils.getYearsRange()));
+        editForm.add(year);
         year.required();
-        year.integer();
-        year.getField().add(RangeValidator.range(MIN_YEAR_DATASET, MAX_YEAR_DATASET));
-
-        final StringValue id = getPageParameters().get(WebConstants.PARAM_ID);
-        List<Long> deletedIds = tetsimDatasetService.findAllDeleted().stream()
-                .map(TetsimDataset::getId)
-                .collect(Collectors.toList());
-        deletedIds.add(id.toLong(-1L));
-        year.getField().add(new UniquePropertyValidator<>(tetsimDatasetService, deletedIds,"year", this));
+        year.setEnabled(false);
 
         return year;
     }
@@ -183,4 +181,9 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
             revertToDraftPageButton.setEnabled(false);
         }
     }
+
+    protected Integer getYearParam() {
+        return getPageParameters().get(PARAM_YEAR).toOptionalInteger();
+    }
+
 }

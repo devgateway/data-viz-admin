@@ -285,3 +285,6 @@ button .btn-home-label {
     margin: 10px 5px 10px 0px;
 }
 
+.error-row {
+    color: red;
+}

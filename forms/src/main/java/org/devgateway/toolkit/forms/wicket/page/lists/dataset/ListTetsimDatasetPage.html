@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<body>
+<wicket:extend>
+
+    <wicket:fragment wicket:id="yearSelectorFragment">
+        <form wicket:id="form">
+            <div class="row">
+                <div class="col-md-4">
+                    <span wicket:id="helperTextYear"/>
+                </div>
+            </div>
+            <div class="row">
+                <div wicket:id="year" class="col-md-3"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 error-row">
+                    <span wicket:id="addButtonError"/>
+                </div>
+            </div>
+        </form>
+    </wicket:fragment>
+</wicket:extend>
+</body>
+</html>

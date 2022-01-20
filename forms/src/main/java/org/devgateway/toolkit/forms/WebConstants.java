@@ -36,6 +36,7 @@ public final class WebConstants {
             = "if(typeof disableFormLeavingConfirmation === 'function') disableFormLeavingConfirmation();";
 
     public static final String PARAM_PRINT = "print";
+    public static final String PARAM_YEAR = "year";
 
     public static final String PARAM_ID = "id";
     public static final String V_POSITION = "vPosition";
