@@ -45,6 +45,7 @@ import org.apache.wicket.request.resource.caching.FilenameWithVersionResourceCac
 import org.apache.wicket.request.resource.caching.version.CachingResourceVersion;
 import org.apache.wicket.settings.RequestCycleSettings.RenderStrategy;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
+import org.apache.wicket.util.convert.converter.BigDecimalConverter;
 import org.apache.wicket.util.file.Folder;
 import org.devgateway.toolkit.forms.serializer.SpringDevToolsSerializer;
 import org.devgateway.toolkit.forms.service.SessionFinderService;
@@ -114,6 +115,7 @@ public class FormsWebApplication extends AuthenticatedWebApplication {
     protected IConverterLocator newConverterLocator() {
         ConverterLocator locator = (ConverterLocator) super.newConverterLocator();
         locator.set(Double.class, new FormattedDoubleConverter(defaultDecimalFormatter));
+        locator.set(BigDecimal.class, new NonNumericFilteredBigDecimalConverter(defaultDecimalFormatter));
         locator.set(LocalDate.class, new LocalDateFormatter());
         locator.set(ZonedDateTime.class, new ZonedDateTimeFormatter());
         return locator;

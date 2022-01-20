@@ -39,6 +39,8 @@ public class NonNumericFilteredBigDecimalConverter extends BigDecimalConverter {
 
     private static final long serialVersionUID = 1L;
 
+    private int MAX_SCALE_BIG_DECIMAL = 16;
+
     private final INumberFormatter numberFormatter;
 
     public NonNumericFilteredBigDecimalConverter(final INumberFormatter numberFormatter) {
@@ -53,10 +55,11 @@ public class NonNumericFilteredBigDecimalConverter extends BigDecimalConverter {
 
     @Override
     public BigDecimal convertToObject(final String value, final Locale locale) {
-        String newValue = value;
-        if (newValue != null) {
-            newValue = newValue.replaceAll("[^\\d\\.]", "");
-        }
-        return super.convertToObject(newValue, locale);
+//        String newValue = value;
+//        if (newValue != null) {
+//            newValue = newValue.replaceAll("[^\\d\\.]", "");
+//        }
+
+        return parse(value, null, BigDecimal.TEN.scaleByPowerOfTen(MAX_SCALE_BIG_DECIMAL), locale);
     }
 }
