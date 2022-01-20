@@ -10,7 +10,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * @author idobre
@@ -19,6 +23,8 @@ import java.util.List;
 @Service
 public class SettingsUtils {
     protected static Logger logger = LoggerFactory.getLogger(SettingsUtils.class);
+
+    public static final int START_YEAR = 2000;
 
     @Autowired
     private AdminSettingsService adminSettingsService;
@@ -54,6 +60,14 @@ public class SettingsUtils {
         }
     }
 
+    public List<Integer> getYearsRange() {
+        return IntStream.rangeClosed(getStartYear(), Calendar.getInstance().get(Calendar.YEAR)).
+                boxed().sorted(Collections.reverseOrder()).collect(Collectors.toList());
+    }
+
+    public int getStartYear() {
+        return START_YEAR;
+    }
 
     public static final String DEFAULT_LANGUAGE = "en_US";
 

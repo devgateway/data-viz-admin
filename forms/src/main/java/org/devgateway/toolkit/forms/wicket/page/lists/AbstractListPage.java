@@ -27,6 +27,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.GoAnd
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.IFilteredColumn;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
@@ -83,7 +84,7 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
 
     protected SortableJpaServiceDataProvider<T> dataProvider;
 
-    private BootstrapBookmarkablePageLink<T> editPageLink;
+    protected BootstrapBookmarkablePageLink<T> editPageLink;
 
     protected Boolean filterGoReset = false;
 
@@ -106,6 +107,9 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
     @Override
     protected void onInitialize() {
         super.onInitialize();
+
+        Fragment fragment = new Fragment("bottomPageFragment", "noBottomPageFragment", this);
+        add(fragment);
 
         if (jpaService == null) {
             throw new NullJpaServiceException();
@@ -158,6 +162,7 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
         editPageLink = new BootstrapBookmarkablePageLink<T>("new", editPageClass, pageParameters, Buttons.Type.Success);
         editPageLink.setIconType(FontAwesome5IconType.plus_circle_s).setSize(Size.Large)
                 .setLabel(new StringResourceModel("new", AbstractListPage.this, null));
+        editPageLink.setOutputMarkupId(true);
 
         add(editPageLink);
     }

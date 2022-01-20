@@ -52,12 +52,10 @@ import org.devgateway.toolkit.forms.wicket.components.form.GenericBootstrapFormC
 import org.devgateway.toolkit.forms.wicket.components.form.OptionallyRequiredTextAreaFieldComponent;
 import org.devgateway.toolkit.forms.wicket.components.form.TextAreaFieldBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.util.ComponentUtil;
-import org.devgateway.toolkit.forms.wicket.components.util.FormSecurityUtil;
 import org.devgateway.toolkit.forms.wicket.events.EditingDisabledEvent;
 import org.devgateway.toolkit.forms.wicket.page.BasePage;
 import org.devgateway.toolkit.forms.wicket.styles.BlockUiJavaScript;
 import org.devgateway.toolkit.persistence.dao.AbstractStatusAuditableEntity;
-import org.devgateway.toolkit.persistence.dao.DBConstants;
 import org.devgateway.toolkit.persistence.dao.StatusChangedComment;
 import org.springframework.util.ObjectUtils;
 import org.wicketstuff.datetime.markup.html.basic.DateLabel;

@@ -39,4 +39,9 @@ public class TetsimDatasetServiceImpl extends BaseJpaServiceImpl<TetsimDataset> 
     public List<TetsimDataset> findAllDeleted() {
         return tetsimDatasetRepository.findAllDeleted();
     }
+
+    @Override
+    public long countByNonPublished(final Integer year) {
+        return tetsimDatasetRepository.countByNonPublished(year);
+    }
 }

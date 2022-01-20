@@ -3,6 +3,12 @@
 <body>
 <wicket:extend>
     <div class="row">
+        <div class="col-md-12">
+            <wicket:child/>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col-md-1 col-md-offset-10">
             <form wicket:id="excelForm">
                 <button wicket:id="excelButton" type="button" id="excelButton" class="pull-right btn btn-lg btn-warning">
@@ -19,11 +25,22 @@
                 <button type="submit" style="display: none;">Submit</button>
                 <table class="dataview table" wicket:id="table"></table>
             </form>
+        </div>
+    </div>
+
+    <div class="row col-md-12 col-md-offset-1">
+        <div>
+            <span wicket:id="bottomPageFragment"></span>
+        </div>
+        <div>
             <button wicket:id="new" type="button" class="btn-add-output">
                 Add entity
             </button>
         </div>
     </div>
+
+    <wicket:fragment wicket:id="noBottomPageFragment"> </wicket:fragment>
+
 </wicket:extend>
 </body>
 </html>

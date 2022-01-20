@@ -9,4 +9,6 @@ import java.util.List;
 public interface TetsimDatasetService extends BaseJpaService<TetsimDataset>, UniquePropertyService<TetsimDataset> {
 
     List<TetsimDataset> findAllDeleted();
+
+    long countByNonPublished(Integer year);
 }
