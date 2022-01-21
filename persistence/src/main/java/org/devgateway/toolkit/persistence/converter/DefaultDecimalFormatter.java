@@ -19,8 +19,6 @@ public class DefaultDecimalFormatter implements INumberFormatter {
 
     public DecimalFormat init(final Locale locale) {
         DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getInstance(locale);
-        decimalFormat.setMaximumFractionDigits(2);
-        decimalFormat.setMinimumFractionDigits(2);
 
         DecimalFormatSymbols decimalFormatSymbols = DecimalFormatSymbols.getInstance(locale);
         decimalFormatSymbols.setDecimalSeparator('.');

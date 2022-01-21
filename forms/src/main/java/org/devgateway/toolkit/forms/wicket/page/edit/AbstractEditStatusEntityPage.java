@@ -61,6 +61,7 @@ import org.springframework.util.ObjectUtils;
 import org.wicketstuff.datetime.markup.html.basic.DateLabel;
 import org.wicketstuff.select2.Select2Choice;
 
+import static org.devgateway.toolkit.forms.WebConstants.PARAM_AUTO_SAVE;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DRAFT;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.SAVED;
@@ -422,7 +423,8 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         if (!ComponentUtil.isPrintMode() && adminSettingsService.getAutosaveTime() > 0
                 && Strings.isEqual(editForm.getModelObject().getStatus(), DRAFT)) {
             saveDraftContinueButton.add(getAutosaveBehavior());
-            autoSaveLabel.setVisibilityAllowed(true);
+            boolean isAutoSaveVisible = getPageParameters().get(PARAM_AUTO_SAVE).toBoolean(false);
+            autoSaveLabel.setVisibilityAllowed(isAutoSaveVisible);
             if (target != null) {
                 target.add(autoSaveLabel);
             }
@@ -658,7 +660,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
             @Override
             protected PageParameters getParameterPage() {
-                return getPageParameters();
+                return getPageParameters().set(PARAM_AUTO_SAVE, true);
             }
         };
 

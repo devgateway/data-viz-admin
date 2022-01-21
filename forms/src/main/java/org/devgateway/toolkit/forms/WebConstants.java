@@ -43,6 +43,7 @@ public final class WebConstants {
     public static final String MAX_HEIGHT = "maxPosition";
     public static final String PARAM_REVISION_ID = "revisionId";
     public static final String PARAM_ENTITY_CLASS = "class";
+    public static final String PARAM_AUTO_SAVE = "autosave";
 
     public static final String LANGUAGE_PARAM = "lang";
 
