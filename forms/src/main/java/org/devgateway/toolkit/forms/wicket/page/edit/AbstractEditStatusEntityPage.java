@@ -447,8 +447,11 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
                         + "$('#" + verticalPosition.getMarkupId() + "').val($(window).scrollTop()); "
                         + "$('#" + saveDraftContinueButton.getMarkupId() + "').click();");
 
+                target.prependJavaScript(getShowBlockUICode());
+
                 // disable all buttons from js
                 target.prependJavaScript("$('#" + editForm.getMarkupId() + " button').prop('disabled', true);");
+                target.prependJavaScript("$('#modals button').prop('disabled', false);");
             }
         };
 
