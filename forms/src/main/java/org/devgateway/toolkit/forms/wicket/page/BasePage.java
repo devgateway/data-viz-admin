@@ -312,22 +312,11 @@ public abstract class BasePage extends GenericWebPage<Void> {
         return dataSetsMenu;
     }
 
-    protected NavbarDropDownButton newCategoriesMenu() {
-        NavbarDropDownButton categoriesMenu = new NavbarDropDownButton(
-                new StringResourceModel("navbar.categories", this, null)) {
-            private static final long serialVersionUID = 1L;
+    protected NavbarButton newCategoriesMenu() {
+        NavbarButton categoriesMenu = new NavbarButton(CategoriesHomepage.class,
+                new StringResourceModel("navbar.categories", this, null))
+                .setIconType(FontAwesome5IconType.list_alt_r);
 
-            @Override
-            protected List<AbstractLink> newSubMenuButtons(final String arg0) {
-                final List<AbstractLink> list = new ArrayList<>();
-                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTobaccoProductPage.class, null,
-                        new StringResourceModel("navbar.tobaccoproducts", this, null))
-                        .setIconType(FontAwesome5IconType.smoking_s));
-                return list;
-            }
-        };
-
-        categoriesMenu.setIconType(FontAwesome5IconType.list_alt_r);
         MetaDataRoleAuthorizationStrategy.authorize(categoriesMenu, Component.RENDER, SecurityConstants.Roles.ROLE_USER);
 
         return categoriesMenu;
