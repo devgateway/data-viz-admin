@@ -421,7 +421,8 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     private void addAutosaveBehavior(final AjaxRequestTarget target) {
         // enable autosave
         if (!ComponentUtil.isPrintMode() && adminSettingsService.getAutosaveTime() > 0
-                && Strings.isEqual(editForm.getModelObject().getStatus(), DRAFT)) {
+                && Strings.isEqual(editForm.getModelObject().getStatus(), DRAFT)
+                && !editForm.getModelObject().isNew()) {
             saveDraftContinueButton.add(getAutosaveBehavior());
             boolean isAutoSaveVisible = getPageParameters().get(PARAM_AUTO_SAVE).toBoolean(false);
             autoSaveLabel.setVisibilityAllowed(isAutoSaveVisible);
