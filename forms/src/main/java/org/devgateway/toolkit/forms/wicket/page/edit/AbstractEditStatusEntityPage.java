@@ -775,7 +775,8 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
     protected void addDeleteButtonPermissions(final Component button) {
         MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, SecurityConstants.Roles.ROLE_ADMIN);
-        button.setVisibilityAllowed(entityId != null && !isViewMode());
+        button.setVisibilityAllowed(entityId != null && !isViewMode()
+                && !PUBLISHED.equals(editForm.getModelObject().getStatus()));
         MetaDataRoleAuthorizationStrategy.authorize(
                 button, Component.RENDER, getCommaCombinedRoles());
     }
