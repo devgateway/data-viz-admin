@@ -39,7 +39,7 @@ public class NonNumericFilteredBigDecimalConverter extends BigDecimalConverter {
 
     private static final long serialVersionUID = 1L;
 
-    private int MAX_SCALE_BIG_DECIMAL = 16;
+    private static final int MAX_SCALE_BIG_DECIMAL = 16;
 
     private final INumberFormatter numberFormatter;
 

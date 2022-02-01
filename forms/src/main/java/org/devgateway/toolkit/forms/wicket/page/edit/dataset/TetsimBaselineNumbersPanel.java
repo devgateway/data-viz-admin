@@ -16,7 +16,7 @@ import org.devgateway.toolkit.persistence.service.AdminSettingsService;
 public class TetsimBaselineNumbersPanel extends Panel {
 
     @SpringBean
-    AdminSettingsService adminSettingsService;
+    private AdminSettingsService adminSettingsService;
 
     protected final IModel<TetsimDataset> tetsimDatasetIModel;
 

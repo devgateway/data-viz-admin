@@ -20,8 +20,6 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.SessionTrackingMode;
-import java.util.Collections;
 
 import static org.devgateway.toolkit.web.WebConstants.FORMS_BASE_PATH;
 

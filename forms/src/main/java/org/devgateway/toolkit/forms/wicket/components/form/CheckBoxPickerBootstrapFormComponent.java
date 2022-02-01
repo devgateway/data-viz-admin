@@ -20,7 +20,6 @@ import org.apache.wicket.model.IModel;
 
 /**
  * @author mpostelnicu
- * 
  */
 public class CheckBoxPickerBootstrapFormComponent
         extends GenericEnablingBootstrapFormComponent<Boolean, BootstrapCheckBoxPicker> {
@@ -29,7 +28,7 @@ public class CheckBoxPickerBootstrapFormComponent
     private BootstrapCheckBoxPickerConfig config;
 
     public CheckBoxPickerBootstrapFormComponent(final String id, final IModel<String> labelModel,
-            final IModel<Boolean> model) {
+                                                final IModel<Boolean> model) {
         super(id, labelModel, model);
     }
 

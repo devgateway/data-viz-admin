@@ -1,7 +1,6 @@
 package org.devgateway.toolkit.persistence.service.category;
 
 import org.devgateway.toolkit.persistence.dao.categories.TobaccoProduct;
-import org.devgateway.toolkit.persistence.repository.category.GroupRepository;
 import org.devgateway.toolkit.persistence.repository.category.TobaccoProductRepository;
 import org.devgateway.toolkit.persistence.repository.norepository.BaseJpaRepository;
 import org.devgateway.toolkit.persistence.repository.norepository.TextSearchableRepository;

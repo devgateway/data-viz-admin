@@ -12,7 +12,6 @@
 package org.devgateway.toolkit.forms.wicket.page;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.CssClassNameAppender;
-import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapBookmarkablePageLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.dropdown.MenuBookmarkablePageLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.dropdown.MenuDivider;
 import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel;
@@ -26,7 +25,6 @@ import de.agilecoders.wicket.core.markup.html.themes.bootstrap.BootstrapCssRefer
 import de.agilecoders.wicket.core.util.CssClassNames;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5CssReference;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType;
-import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.authroles.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
 import org.apache.wicket.markup.head.CssHeaderItem;
@@ -50,12 +48,9 @@ import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.resource.JQueryResourceReference;
 import org.apache.wicket.util.string.StringValue;
 import org.devgateway.toolkit.forms.WebConstants;
-import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.security.SecurityUtil;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListGroupPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListTestFormPage;
-import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListTetsimDatasetPage;
-import org.devgateway.toolkit.forms.wicket.page.lists.ListTobaccoProductPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListUserPage;
 import org.devgateway.toolkit.forms.wicket.page.user.EditUserPage;
 import org.devgateway.toolkit.forms.wicket.page.user.LogoutPage;
@@ -67,6 +62,8 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import static org.devgateway.toolkit.forms.security.SecurityConstants.Roles.ROLE_USER;
 
 /**
  * Base wicket-bootstrap {@link org.apache.wicket.Page}
@@ -213,7 +210,7 @@ public abstract class BasePage extends GenericWebPage<Void> {
         final NavbarButton<LogoutPage> logoutMenu =
                 new NavbarButton<LogoutPage>(LogoutPage.class, new StringResourceModel("navbar.logout", this, null));
         logoutMenu.setIconType(FontAwesome5IconType.sign_out_alt_s);
-        MetaDataRoleAuthorizationStrategy.authorize(logoutMenu, Component.RENDER, SecurityConstants.Roles.ROLE_USER);
+        MetaDataRoleAuthorizationStrategy.authorize(logoutMenu, RENDER, ROLE_USER);
 
         return logoutMenu;
     }
@@ -231,7 +228,7 @@ public abstract class BasePage extends GenericWebPage<Void> {
         final NavbarButton<EditUserPage> accountMenu =
                 new NavbarButton<>(EditUserPage.class, pageParametersForAccountPage, account);
         accountMenu.setIconType(FontAwesome5IconType.user_s);
-        MetaDataRoleAuthorizationStrategy.authorize(accountMenu, Component.RENDER, SecurityConstants.Roles.ROLE_USER);
+        MetaDataRoleAuthorizationStrategy.authorize(accountMenu, RENDER, ROLE_USER);
         return accountMenu;
     }
 
@@ -240,7 +237,7 @@ public abstract class BasePage extends GenericWebPage<Void> {
         NavbarButton<Homepage> homeMenu = new NavbarButton<>(Homepage.class,
                 new StringResourceModel("navbar.home", this, null));
         homeMenu.setIconType(FontAwesome5IconType.home_s);
-        MetaDataRoleAuthorizationStrategy.authorize(homeMenu, Component.RENDER, SecurityConstants.Roles.ROLE_USER);
+        MetaDataRoleAuthorizationStrategy.authorize(homeMenu, RENDER, ROLE_USER);
         return homeMenu;
     }
 
@@ -296,7 +293,7 @@ public abstract class BasePage extends GenericWebPage<Void> {
         };
 
         adminMenu.setIconType(FontAwesome5IconType.cog_s);
-        MetaDataRoleAuthorizationStrategy.authorize(adminMenu, Component.RENDER, SecurityConstants.Roles.ROLE_USER);
+        MetaDataRoleAuthorizationStrategy.authorize(adminMenu, RENDER, ROLE_USER);
 
         return adminMenu;
     }
@@ -307,7 +304,7 @@ public abstract class BasePage extends GenericWebPage<Void> {
                 .setIconType(FontAwesome5IconType.table_s);
 
         dataSetsMenu.setIconType(FontAwesome5IconType.table_s);
-        MetaDataRoleAuthorizationStrategy.authorize(dataSetsMenu, Component.RENDER, SecurityConstants.Roles.ROLE_USER);
+        MetaDataRoleAuthorizationStrategy.authorize(dataSetsMenu, RENDER, ROLE_USER);
 
         return dataSetsMenu;
     }
@@ -317,7 +314,7 @@ public abstract class BasePage extends GenericWebPage<Void> {
                 new StringResourceModel("navbar.categories", this, null))
                 .setIconType(FontAwesome5IconType.list_alt_r);
 
-        MetaDataRoleAuthorizationStrategy.authorize(categoriesMenu, Component.RENDER, SecurityConstants.Roles.ROLE_USER);
+        MetaDataRoleAuthorizationStrategy.authorize(categoriesMenu, RENDER, ROLE_USER);
 
         return categoriesMenu;
     }

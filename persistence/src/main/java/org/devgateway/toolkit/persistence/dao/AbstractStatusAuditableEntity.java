@@ -19,7 +19,6 @@ import java.util.List;
 
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DELETED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DRAFT;
-import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHED;
 
 @MappedSuperclass
 public abstract class AbstractStatusAuditableEntity extends AbstractAuditableEntity implements Statusable {
