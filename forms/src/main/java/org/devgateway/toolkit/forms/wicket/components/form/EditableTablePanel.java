@@ -35,11 +35,11 @@ import java.util.Map;
 
 /**
  * This panel can be used to edit small data grid tables.
- *
+ * <p>
  * <p/> For many columns you need to use {@link org.devgateway.toolkit.forms.wicket.components.ListViewSectionPanel}.
  * For too many rows you should check
  * {@link org.devgateway.toolkit.forms.wicket.components.form.EditableGridFormComponent}.
- *
+ * <p>
  * <p/>This class also tracks and updates computed columns (computed formula must be defined in the column model).
  *
  * <p>(Optional) You can use bottom toolbar for computed totals.
@@ -52,15 +52,12 @@ public class EditableTablePanel<T extends Serializable, PARENT extends Serializa
 
     /* <T> property that can be used as unique id among entries */
     protected String rowIdProperty;
-
+    protected boolean usePagingWithErrors = true;
+    protected CustomUpdatableToolbar customUpdatableToolbar;
     private List<String> computedColumnsProperties = new ArrayList<>();
     private Map<String, Integer> rowId2RowIndex = new HashMap<>();
     private Map<String, List<String>> rowId2ComputedColumnsComponentIds = new HashMap<>();
-
-    protected boolean usePagingWithErrors = true;
     private LoopItem currentPaginatorLoopItem;
-
-    protected CustomUpdatableToolbar customUpdatableToolbar;
 
     public EditableTablePanel(final String id, final IModel<PARENT> parentModel) {
         super(id, parentModel);
@@ -98,7 +95,7 @@ public class EditableTablePanel<T extends Serializable, PARENT extends Serializa
     }
 
     public void addComputedColumn(final String resourceKey, final String sortProperty, final String property,
-            final String css) {
+                                  final String css) {
         if (rowIdProperty == null) {
             throw new RuntimeException("No row id property configured.");
         }
@@ -106,9 +103,10 @@ public class EditableTablePanel<T extends Serializable, PARENT extends Serializa
         IColumn<T, String> computedColumn = new PropertyColumn<T, String>(
                 new StringResourceModel(resourceKey), sortProperty, property) {
             private static final long serialVersionUID = -3578903469355827616L;
+
             @Override
             public void populateItem(final Item<ICellPopulator<T>> item, final String componentId,
-                    final IModel<T> rowModel) {
+                                     final IModel<T> rowModel) {
                 super.populateItem(item, componentId, rowModel);
                 item.setOutputMarkupId(true);
 
@@ -146,7 +144,7 @@ public class EditableTablePanel<T extends Serializable, PARENT extends Serializa
 
     protected boolean hasErrors(final long pageIndex) {
         // customize with your page validation logic
-        return  false;
+        return false;
     }
 
     private void onRowEdit(final AjaxRequestTarget target, final IModel<T> rowModel) {
@@ -195,7 +193,7 @@ public class EditableTablePanel<T extends Serializable, PARENT extends Serializa
         private static final long serialVersionUID = -5015086509864523000L;
 
         public EditableTablePagination(final String id, final IPageable pageable,
-                final IPagingLabelProvider labelProvider) {
+                                       final IPagingLabelProvider labelProvider) {
             super(id, pageable, labelProvider);
         }
 

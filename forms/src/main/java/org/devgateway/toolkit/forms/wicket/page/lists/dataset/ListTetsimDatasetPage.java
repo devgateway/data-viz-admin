@@ -49,20 +49,14 @@ import static org.devgateway.toolkit.forms.WebConstants.PARAM_YEAR;
 @MountPath(value = "/listTetsimDataset")
 public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
     private static final long serialVersionUID = -324298525712620234L;
-
-    private Integer selectedYear;
-
-    @SpringBean
-    private TetsimDatasetService tetsimDatasetService;
-
     @SpringBean
     protected SettingsUtils settingsUtils;
-
     protected Select2ChoiceBootstrapFormComponent<Integer> year;
-
-    private Label addButtonError;
-
     protected Fragment yearSelectorFragment;
+    private Integer selectedYear;
+    @SpringBean
+    private TetsimDatasetService tetsimDatasetService;
+    private Label addButtonError;
 
     public ListTetsimDatasetPage(final PageParameters pageParameters) {
         super(pageParameters);
@@ -82,7 +76,7 @@ public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
             public IModel<?> getDataModel(final IModel<TetsimDataset> rowModel) {
                 IModel<?> model = super.getDataModel(rowModel);
                 ZonedDateTime modifiedDate = (ZonedDateTime) model.getObject();
-                return  Model.of(modifiedDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
+                return Model.of(modifiedDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
             }
         });
         columns.add(new PropertyColumn<>(new StringResourceModel("status"), "status", "status"));

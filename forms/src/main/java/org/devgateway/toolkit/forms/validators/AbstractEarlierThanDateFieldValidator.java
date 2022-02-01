@@ -5,12 +5,9 @@ import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
 import org.devgateway.toolkit.forms.wicket.components.form.AbstractDateFieldBootstrapFormComponent;
 
-import java.time.LocalDate;
-import java.util.Date;
-
 /**
  * @author mpostelnicu {@link AbstractDateFieldBootstrapFormComponent} validator for
- *         dates that have a chronology
+ * dates that have a chronology
  */
 public abstract class AbstractEarlierThanDateFieldValidator<T> implements IValidator<T> {
     private static final long serialVersionUID = 5915013097774040799L;

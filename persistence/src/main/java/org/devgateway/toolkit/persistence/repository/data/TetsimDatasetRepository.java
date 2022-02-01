@@ -15,7 +15,7 @@ public interface TetsimDatasetRepository extends DatasetRepository<TetsimDataset
     @Query("select td from TetsimDataset td where td.status like 'DELETED'")
     List<TetsimDataset> findAllDeleted();
 
-    @Query ("select count(e) from #{#entityName} e where (:year is null or e.year=:year) " +
-            "and e.status not in ('DELETED')")
+    @Query ("select count(e) from #{#entityName} e where (:year is null or e.year=:year) "
+            + "and e.status not in ('DELETED')")
     long countByNonPublished(@Param("year") Integer year);
 }

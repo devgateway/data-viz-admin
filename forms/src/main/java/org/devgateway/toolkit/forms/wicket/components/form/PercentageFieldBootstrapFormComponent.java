@@ -1,16 +1,16 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2015 Development Gateway, Inc and others.
- *
+ * <p>
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the MIT License (MIT)
  * which accompanies this distribution, and is available at
  * https://opensource.org/licenses/MIT
- *
+ * <p>
  * Contributors:
  * Development Gateway - initial API and implementation
- *******************************************************************************/
+ */
 /**
- * 
+ *
  */
 package org.devgateway.toolkit.forms.wicket.components.form;
 
@@ -38,7 +38,7 @@ public class PercentageFieldBootstrapFormComponent extends TextFieldBootstrapFor
     private Label label;
 
     public PercentageFieldBootstrapFormComponent(final String id, final IModel<String> labelModel,
-            final IModel<BigDecimal> model) {
+                                                 final IModel<BigDecimal> model) {
         super(id, labelModel, model);
     }
 
@@ -60,7 +60,7 @@ public class PercentageFieldBootstrapFormComponent extends TextFieldBootstrapFor
 
             /*
              * (non-Javadoc)
-             * 
+             *
              * @see org.apache.wicket.Component#getConverter(java.lang.Class)
              */
             @SuppressWarnings("unchecked")

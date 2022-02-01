@@ -30,7 +30,6 @@ import org.wicketstuff.datetime.markup.html.basic.DateLabel;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.devgateway.toolkit.persistence.PersistenceConstants.ZONED_DATE_TIME_PATTER;

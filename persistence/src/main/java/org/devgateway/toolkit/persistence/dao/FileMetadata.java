@@ -20,7 +20,6 @@ import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.io.Serializable;
 
 /**
  * @author idobre

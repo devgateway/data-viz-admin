@@ -7,6 +7,7 @@
 
     <suppress checks="HideUtilityClassConstructor|FinalClass"
               files="PersistenceApplication\.java|MongoPersistenceApplication\.java|UIWebApplication\.java|WebApplication\.java|ReportingApplication\.java" />
+    <suppress checks="LineLength" files=".properties" />
 
     <suppress checks="[a-zA-Z0-9]*" files="[\\/]ui[\\/]" />
     <suppress checks="[a-zA-Z0-9]*" files="[\\/]metamodel[\\/]" />

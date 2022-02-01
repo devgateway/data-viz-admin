@@ -22,7 +22,7 @@ import javax.persistence.PersistenceContext;
 /**
  * Spring Service allowing access to hibernate session. This is needed by
  * {@link DozerModel}
- * 
+ *
  * @author mpostelnicu
  * @see DozerModel
  */
@@ -34,7 +34,7 @@ public class SessionFinderService implements SessionFinder {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * nl.dries.wicket.hibernate.dozer.SessionFinder#getHibernateSession(java
      * .lang.Class)

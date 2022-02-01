@@ -16,22 +16,15 @@ import org.apache.wicket.authroles.authorization.strategies.role.annotations.Aut
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.wicket.components.table.TextFilteredBootstrapPropertyColumn;
 import org.devgateway.toolkit.forms.wicket.components.table.filter.JpaFilterState;
-import org.devgateway.toolkit.forms.wicket.components.table.filter.TestFormFilterState;
 import org.devgateway.toolkit.forms.wicket.components.table.filter.TobaccoProductFilterState;
-import org.devgateway.toolkit.forms.wicket.page.edit.AbstractEditPage;
-import org.devgateway.toolkit.forms.wicket.page.edit.EditTestFormPage;
 import org.devgateway.toolkit.forms.wicket.page.edit.category.EditTobaccoProductPage;
-import org.devgateway.toolkit.persistence.dao.TestForm;
 import org.devgateway.toolkit.persistence.dao.categories.TobaccoProduct;
-import org.devgateway.toolkit.persistence.service.RoleService;
-import org.devgateway.toolkit.persistence.service.TestFormService;
 import org.devgateway.toolkit.persistence.service.category.TobaccoProductService;
 import org.wicketstuff.annotation.mount.MountPath;
 
