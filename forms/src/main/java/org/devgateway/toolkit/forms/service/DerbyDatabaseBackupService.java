@@ -32,17 +32,15 @@ import java.sql.SQLException;
 
 /**
  * @author mpostelnicu Provides built-in backup services. Defaults to the
- *         database location derby.system.home. Currently works only for Derby.
- *         Runs 9PM daily (good backup time for both EST and CET)
+ * database location derby.system.home. Currently works only for Derby.
+ * Runs 9PM daily (good backup time for both EST and CET)
  */
 @Service
 public class DerbyDatabaseBackupService {
 
-    private static final Logger logger = LoggerFactory.getLogger(DerbyDatabaseBackupService.class);
-
     public static final String DATABASE_PRODUCT_NAME_APACHE_DERBY = "Apache Derby";
     public static final String ARCHIVE_SUFFIX = ".zip";
-
+    private static final Logger logger = LoggerFactory.getLogger(DerbyDatabaseBackupService.class);
     @Autowired
     private DataSource datasource;
 
@@ -89,9 +87,8 @@ public class DerbyDatabaseBackupService {
      * last leaf of backup's location parent directory + {@link #databaseName}
      * If the backupPath does not have a parent, it uses the host name from
      * {@link InetAddress#getLocalHost()}
-     * 
-     * @param backupPath
-     *            the parent directory for the backup
+     *
+     * @param backupPath the parent directory for the backup
      * @return the backup url to be used by the backup procedure
      * @throws UnknownHostException
      */
@@ -121,7 +118,7 @@ public class DerbyDatabaseBackupService {
      * Use backup.home system variable, if exists, as homedir for backups If
      * backup.home does not exist try using derby.system.home If that is also
      * null, use user.dir
-     * 
+     *
      * @return the backupURL
      */
     private String createBackupURL() {
@@ -138,11 +135,11 @@ public class DerbyDatabaseBackupService {
     /**
      * Backup the On-Line Derby database. This temporarily locks the db in
      * readonly mode
-     * 
+     * <p>
      * Invokes SYSCS_BACKUP_DATABASE and dumps the database to the temporary
      * directory Use {@link ZipUtil#pack(File, File)} to zip the directory
      * Deletes the temporary directory
-     * 
+     *
      * @see #createBackupURL(String)
      */
     private void backupDerbyDatabase() {

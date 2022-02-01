@@ -19,7 +19,6 @@ import org.apache.wicket.model.Model;
 
 /**
  * @author mpostelnicu
- * 
  */
 public class CheckBoxBootstrapFormComponent extends GenericEnablingBootstrapFormComponent<Boolean, BootstrapCheckbox> {
     private static final long serialVersionUID = -4032850928243673675L;
@@ -27,7 +26,7 @@ public class CheckBoxBootstrapFormComponent extends GenericEnablingBootstrapForm
     private CheckBox wrappedCheckbox;
 
     public CheckBoxBootstrapFormComponent(final String id, final IModel<String> labelModel,
-            final IModel<Boolean> model) {
+                                          final IModel<Boolean> model) {
         super(id, labelModel, model);
     }
 

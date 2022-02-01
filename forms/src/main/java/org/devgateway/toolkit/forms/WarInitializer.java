@@ -17,9 +17,8 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 
 /**
  * Allows the app to deployed as Servlet 3.0 WAR
- * 
- * @author mpostelnicu
  *
+ * @author mpostelnicu
  */
 public class WarInitializer extends SpringBootServletInitializer {
 

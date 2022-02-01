@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -22,17 +21,16 @@ import java.util.stream.IntStream;
  */
 @Service
 public class SettingsUtils {
-    protected static Logger logger = LoggerFactory.getLogger(SettingsUtils.class);
-
     public static final int START_YEAR = 2000;
-
+    public static final String DEFAULT_LANGUAGE = "en_US";
+    protected static Logger logger = LoggerFactory.getLogger(SettingsUtils.class);
     @Autowired
     private AdminSettingsService adminSettingsService;
-
     private AdminSettings setting;
-
     @Value("${googleAnalyticsTrackingId:#{null}}")
     private String googleAnalyticsTrackingId;
+    @Autowired
+    private AdminSettingsRepository adminSettingsRepository;
 
     public String getGoogleAnalyticsTrackingId() {
         return googleAnalyticsTrackingId;
@@ -68,11 +66,6 @@ public class SettingsUtils {
     public int getStartYear() {
         return START_YEAR;
     }
-
-    public static final String DEFAULT_LANGUAGE = "en_US";
-
-    @Autowired
-    private AdminSettingsRepository adminSettingsRepository;
 
     public AdminSettings getSettings() {
         List<AdminSettings> list = adminSettingsRepository.findAll();

@@ -16,74 +16,74 @@ import java.math.BigDecimal;
 public class TetsimDataset extends Dataset {
 
     @Audited
-    BigDecimal cigaretteConsumption;
+    private BigDecimal cigaretteConsumption;
 
     @Audited
-    BigDecimal vatRate;
+    private BigDecimal vatRate;
 
     @Audited
-    BigDecimal cigaretteDeclaredCustomValue;
+    private BigDecimal cigaretteDeclaredCustomValue;
 
     @Audited
-    BigDecimal adultPopulation;
+    private BigDecimal adultPopulation;
 
     @Audited
-    BigDecimal smokingPrevalence;
-
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @Audited
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    TetsimPriceVariable retailPrice = new TetsimPriceVariable(this);
+    private BigDecimal smokingPrevalence;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Audited
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    TetsimPriceVariable marketShare = new TetsimPriceVariable(this);
+    private TetsimPriceVariable retailPrice = new TetsimPriceVariable(this);
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Audited
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    TetsimPriceVariable cif = new TetsimPriceVariable(this);
+    private TetsimPriceVariable marketShare = new TetsimPriceVariable(this);
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Audited
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    TetsimPriceVariable tobaccoLevy = new TetsimPriceVariable(this);
+    private TetsimPriceVariable cif = new TetsimPriceVariable(this);
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Audited
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    TetsimPriceVariable exciseTax = new TetsimPriceVariable(this);
+    private TetsimPriceVariable tobaccoLevy = new TetsimPriceVariable(this);
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Audited
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    TetsimPriceVariable customsDuty = new TetsimPriceVariable(this);
+    private TetsimPriceVariable exciseTax = new TetsimPriceVariable(this);
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Audited
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    TetsimPriceVariable elasticityOfDemandPrice = new TetsimPriceVariable(this);
+    private TetsimPriceVariable customsDuty = new TetsimPriceVariable(this);
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Audited
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    TetsimPriceVariable elasticityOfDemandCrossPrice = new TetsimPriceVariable(this);
+    private TetsimPriceVariable elasticityOfDemandPrice = new TetsimPriceVariable(this);
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Audited
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    TetsimPriceVariable changeInIllicitNot = new TetsimPriceVariable(this);
+    private TetsimPriceVariable elasticityOfDemandCrossPrice = new TetsimPriceVariable(this);
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Audited
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    TetsimPriceVariable overShifting = new TetsimPriceVariable(this);
+    private TetsimPriceVariable changeInIllicitNot = new TetsimPriceVariable(this);
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Audited
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    TetsimPriceVariable underShifting = new TetsimPriceVariable(this);
+    private TetsimPriceVariable overShifting = new TetsimPriceVariable(this);
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Audited
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    private TetsimPriceVariable underShifting = new TetsimPriceVariable(this);
 
     public BigDecimal getCigaretteConsumption() {
         return cigaretteConsumption;
@@ -145,8 +145,8 @@ public class TetsimDataset extends Dataset {
         return cif;
     }
 
-    public void setCif(final TetsimPriceVariable CIF) {
-        this.cif = CIF;
+    public void setCif(final TetsimPriceVariable cif) {
+        this.cif = cif;
     }
 
     public TetsimPriceVariable getTobaccoLevy() {

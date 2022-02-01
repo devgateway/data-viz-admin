@@ -1,7 +1,5 @@
 package org.devgateway.toolkit.persistence.dao;
 
-import org.apache.xmlbeans.impl.xb.xsdschema.Public;
-
 /**
  * These is a set of possible views to be used with com.fasterxml.jackson.annotation.JsonView,
  * that allows multiple serializations options for the same class based on the view.

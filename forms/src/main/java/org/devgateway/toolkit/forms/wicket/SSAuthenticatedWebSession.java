@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.devgateway.toolkit.forms.wicket;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.wicket.Session;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
@@ -32,11 +29,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.RememberMeServices;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Collection;
 
 /**
  * AuthenticatedWebSession implementation using Spring Security.
- *
+ * <p>
  * Based on:
  * https://cwiki.apache.org/confluence/display/WICKET/Spring+Security+and+Wicket-auth-roles
  *
@@ -62,22 +61,6 @@ public class SSAuthenticatedWebSession extends AuthenticatedWebSession {
     // @SpringBean
     // private SessionRegistry sessionRegistry;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.wicket.Session#replaceSession()
-     */
-    @Override
-    public void replaceSession() {
-        // do nothing here, this breaks spring security in wicket 6.19
-    }
-
-    private void ensureDependenciesNotNull() {
-        if (authenticationManager == null) {
-            throw new IllegalStateException("An authenticationManager is required.");
-        }
-    }
-
     public SSAuthenticatedWebSession(final Request request) {
         super(request);
         Injector.get().inject(this);
@@ -90,6 +73,22 @@ public class SSAuthenticatedWebSession extends AuthenticatedWebSession {
 
     public static SSAuthenticatedWebSession getSSAuthenticatedWebSession() {
         return (SSAuthenticatedWebSession) Session.get();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apache.wicket.Session#replaceSession()
+     */
+    @Override
+    public void replaceSession() {
+        // do nothing here, this breaks spring security in wicket 6.19
+    }
+
+    private void ensureDependenciesNotNull() {
+        if (authenticationManager == null) {
+            throw new IllegalStateException("An authenticationManager is required.");
+        }
     }
 
     @Override
@@ -129,10 +128,10 @@ public class SSAuthenticatedWebSession extends AuthenticatedWebSession {
     /**
      * Gets the Spring roles and dumps them into Wicket's {@link Roles} object,
      * only if the user is signed in
-     * 
+     *
+     * @param roles
      * @see {@link #isSignedIn()}
      * @see #addRolesFromAuthentication(Roles, Authentication)
-     * @param roles
      */
     private void getRolesIfSignedIn(final Roles roles) {
         if (isSignedIn()) {

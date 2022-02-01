@@ -1,16 +1,16 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2015 Development Gateway, Inc and others.
- *
+ * <p>
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the MIT License (MIT)
  * which accompanies this distribution, and is available at
  * https://opensource.org/licenses/MIT
- *
+ * <p>
  * Contributors:
  * Development Gateway - initial API and implementation
- *******************************************************************************/
+ */
 /**
- * 
+ *
  */
 package org.devgateway.toolkit.forms.wicket.components.form;
 
@@ -54,14 +54,14 @@ public abstract class GenericEnablingBootstrapFormComponent<TYPE, FIELD extends 
      * @param model
      */
     public GenericEnablingBootstrapFormComponent(final String id, final IModel<String> labelModel,
-            final IModel<TYPE> model) {
+                                                 final IModel<TYPE> model) {
         super(id, labelModel, model);
     }
 
     /**
      * Returns true if the bound components should have
      * {@link #setVisibilityAllowed(boolean)} to true otherwise returns false.
-     * 
+     *
      * @param selectedValue
      *            the selected value of the current component, that may be taken
      *            into consideration when evaluating the visibility of the bound
@@ -73,7 +73,7 @@ public abstract class GenericEnablingBootstrapFormComponent<TYPE, FIELD extends 
     /**
      * change visibility status of bound components based of the fact the level
      * has an affirmative answer or not
-     * 
+     *
      * @param target
      */
     protected void updateBoundComponents(final AjaxRequestTarget target) {
@@ -90,7 +90,7 @@ public abstract class GenericEnablingBootstrapFormComponent<TYPE, FIELD extends 
 
     /**
      * Reversed of {@link #updateBoundComponents(AjaxRequestTarget)}
-     * 
+     *
      * @param target
      */
     protected void updateReverseBoundComponents(final AjaxRequestTarget target) {
@@ -133,7 +133,7 @@ public abstract class GenericEnablingBootstrapFormComponent<TYPE, FIELD extends 
      * changing the selected element of this component may influence if the
      * bound component is visible or not. By default all bound components are
      * not visible
-     * 
+     *
      * @param c
      * @return
      */
@@ -147,7 +147,7 @@ public abstract class GenericEnablingBootstrapFormComponent<TYPE, FIELD extends 
     /**
      * This is the negated version of
      * {@link GenericEnablingBootstrapFormComponent#addBoundComponent(Component)}
-     * 
+     *
      * @param c
      * @return
      */

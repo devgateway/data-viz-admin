@@ -89,7 +89,8 @@ public class GenericPersistableJpaTextChoiceProvider<T extends GenericPersistabl
         return this;
     }
 
-    public GenericPersistableJpaTextChoiceProvider<T> setSort(final Sort.Direction direction, final String... properties) {
+    public GenericPersistableJpaTextChoiceProvider<T> setSort(final Sort.Direction direction,
+                                                              final String... properties) {
         return this.setSort(Sort.by(direction, properties));
     }
 

@@ -11,15 +11,11 @@
  *******************************************************************************/
 package org.devgateway.toolkit.forms.validators;
 
-import org.apache.wicket.validation.IValidatable;
-import org.apache.wicket.validation.IValidator;
-import org.apache.wicket.validation.ValidationError;
-
 import java.util.Date;
 
 /**
  * Validator to test if the date is earlier than provided high date
- * 
+ *
  * @author idobre
  * @since 5/18/15
  */
