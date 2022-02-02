@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 	PROP_FILE="tcdi-admin.properties"
 	echo "Writing to $PROP_FILE:"
 
@@ -23,7 +24,8 @@
 
 	JAR="tcdi-admin-forms-0.0.1-SNAPSHOT.jar"
 	JAVA_OPTS="-Dspring.config.location=file://$PROP_FILE"
-	exec /bin/sh -c "java -jar '$JAR' $JAVA_OPTS $@" nobody
+	#exec /bin/sh -c "java -jar '$JAR' $JAVA_OPTS $@" nobody
+	exec /bin/bash
 	;;
 *)
 	exec $@
