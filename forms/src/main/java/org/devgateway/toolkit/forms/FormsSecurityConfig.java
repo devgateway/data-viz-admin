@@ -13,6 +13,8 @@ package org.devgateway.toolkit.forms;
 
 import org.devgateway.toolkit.persistence.spring.CustomJPAUserDetailsService;
 import org.devgateway.toolkit.web.spring.WebSecurityConfig;
+import org.devgateway.toolkit.web.util.SettingsUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -25,8 +27,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 
-import static org.devgateway.toolkit.web.WebConstants.FORMS_BASE_PATH;
-
 @Configuration
 @EnableWebSecurity
 @Order(1) // this ensures the forms security comes first
@@ -36,6 +36,9 @@ public class FormsSecurityConfig extends WebSecurityConfig {
      * Remember me key for {@link TokenBasedRememberMeServices}
      */
     private static final String UNIQUE_SECRET_REMEMBER_ME_KEY = "secret";
+
+    @Autowired
+    private SettingsUtils settingsUtils;
 
     /**
      * We ensure the superclass configuration is being applied Take note the
@@ -47,18 +50,19 @@ public class FormsSecurityConfig extends WebSecurityConfig {
     @Override
     public void configure(final WebSecurity web) throws Exception {
         super.configure(web);
+        String formsBasePath = settingsUtils.getFormsBasePath();
         web.ignoring().antMatchers("/img/**", "/css*/**", "/js*/**", "/assets*/**", "/favicon.ico", "/resources/**",
                 "/resources/public/**");
         web.ignoring().antMatchers(
-                FORMS_BASE_PATH + "/wicket/resource/**/*.js",
-                FORMS_BASE_PATH + "/wicket/resource/**/*.css",
-                FORMS_BASE_PATH + "/wicket/resource/**/*.png",
-                FORMS_BASE_PATH + "/wicket/resource/**/*.jpg",
-                FORMS_BASE_PATH + "/wicket/resource/**/*.woff",
-                FORMS_BASE_PATH + "/wicket/resource/**/*.woff2",
-                FORMS_BASE_PATH + "/wicket/resource/**/*.ttf",
-                FORMS_BASE_PATH + "/wicket/resource/**/*.svg",
-                FORMS_BASE_PATH + "/wicket/resource/**/*.gif");
+                formsBasePath + "/wicket/resource/**/*.js",
+                formsBasePath + "/wicket/resource/**/*.css",
+                formsBasePath + "/wicket/resource/**/*.png",
+                formsBasePath + "/wicket/resource/**/*.jpg",
+                formsBasePath + "/wicket/resource/**/*.woff",
+                formsBasePath + "/wicket/resource/**/*.woff2",
+                formsBasePath + "/wicket/resource/**/*.ttf",
+                formsBasePath + "/wicket/resource/**/*.svg",
+                formsBasePath + "/wicket/resource/**/*.gif");
     }
 
     /**

@@ -21,14 +21,24 @@ import java.util.stream.IntStream;
  */
 @Service
 public class SettingsUtils {
+
     public static final int START_YEAR = 2000;
+
     public static final String DEFAULT_LANGUAGE = "en_US";
+
     protected static Logger logger = LoggerFactory.getLogger(SettingsUtils.class);
+
     @Autowired
     private AdminSettingsService adminSettingsService;
+
     private AdminSettings setting;
+
     @Value("${googleAnalyticsTrackingId:#{null}}")
     private String googleAnalyticsTrackingId;
+
+    @Value("${dg-toolkit.forms.base-path}")
+    private String formsBasePath;
+
     @Autowired
     private AdminSettingsRepository adminSettingsRepository;
 
@@ -76,5 +86,11 @@ public class SettingsUtils {
         }
     }
 
+    public String getFormsBasePath() {
+        return formsBasePath;
+    }
 
+    public void setFormsBasePath(final String formsBasePath) {
+        this.formsBasePath = formsBasePath;
+    }
 }

@@ -13,6 +13,8 @@ package org.devgateway.toolkit.forms.wicket;
 
 import org.apache.wicket.protocol.http.WicketFilter;
 import org.apache.wicket.spring.SpringWebApplicationFactory;
+import org.devgateway.toolkit.web.util.SettingsUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
@@ -20,8 +22,6 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-
-import static org.devgateway.toolkit.web.WebConstants.FORMS_BASE_PATH;
 
 /**
  * This class is the replacement of the web.xml. It registers the wicket filter
@@ -33,8 +33,10 @@ import static org.devgateway.toolkit.web.WebConstants.FORMS_BASE_PATH;
 @Configuration
 public class WebInitializer implements ServletContextInitializer {
 
+    @Autowired
+    private SettingsUtils settingsUtils;
+
     private static final String PARAM_APP_BEAN = "applicationBean";
-    public static final String FORMS_PATH_PATTERN = FORMS_BASE_PATH + "/*";
 
     @Override
     public void onStartup(final ServletContext sc) throws ServletException {
@@ -53,8 +55,8 @@ public class WebInitializer implements ServletContextInitializer {
         filter.setInitParameter(PARAM_APP_BEAN, "formsWebApplication");
         // This line is the only surprise when comparing to the equivalent
         // web.xml. Without some initialization seems to be missing.
-        filter.setInitParameter(WicketFilter.FILTER_MAPPING_PARAM, FORMS_PATH_PATTERN);
-        filter.addMappingForUrlPatterns(null, false, FORMS_PATH_PATTERN);
+        filter.setInitParameter(WicketFilter.FILTER_MAPPING_PARAM, settingsUtils.getFormsBasePath() + "/*");
+        filter.addMappingForUrlPatterns(null, false, settingsUtils.getFormsBasePath() + "/*");
 
         // // Request Listener
         // sc.addListener(new RequestContextListener());

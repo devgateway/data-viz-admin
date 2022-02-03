@@ -12,6 +12,7 @@
 package org.devgateway.toolkit.web.spring;
 
 import org.devgateway.toolkit.persistence.spring.CustomJPAUserDetailsService;
+import org.devgateway.toolkit.web.util.SettingsUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
@@ -35,8 +36,6 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
-
-import static org.devgateway.toolkit.web.WebConstants.FORMS_BASE_PATH;
 
 /**
  * @author mpostelnicu This configures the spring security for the Web project.
@@ -62,6 +61,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private SettingsUtils settingsUtils;
 
     @Bean
     public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
@@ -89,16 +91,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web.httpFirewall(allowUrlEncodedSlashHttpFirewall())
                 .ignoring().antMatchers(allowedApiEndpoints).and()
                 .ignoring().antMatchers(
-                        FORMS_BASE_PATH + "/login",
-                        FORMS_BASE_PATH + "/forgotPassword/**");
+                        settingsUtils.getFormsBasePath() + "/login",
+                        settingsUtils.getFormsBasePath() + "/forgotPassword/**");
     }
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http.authorizeRequests().expressionHandler(webExpressionHandler()) // inject role hierarchy
-                .antMatchers(FORMS_BASE_PATH + "/monitoring/**").access("hasRole('ROLE_ADMIN')")
-                .antMatchers(FORMS_BASE_PATH + "/**").authenticated().and()
-                .formLogin().loginPage(FORMS_BASE_PATH + "/login").permitAll().and()
+                .antMatchers(settingsUtils.getFormsBasePath() + "/monitoring/**").access("hasRole('ROLE_ADMIN')")
+                .antMatchers(settingsUtils.getFormsBasePath() + "/**").authenticated().and()
+                .formLogin().loginPage(settingsUtils.getFormsBasePath() + "/login").permitAll().and()
                 .requestCache().and().logout().permitAll().and()
                 .sessionManagement().and().csrf().disable();
         http.addFilter(securityContextPersistenceFilter());
