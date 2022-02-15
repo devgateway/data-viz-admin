@@ -87,7 +87,7 @@ public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
     protected void onInitialize() {
         super.onInitialize();
 
-        dataProvider.setSort("year", SortOrder.ASCENDING);
+        dataProvider.setSort("year", SortOrder.DESCENDING);
 
         addNewYearSelector();
 
