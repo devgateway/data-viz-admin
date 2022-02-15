@@ -51,8 +51,11 @@ public class FormsSecurityConfig extends WebSecurityConfig {
     public void configure(final WebSecurity web) throws Exception {
         super.configure(web);
         String formsBasePath = settingsUtils.getFormsBasePath();
-        web.ignoring().antMatchers("/img/**", "/css*/**", "/js*/**", "/assets*/**", "/favicon.ico", "/resources/**",
-                "/resources/public/**");
+        web.ignoring().antMatchers(formsBasePath + "/img/**",
+                formsBasePath + "/css*/**",
+                formsBasePath + "/js*/**",
+                formsBasePath + "/assets*/**", formsBasePath + "/favicon.ico", formsBasePath + "/resources/**",
+                formsBasePath + "/resources/public/**");
         web.ignoring().antMatchers(
                 formsBasePath + "/wicket/resource/**/*.js",
                 formsBasePath + "/wicket/resource/**/*.css",
