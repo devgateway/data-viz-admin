@@ -1,32 +1,24 @@
-#!/bin/sh
+#!/bin/bash
 
  		PROP_FILE="/etc/$1.properties"
-		echo "Writing to $PROP_FILE:"
-    truncate -s 0 $PROP_FILE
+	  truncate -s 0 $PROP_FILE
+  	echo "..................... Writing to $PROP_FILE: ............... "
 
-	echo "..................... Writing to $PROP_FILE: ............... "
+    while IFS='=' read -r -d '' n v; do
+        if [[ $n == SPRING* ]]; then
+				  VAR_NAME="$(echo "$n" | tr '[:upper:]_' '[:lower:].')"
+				  echo "$VAR_NAME=$v" >> $PROP_FILE
+			  fi
+    done < <(env -0)
 
-		PROPERTIES="$(cat <<-EOF
-			server.port
-			spring.application.name
-			spring.liquibase.enabled
-			spring.datasource.url
-			spring.datasource.jdbc.url
-			spring.datasource.username
-			spring.datasource.password
-			spring.jpa.hibernate.ddl.auto
+    while IFS='=' read -r -d '' n v; do
+        if [[ $n == TCDI_* ]]; then
+				  VAR_NAME="$(echo "$n" | tr '[:upper:]_' '[:lower:].' | cut -c 6-)"
+				  echo "$VAR_NAME=$v" >> $PROP_FILE
+			  fi
+    done < <(env -0)
 
 
-		EOF
-		)"
-
-		echo "$PROPERTIES" | while IFS= read PROPERTY; do
-			VAR_NAME="$(echo "$PROPERTY" | tr '[:lower:].-' '[:upper:]__')"
-			eval VALUE="\$$VAR_NAME"
-			if [ -n "$VALUE" ]; then
-				echo "$PROPERTY=$VALUE"
-			fi
-		done | tee -a "$PROP_FILE"
     echo "................. Properties ................."
     cat $PROP_FILE
     echo "................. End sou ................."

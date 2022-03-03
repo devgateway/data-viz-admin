@@ -11,8 +11,11 @@
 		spring.datasource.jdbc-url
 		spring.datasource.url
 		spring.mail.host
+		spring.jpa.hibernate.ddl-auto
 	EOF
 	)"
+
+  env
 
 	echo "$PROPERTIES" | while IFS=read PROPERTY; do
 		VAR_NAME="$(echo "$PROPERTY" | tr '[:lower:].-' '[:upper:]__')"
