@@ -27,11 +27,11 @@ public class TetsimOutputOvershiftCalculatorTest extends TetsimOutputBaseCalcula
         TetsimOutputCalculator tetsimOutputCalculator = new TetsimOutputOvershiftCalculator(datasetWithAllTobaccoProducts, 20.0);
         TetsimOutput output = tetsimOutputCalculator.calculate();
         assertEquals(680.2, output.getConsumptionLegal()
-                .setScale(1, ROUND_HALF_UP).doubleValue(), "Check Consumption Legal TETSIM Output Overshift");
+                .setScale(1, ROUND_HALF_UP).doubleValue(), "Check Consumption Legal TETSIM Output Overshift (Tax Change)");
     }
 
     @Test
-    public void testConsumptionIllicitlNoTaxChange() {
+    public void testConsumptionIllicitNoTaxChange() {
         TetsimOutputCalculator tetsimOutputCalculator = new TetsimOutputOvershiftCalculator(datasetWithAllTobaccoProducts, 0.0);
         TetsimOutput output = tetsimOutputCalculator.calculate();
         assertEquals(395.6, output.getConsumptionIllicit()
@@ -43,7 +43,39 @@ public class TetsimOutputOvershiftCalculatorTest extends TetsimOutputBaseCalcula
         TetsimOutputCalculator tetsimOutputCalculator = new TetsimOutputOvershiftCalculator(datasetWithAllTobaccoProducts, 20.0);
         TetsimOutput output = tetsimOutputCalculator.calculate();
         assertEquals(387.6, output.getConsumptionIllicit()
-                .setScale(1, ROUND_HALF_UP).doubleValue(), "Check Consumption Illicit TETSIM Output Overshift");
+                .setScale(1, ROUND_HALF_UP).doubleValue(), "Check Consumption Illicit TETSIM Output Overshift (Tax Change)");
+    }
+
+    @Test
+    public void testTotalExciseRevenueNoTaxChange() {
+        TetsimOutputCalculator tetsimOutputCalculator = new TetsimOutputOvershiftCalculator(datasetWithAllTobaccoProducts, 0.0);
+        TetsimOutput output = tetsimOutputCalculator.calculate();
+        assertEquals(14167.6, output.getExciseRev()
+                .setScale(1, ROUND_HALF_UP).doubleValue(), "Check Total Legal Excise Revenue TETSIM Output Overshift");
+    }
+
+    @Test
+    public void testTotalExciseRevenueWithTaxChange() {
+        TetsimOutputCalculator tetsimOutputCalculator = new TetsimOutputOvershiftCalculator(datasetWithAllTobaccoProducts, 20.0);
+        TetsimOutput output = tetsimOutputCalculator.calculate();
+        assertEquals(15328.9, output.getExciseRev()
+                .setScale(1, ROUND_HALF_UP).doubleValue(), "Check Total Legal Excise Revenue TETSIM Output Overshift (Tax Change)");
+    }
+
+    @Test
+    public void testTotalLegalGovRevenueNoTaxChange() {
+        TetsimOutputCalculator tetsimOutputCalculator = new TetsimOutputOvershiftCalculator(datasetWithAllTobaccoProducts, 0.0);
+        TetsimOutput output = tetsimOutputCalculator.calculate();
+        assertEquals(18051.4, output.getTotalGovRev()
+                .setScale(1, ROUND_HALF_UP).doubleValue(), "Check Total Legal Government Revenue TETSIM Output Overshift");
+    }
+
+    @Test
+    public void testTotalLegalGovRevenueWithTaxChange() {
+        TetsimOutputCalculator tetsimOutputCalculator = new TetsimOutputOvershiftCalculator(datasetWithAllTobaccoProducts, 20.0);
+        TetsimOutput output = tetsimOutputCalculator.calculate();
+        assertEquals(19315.5, output.getTotalGovRev()
+                .setScale(1, ROUND_HALF_UP).doubleValue(), "Check Total Legal Government Revenue TETSIM Output Overshift (Tax Change)");
     }
 
     @Test
