@@ -26,7 +26,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
 
     protected final TetsimDataset dataset;
 
-    protected final Double percentageChange;
+    protected final Integer percentageChange;
 
     protected final Double trackTracingAdditionalCost;
 
@@ -47,11 +47,11 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
             .put("Discount", "Illicit")
             .build();
 
-    public TetsimOutputBaseCalculator(TetsimDataset dataset, Double percentageChange) {
+    public TetsimOutputBaseCalculator(TetsimDataset dataset, Integer percentageChange) {
         this(dataset, percentageChange, 0.0, 0.0);
     }
 
-    public TetsimOutputBaseCalculator(TetsimDataset dataset, Double percentageChange,
+    public TetsimOutputBaseCalculator(TetsimDataset dataset, Integer percentageChange,
                                       Double trackTracingAdditionalCost, Double levyPercentageChange) {
         this.dataset = dataset;
         this.percentageChange = percentageChange;
@@ -75,73 +75,74 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
         tetsimOutput.setExciseTax(calculateOutputExciseTax());
         tetsimOutput.setVat(calculateOutputVat());
         tetsimOutput.setLevy(calculateOutputLevy());
+        tetsimOutput.setBaseline(percentageChange.intValue());
 
         return tetsimOutput;
     }
 
-    public BigDecimal calculateOutputConsumptionLegal() {
-        return calculateTotalLegalConsumption();
+    public Double calculateOutputConsumptionLegal() {
+        return calculateTotalLegalConsumption().doubleValue();
     }
 
-    private BigDecimal calculateOutputConsumptionIllicit() {
-        return calculateConsumption("Illicit");
+    private Double calculateOutputConsumptionIllicit() {
+        return calculateConsumption("Illicit").doubleValue();
     }
 
-    private BigDecimal calculateOutputExciseRev() {
-        return calculateTotalExciseRevenue();
+    private Double calculateOutputExciseRev() {
+        return calculateTotalExciseRevenue().doubleValue();
     }
 
-    private BigDecimal calculateOutputTotalGovRev() {
-        return calculateTotalLegalGovernmentRevenue();
+    private Double calculateOutputTotalGovRev() {
+        return calculateTotalLegalGovernmentRevenue().doubleValue();
     }
 
     /**
      * Calculate the Output Excise Burden
      */
-    private BigDecimal calculateOutputExciseBurden() {
-        return calculateExciseBurden("Popular");
+    private Double calculateOutputExciseBurden() {
+        return calculateExciseBurden("Popular").doubleValue();
     }
 
     /**
      * Calculate the Output Total Tax Burden
      */
-    private BigDecimal calculateOutputTotalTaxBurden() {
-        return calculateTotalTaxBurden("Popular");
+    private Double calculateOutputTotalTaxBurden() {
+        return calculateTotalTaxBurden("Popular").doubleValue();
     }
 
     /**
      * Calculate the Output Retail Price
      */
-    public BigDecimal calculateOutputRetailPrice() {
-        return calculateRetailPrice("Popular");
+    public Double calculateOutputRetailPrice() {
+        return calculateRetailPrice("Popular").doubleValue();
     }
 
     /**
      * Calculate the Output NOT
      */
-    public BigDecimal calculateOutputNot() {
-        return calculateNetTaxPrice("Popular");
+    public Double calculateOutputNot() {
+        return calculateNetTaxPrice("Popular").doubleValue();
     }
 
     /**
      * Calculate the Output Excise Tax
      */
-    public BigDecimal calculateOutputExciseTax() {
-        return calculateExciseTaxDomesticProduction("Popular");
+    public Double calculateOutputExciseTax() {
+        return calculateExciseTaxDomesticProduction("Popular").doubleValue();
     }
 
     /**
      * Calculate the Output VAT
      */
-    public BigDecimal calculateOutputVat() {
-        return calculateVat("Popular");
+    public Double calculateOutputVat() {
+        return calculateVat("Popular").doubleValue();
     }
 
     /**
      * Calculate the Output Levy
      */
-    public BigDecimal calculateOutputLevy() {
-        return calculateTobaccoLevy("Popular");
+    public Double calculateOutputLevy() {
+        return calculateTobaccoLevy("Popular").doubleValue();
     }
 
     /**

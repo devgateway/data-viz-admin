@@ -1,7 +1,6 @@
 package org.devgateway.toolkit.forms.util.tetsim;
 
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
-import org.devgateway.toolkit.persistence.dto.TetsimOutput;
 
 import java.math.BigDecimal;
 
@@ -12,13 +11,8 @@ import static org.devgateway.toolkit.forms.util.tetsim.TetsimUtil.getTobaccoProd
  */
 public class TetsimOutputUndershiftCalculator extends TetsimOutputBaseCalculator {
 
-    public TetsimOutputUndershiftCalculator(TetsimDataset dataset, Double percentageChange) {
+    public TetsimOutputUndershiftCalculator(TetsimDataset dataset, Integer percentageChange) {
         super(dataset, percentageChange);
-    }
-
-    @Override
-    public TetsimOutput calculate() {
-        return null;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package org.devgateway.toolkit.persistence.dto;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 /**
  *
@@ -12,27 +11,27 @@ public class TetsimOutput implements Serializable {
 
     private Integer baseline;
 
-    private BigDecimal consumptionLegal;
+    private Double consumptionLegal;
 
-    private BigDecimal consumptionIllicit;
+    private Double consumptionIllicit;
 
-    private BigDecimal exciseRev;
+    private Double exciseRev;
 
-    private BigDecimal totalGovRev;
+    private Double totalGovRev;
 
-    private BigDecimal exciseBurden;
+    private Double exciseBurden;
 
-    private BigDecimal totalTaxBurden;
+    private Double totalTaxBurden;
 
-    private BigDecimal retailPrice;
+    private Double retailPrice;
 
-    private BigDecimal not;
+    private Double not;
 
-    private BigDecimal exciseTax;
+    private Double exciseTax;
 
-    private BigDecimal vat;
+    private Double vat;
 
-    private BigDecimal levy;
+    private Double levy;
 
     public Integer getBaseline() {
         return baseline;
@@ -42,91 +41,91 @@ public class TetsimOutput implements Serializable {
         this.baseline = baseline;
     }
 
-    public BigDecimal getConsumptionLegal() {
+    public Double getConsumptionLegal() {
         return consumptionLegal;
     }
 
-    public void setConsumptionLegal(final BigDecimal consumptionLegal) {
+    public void setConsumptionLegal(final Double consumptionLegal) {
         this.consumptionLegal = consumptionLegal;
     }
 
-    public BigDecimal getConsumptionIllicit() {
+    public Double getConsumptionIllicit() {
         return consumptionIllicit;
     }
 
-    public void setConsumptionIllicit(final BigDecimal consumptionIllicit) {
+    public void setConsumptionIllicit(final Double consumptionIllicit) {
         this.consumptionIllicit = consumptionIllicit;
     }
 
-    public BigDecimal getExciseRev() {
+    public Double getExciseRev() {
         return exciseRev;
     }
 
-    public void setExciseRev(final BigDecimal exciseRev) {
+    public void setExciseRev(final Double exciseRev) {
         this.exciseRev = exciseRev;
     }
 
-    public BigDecimal getTotalGovRev() {
+    public Double getTotalGovRev() {
         return totalGovRev;
     }
 
-    public void setTotalGovRev(final BigDecimal totalGovRev) {
+    public void setTotalGovRev(final Double totalGovRev) {
         this.totalGovRev = totalGovRev;
     }
 
-    public BigDecimal getExciseBurden() {
+    public Double getExciseBurden() {
         return exciseBurden;
     }
 
-    public void setExciseBurden(final BigDecimal exciseBurden) {
+    public void setExciseBurden(final Double exciseBurden) {
         this.exciseBurden = exciseBurden;
     }
 
-    public BigDecimal getTotalTaxBurden() {
+    public Double getTotalTaxBurden() {
         return totalTaxBurden;
     }
 
-    public void setTotalTaxBurden(final BigDecimal totalTaxBurden) {
+    public void setTotalTaxBurden(final Double totalTaxBurden) {
         this.totalTaxBurden = totalTaxBurden;
     }
 
-    public BigDecimal getRetailPrice() {
+    public Double getRetailPrice() {
         return retailPrice;
     }
 
-    public void setRetailPrice(final BigDecimal retailPrice) {
+    public void setRetailPrice(final Double retailPrice) {
         this.retailPrice = retailPrice;
     }
 
-    public BigDecimal getNot() {
+    public Double getNot() {
         return not;
     }
 
-    public void setNot(final BigDecimal not) {
+    public void setNot(final Double not) {
         this.not = not;
     }
 
-    public BigDecimal getExciseTax() {
+    public Double getExciseTax() {
         return exciseTax;
     }
 
-    public void setExciseTax(final BigDecimal exciseTax) {
+    public void setExciseTax(final Double exciseTax) {
         this.exciseTax = exciseTax;
     }
 
-    public BigDecimal getVat() {
+    public Double getVat() {
         return vat;
     }
 
-    public void setVat(final BigDecimal vat) {
+    public void setVat(final Double vat) {
         this.vat = vat;
     }
 
-    public BigDecimal getLevy() {
+    public Double getLevy() {
         return levy;
     }
 
-    public void setLevy(final BigDecimal levy) {
+    public void setLevy(final Double levy) {
         this.levy = levy;
     }
 }

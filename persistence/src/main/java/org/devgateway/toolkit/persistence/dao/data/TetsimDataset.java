@@ -210,6 +210,6 @@ public class TetsimDataset extends Dataset {
     }
 
     public void setUndershifting(final TetsimPriceVariable undershifting) {
-        this.undershifting = this.undershifting;
+        this.undershifting = undershifting;
     }
 }

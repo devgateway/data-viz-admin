@@ -11,7 +11,7 @@ import static org.devgateway.toolkit.forms.util.tetsim.TetsimUtil.getTobaccoProd
  */
 public class TetsimOutputOvershiftCalculator extends TetsimOutputBaseCalculator {
 
-    public TetsimOutputOvershiftCalculator(TetsimDataset dataset, Double percentageChange) {
+    public TetsimOutputOvershiftCalculator(TetsimDataset dataset, Integer percentageChange) {
         super(dataset, percentageChange);
     }
 
