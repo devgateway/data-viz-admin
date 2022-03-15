@@ -27,6 +27,8 @@ public class TetsimOutputBaseCalculatorTest {
 
     protected TetsimDataset datasetWithAllTobaccoProducts;
 
+    double delta = 0.01;
+
     @Before
     public void setUp() {
         this.tobaccoProductImported = createTobaccoProduct("Imported", false);
