@@ -78,12 +78,12 @@ public class TetsimDataset extends Dataset {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Audited
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private TetsimPriceVariable overShifting = new TetsimPriceVariable(this);
+    private TetsimPriceVariable overshifting = new TetsimPriceVariable(this);
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Audited
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private TetsimPriceVariable underShifting = new TetsimPriceVariable(this);
+    private TetsimPriceVariable undershifting = new TetsimPriceVariable(this);
 
     public BigDecimal getCigaretteConsumption() {
         return cigaretteConsumption;
@@ -197,19 +197,19 @@ public class TetsimDataset extends Dataset {
         this.changeInIllicitNot = changeInIllicitNot;
     }
 
-    public TetsimPriceVariable getOverShifting() {
-        return overShifting;
+    public TetsimPriceVariable getOvershifting() {
+        return overshifting;
     }
 
-    public void setOverShifting(final TetsimPriceVariable overShifting) {
-        this.overShifting = overShifting;
+    public void setOvershifting(final TetsimPriceVariable overshifting) {
+        this.overshifting = overshifting;
     }
 
-    public TetsimPriceVariable getUnderShifting() {
-        return underShifting;
+    public TetsimPriceVariable getUndershifting() {
+        return undershifting;
     }
 
-    public void setUnderShifting(final TetsimPriceVariable underShifting) {
-        this.underShifting = underShifting;
+    public void setUndershifting(final TetsimPriceVariable undershifting) {
+        this.undershifting = undershifting;
     }
 }
