@@ -1,4 +1,4 @@
-package org.devgateway.toolkit.forms.util.tetsim;
+package org.devgateway.toolkit.persistence.util.tetsim;
 
 import org.devgateway.toolkit.persistence.dao.data.TetsimPriceVariable;
 

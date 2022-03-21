@@ -1,4 +1,4 @@
-package org.devgateway.toolkit.forms.util.tetsim;
+package org.devgateway.toolkit.persistence.util.tetsim;
 
 import com.google.common.collect.ImmutableMap;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.TEN;
 import static java.math.BigDecimal.ZERO;
-import static org.devgateway.toolkit.forms.util.tetsim.TetsimUtil.getTobaccoProductValueFromVariable;
+import static org.devgateway.toolkit.persistence.util.tetsim.TetsimUtil.getTobaccoProductValueFromVariable;
 
 /**
  * @author vchihai
@@ -188,7 +188,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    protected BigDecimal calculateExciseTaxDomesticProduction(String tobaccoProduct) {
+    public BigDecimal calculateExciseTaxDomesticProduction(String tobaccoProduct) {
         return calculateBaselineExciseTaxOnDomesticProduction(tobaccoProduct)
                 .multiply(ONE.add(BigDecimal.valueOf(percentageChange).divide(HUNDRED, DEFAULT_CONTEXT)));
     }
@@ -522,6 +522,10 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
         if (tobaccoProduct.equals("Imported")) {
             BigDecimal cif = getTobaccoProductValueFromVariable(dataset.getCif(), tobaccoProduct);
             BigDecimal duty = getTobaccoProductValueFromVariable(dataset.getCustomsDuty(), tobaccoProduct);
+
+            if (duty == null) {
+                return ZERO;
+            }
 
             return cif.multiply(duty)
                     .divide(HUNDRED);

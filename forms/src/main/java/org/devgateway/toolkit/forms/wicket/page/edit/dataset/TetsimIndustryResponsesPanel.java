@@ -70,9 +70,9 @@ public class TetsimIndustryResponsesPanel extends Panel {
      */
     private TetsimTobaccoProductsVariable getOverShifting(final String id) {
         return new TetsimTobaccoProductsVariable(id,
-                new StringResourceModel("overShifting.label"),
-                new StringResourceModel("overShifting.unit"),
-                new PropertyModel<>(tetsimDatasetIModel, "overShifting"), true) {
+                new StringResourceModel("overshifting.label"),
+                new StringResourceModel("overshifting.unit"),
+                new PropertyModel<>(tetsimDatasetIModel, "overshifting"), true) {
         };
     }
 
@@ -85,9 +85,9 @@ public class TetsimIndustryResponsesPanel extends Panel {
      */
     private TetsimTobaccoProductsVariable getUnderShifting(final String id) {
         return new TetsimTobaccoProductsVariable(id,
-                new StringResourceModel("underShifting.label"),
-                new StringResourceModel("underShifting.unit"),
-                new PropertyModel<>(tetsimDatasetIModel, "underShifting"), true) {
+                new StringResourceModel("undershifting.label"),
+                new StringResourceModel("undershifting.unit"),
+                new PropertyModel<>(tetsimDatasetIModel, "undershifting"), true) {
         };
     }
 

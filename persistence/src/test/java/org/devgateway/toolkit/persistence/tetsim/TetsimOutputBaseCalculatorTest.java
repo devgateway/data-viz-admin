@@ -1,9 +1,9 @@
-package org.devgateway.toolkit.forms.util.tetsim;
+package org.devgateway.toolkit.persistence.tetsim;
 
-import org.devgateway.toolkit.forms.util.tetsim.builder.TetsimDatasetBuilder;
-import org.devgateway.toolkit.forms.util.tetsim.builder.TetsimPriceVariableBuilder;
-import org.devgateway.toolkit.forms.util.tetsim.builder.TetsimTobaccoProductValueBuilder;
-import org.devgateway.toolkit.forms.util.tetsim.builder.TobaccoProductBuilder;
+import org.devgateway.toolkit.persistence.tetsim.builder.TetsimDatasetBuilder;
+import org.devgateway.toolkit.persistence.tetsim.builder.TetsimPriceVariableBuilder;
+import org.devgateway.toolkit.persistence.tetsim.builder.TetsimTobaccoProductValueBuilder;
+import org.devgateway.toolkit.persistence.tetsim.builder.TobaccoProductBuilder;
 import org.devgateway.toolkit.persistence.dao.categories.TobaccoProduct;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
 import org.devgateway.toolkit.persistence.dao.data.TetsimPriceVariable;

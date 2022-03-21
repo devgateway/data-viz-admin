@@ -1,6 +1,8 @@
-package org.devgateway.toolkit.forms.util.tetsim;
+package org.devgateway.toolkit.persistence.tetsim;
 
 import org.devgateway.toolkit.persistence.dto.TetsimOutput;
+import org.devgateway.toolkit.persistence.util.tetsim.TetsimOutputCalculator;
+import org.devgateway.toolkit.persistence.util.tetsim.TetsimOutputOvershiftCalculator;
 import org.junit.Before;
 import org.junit.Test;
 

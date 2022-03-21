@@ -1,5 +1,6 @@
 package org.devgateway.toolkit.persistence.converter;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -9,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author Nadejda Mandrescu
  */
-public class DefaultDecimalFormatter implements INumberFormatter {
+public class DefaultDecimalFormatter implements INumberFormatter, Serializable {
 
     private final ConcurrentHashMap<Locale, DecimalFormat> decimalFormats = new ConcurrentHashMap<>();
 
