@@ -37,6 +37,9 @@ import org.springframework.security.web.context.SecurityContextPersistenceFilter
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 /**
  * @author mpostelnicu This configures the spring security for the Web project.
  * An
@@ -89,10 +92,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(final WebSecurity web) throws Exception {
         web.httpFirewall(allowUrlEncodedSlashHttpFirewall())
-                .ignoring().antMatchers(allowedApiEndpoints).and()
+                .ignoring().antMatchers(getAllowedAPIEndpointsWithBasePath()).and()
                 .ignoring().antMatchers(
                         settingsUtils.getFormsBasePath() + "/login",
                         settingsUtils.getFormsBasePath() + "/forgotPassword/**");
+    }
+
+    private String[] getAllowedAPIEndpointsWithBasePath() {
+        if (allowedApiEndpoints != null) {
+            return Arrays.stream(allowedApiEndpoints)
+                    .map(s -> settingsUtils.getFormsBasePath() + s)
+                    .collect(Collectors.toList()).toArray(new String[allowedApiEndpoints.length]);
+        }
+
+        return new String[]{};
     }
 
     @Override

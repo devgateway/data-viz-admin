@@ -1,4 +1,4 @@
-package org.devgateway.toolkit.forms.util.tetsim.builder;
+package org.devgateway.toolkit.persistence.tetsim.builder;
 
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
 import org.devgateway.toolkit.persistence.dao.data.TetsimPriceVariable;

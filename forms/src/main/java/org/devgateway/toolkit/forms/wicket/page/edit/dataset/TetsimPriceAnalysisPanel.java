@@ -238,7 +238,7 @@ public class TetsimPriceAnalysisPanel extends Panel {
         return new TetsimTobaccoProductsVariable(id,
                 new StringResourceModel("elasticityOfDemandCrossPrice.label"),
                 new StringResourceModel("elasticityOfDemandCrossPrice.unit"),
-                new PropertyModel<>(tetsimDatasetIModel, "elasticityOfDemandPrice")) {
+                new PropertyModel<>(tetsimDatasetIModel, "elasticityOfDemandCrossPrice")) {
 
             @Override
             protected void addBehavioursToTobaccoProductVariable(final TextFieldBootstrapFormComponent variable1) {
