@@ -9,7 +9,11 @@ import java.io.Serializable;
  */
 public class TetsimOutput implements Serializable {
 
-    private Integer baseline;
+    private Integer taxChange;
+
+    private String tobaccoProduct;
+
+    private String shifting;
 
     private Double consumptionLegal;
 
@@ -33,12 +37,28 @@ public class TetsimOutput implements Serializable {
 
     private Double levy;
 
-    public Integer getBaseline() {
-        return baseline;
+    public Integer getTaxChange() {
+        return taxChange;
     }
 
-    public void setBaseline(final Integer baseline) {
-        this.baseline = baseline;
+    public void setTaxChange(final Integer taxChange) {
+        this.taxChange = taxChange;
+    }
+
+    public String getTobaccoProduct() {
+        return tobaccoProduct;
+    }
+
+    public void setTobaccoProduct(final String tobaccoProduct) {
+        this.tobaccoProduct = tobaccoProduct;
+    }
+
+    public String getShifting() {
+        return shifting;
+    }
+
+    public void setShifting(final String shifting) {
+        this.shifting = shifting;
     }
 
     public Double getConsumptionLegal() {
