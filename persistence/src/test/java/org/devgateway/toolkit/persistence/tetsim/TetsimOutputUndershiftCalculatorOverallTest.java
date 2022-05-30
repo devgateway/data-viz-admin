@@ -18,7 +18,7 @@ public class TetsimOutputUndershiftCalculatorOverallTest extends TetsimOutputBas
     @Test
     public void testOverallOutputBaseline() {
         TetsimOutputUndershiftCalculator tetsimOutputCalculator = new TetsimOutputUndershiftCalculator(datasetWithAllTobaccoProducts, 0);
-        TetsimOutput output = tetsimOutputCalculator.calculate();
+        TetsimOutput output = tetsimOutputCalculator.calculate("Popular");
 
         assertAll("TETSIM Undershift Baseline",
                 () -> assertEquals(754.40, output.getConsumptionLegal(), delta, "TETSIM Undershift - Consumption Legal"),
@@ -37,7 +37,7 @@ public class TetsimOutputUndershiftCalculatorOverallTest extends TetsimOutputBas
     @Test
     public void testOverallOutputWithTaxChange() {
         TetsimOutputUndershiftCalculator tetsimOutputCalculator = new TetsimOutputUndershiftCalculator(datasetWithAllTobaccoProducts, 30);
-        TetsimOutput output = tetsimOutputCalculator.calculate();
+        TetsimOutput output = tetsimOutputCalculator.calculate("Popular");
 
         assertAll("TETSIM Undershift With 30% Tax Change",
                 () -> assertEquals(694.62, output.getConsumptionLegal(), delta, "TETSIM Undershift - Consumption Legal"),

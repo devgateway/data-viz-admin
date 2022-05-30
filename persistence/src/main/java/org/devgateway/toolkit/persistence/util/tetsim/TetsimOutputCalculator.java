@@ -4,6 +4,6 @@ import org.devgateway.toolkit.persistence.dto.TetsimOutput;
 
 public interface TetsimOutputCalculator {
 
-    TetsimOutput calculate();
+    TetsimOutput calculate(String tobaccoProduct);
 
 }

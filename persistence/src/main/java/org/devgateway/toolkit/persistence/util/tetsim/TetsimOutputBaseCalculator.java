@@ -59,23 +59,29 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
         this.levyPercentageChange = levyPercentageChange;
     }
 
+    protected abstract String getShifting();
+
     protected abstract BigDecimal calculateAbsChangeShift(String tobaccoProduct);
 
     @Override
-    public TetsimOutput calculate() {
+    public TetsimOutput calculate(String tobaccoProduct) {
         TetsimOutput tetsimOutput = new TetsimOutput();
+
+        tetsimOutput.setShifting(getShifting());
+        tetsimOutput.setTobaccoProduct(tobaccoProduct);
+        tetsimOutput.setTaxChange(percentageChange.intValue());
         tetsimOutput.setConsumptionLegal(calculateOutputConsumptionLegal());
         tetsimOutput.setConsumptionIllicit(calculateOutputConsumptionIllicit());
         tetsimOutput.setExciseRev(calculateOutputExciseRev());
         tetsimOutput.setTotalGovRev(calculateOutputTotalGovRev());
-        tetsimOutput.setExciseBurden(calculateOutputExciseBurden());
-        tetsimOutput.setTotalTaxBurden(calculateOutputTotalTaxBurden());
-        tetsimOutput.setRetailPrice(calculateOutputRetailPrice());
-        tetsimOutput.setNot(calculateOutputNot());
-        tetsimOutput.setExciseTax(calculateOutputExciseTax());
-        tetsimOutput.setVat(calculateOutputVat());
-        tetsimOutput.setLevy(calculateOutputLevy());
-        tetsimOutput.setBaseline(percentageChange.intValue());
+
+        tetsimOutput.setExciseBurden(calculateOutputExciseBurden(tobaccoProduct));
+        tetsimOutput.setTotalTaxBurden(calculateOutputTotalTaxBurden(tobaccoProduct));
+        tetsimOutput.setRetailPrice(calculateOutputRetailPrice(tobaccoProduct));
+        tetsimOutput.setNot(calculateOutputNot(tobaccoProduct));
+        tetsimOutput.setExciseTax(calculateOutputExciseTax(tobaccoProduct));
+        tetsimOutput.setVat(calculateOutputVat(tobaccoProduct));
+        tetsimOutput.setLevy(calculateOutputLevy(tobaccoProduct));
 
         return tetsimOutput;
     }
@@ -99,50 +105,50 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
     /**
      * Calculate the Output Excise Burden
      */
-    private Double calculateOutputExciseBurden() {
-        return calculateExciseBurden("Popular").doubleValue();
+    private Double calculateOutputExciseBurden(String tobaccoProduct) {
+        return calculateExciseBurden(tobaccoProduct).doubleValue();
     }
 
     /**
      * Calculate the Output Total Tax Burden
      */
-    private Double calculateOutputTotalTaxBurden() {
-        return calculateTotalTaxBurden("Popular").doubleValue();
+    private Double calculateOutputTotalTaxBurden(String tobaccoProduct) {
+        return calculateTotalTaxBurden(tobaccoProduct).doubleValue();
     }
 
     /**
      * Calculate the Output Retail Price
      */
-    public Double calculateOutputRetailPrice() {
-        return calculateRetailPrice("Popular").doubleValue();
+    public Double calculateOutputRetailPrice(String tobaccoProduct) {
+        return calculateRetailPrice(tobaccoProduct).doubleValue();
     }
 
     /**
      * Calculate the Output NOT
      */
-    public Double calculateOutputNot() {
-        return calculateNetTaxPrice("Popular").doubleValue();
+    public Double calculateOutputNot(String tobaccoProduct) {
+        return calculateNetTaxPrice(tobaccoProduct).doubleValue();
     }
 
     /**
      * Calculate the Output Excise Tax
      */
-    public Double calculateOutputExciseTax() {
-        return calculateExciseTaxDomesticProduction("Popular").doubleValue();
+    public Double calculateOutputExciseTax(String tobaccoProduct) {
+        return calculateExciseTaxDomesticProduction(tobaccoProduct).doubleValue();
     }
 
     /**
      * Calculate the Output VAT
      */
-    public Double calculateOutputVat() {
-        return calculateVat("Popular").doubleValue();
+    public Double calculateOutputVat(String tobaccoProduct) {
+        return calculateVat(tobaccoProduct).doubleValue();
     }
 
     /**
      * Calculate the Output Levy
      */
-    public Double calculateOutputLevy() {
-        return calculateTobaccoLevy("Popular").doubleValue();
+    public Double calculateOutputLevy(String tobaccoProduct) {
+        return calculateTobaccoLevy(tobaccoProduct).doubleValue();
     }
 
     /**

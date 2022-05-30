@@ -16,6 +16,11 @@ public class TetsimOutputOvershiftCalculator extends TetsimOutputBaseCalculator 
     }
 
     @Override
+    protected String getShifting() {
+        return "Overshift";
+    }
+
+    @Override
     public BigDecimal calculateAbsChangeShift(final String tobaccoProduct) {
         BigDecimal exciseTax = getTobaccoProductValueFromVariable(dataset.getExciseTax(), tobaccoProduct);
         BigDecimal overshifting = getTobaccoProductValueFromVariable(dataset.getOvershifting(), tobaccoProduct);
