@@ -52,6 +52,7 @@ import org.devgateway.toolkit.forms.security.SecurityUtil;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListGroupPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListTestFormPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListUserPage;
+import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServicePage;
 import org.devgateway.toolkit.forms.wicket.page.user.EditUserPage;
 import org.devgateway.toolkit.forms.wicket.page.user.LogoutPage;
 import org.devgateway.toolkit.forms.wicket.styles.BaseStyles;
@@ -257,6 +258,10 @@ public abstract class BasePage extends GenericWebPage<Void> {
                 list.add(new MenuBookmarkablePageLink<ListGroupPage>(ListGroupPage.class, null,
                         new StringResourceModel("navbar.groups", this, null))
                         .setIconType(FontAwesome5IconType.tags_s));
+
+                list.add(new MenuBookmarkablePageLink<ListGroupPage>(ListServicePage.class, null,
+                        new StringResourceModel("navbar.services", this, null))
+                        .setIconType(FontAwesome5IconType.servicestack));
 
 //                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTestFormPage.class, null,
 //                        new StringResourceModel("navbar.testcomponents", this, null))
