@@ -10,5 +10,7 @@ public interface TetsimDatasetService extends BaseJpaService<TetsimDataset>, Uni
 
     List<TetsimDataset> findAllDeleted();
 
+    List<TetsimDataset> findAllPublishing();
+
     long countByNonPublished(Integer year);
 }

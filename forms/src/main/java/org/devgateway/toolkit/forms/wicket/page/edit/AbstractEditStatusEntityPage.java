@@ -64,6 +64,7 @@ import org.wicketstuff.select2.Select2Choice;
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_AUTO_SAVE;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DRAFT;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHED;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.SAVED;
 
 /**
@@ -173,7 +174,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
-                setStatusAppendComment(PUBLISHED);
+                setStatusAppendComment(PUBLISHING);
                 super.onSubmit(target);
             }
         };
@@ -477,6 +478,8 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
             case DRAFT:
                 return "label-danger";
             case SAVED:
+                return "label-primary";
+            case PUBLISHING:
                 return "label-warning";
             default:
                 return "";
@@ -683,7 +686,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
-                setStatusAppendComment(PUBLISHED);
+                setStatusAppendComment(PUBLISHING);
                 super.onSubmit(target);
             }
         };
