@@ -779,7 +779,8 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     protected void addDeleteButtonPermissions(final Component button) {
         MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, SecurityConstants.Roles.ROLE_ADMIN);
         button.setVisibilityAllowed(entityId != null && !isViewMode()
-                && !PUBLISHED.equals(editForm.getModelObject().getStatus()));
+                && (!PUBLISHING.equals(editForm.getModelObject().getStatus())
+                || !PUBLISHED.equals(editForm.getModelObject().getStatus())));
         MetaDataRoleAuthorizationStrategy.authorize(
                 button, Component.RENDER, getCommaCombinedRoles());
     }
@@ -789,7 +790,8 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, getValidatorRole());
         MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, getCommaCombinedRoles());
         button.setVisibilityAllowed(button.isVisibilityAllowed()
-                && PUBLISHED.equals(editForm.getModelObject().getStatus()));
+                && (PUBLISHING.equals(editForm.getModelObject().getStatus())
+                || PUBLISHED.equals(editForm.getModelObject().getStatus())));
     }
 
     protected void addSaveApproveButtonPermissions(final Component button) {

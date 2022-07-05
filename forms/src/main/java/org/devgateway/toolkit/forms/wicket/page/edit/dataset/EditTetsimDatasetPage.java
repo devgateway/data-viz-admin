@@ -14,15 +14,18 @@ import org.devgateway.toolkit.forms.wicket.components.form.Select2ChoiceBootstra
 import org.devgateway.toolkit.forms.wicket.page.edit.AbstractEditStatusEntityPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListTetsimDatasetPage;
 import org.devgateway.toolkit.forms.wicket.providers.GenericChoiceProvider;
+import org.devgateway.toolkit.persistence.dao.ServiceMetadata;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
 import org.devgateway.toolkit.persistence.dao.data.TetsimPriceVariable;
 import org.devgateway.toolkit.persistence.dao.data.TetsimTobaccoProductValue;
+import org.devgateway.toolkit.persistence.service.ServiceMetadataService;
 import org.devgateway.toolkit.persistence.service.category.TobaccoProductService;
 import org.devgateway.toolkit.persistence.service.data.TetsimDatasetService;
 import org.devgateway.toolkit.web.util.SettingsUtils;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.wicketstuff.annotation.mount.MountPath;
 
+import javax.xml.ws.Service;
 import java.math.BigDecimal;
 
 import static org.devgateway.toolkit.forms.WebConstants.MAXIMUM_PERCENTAGE;
@@ -39,8 +42,13 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
 
     protected Select2ChoiceBootstrapFormComponent<Integer> year;
 
+    protected Select2ChoiceBootstrapFormComponent<ServiceMetadata> service;
+
     @SpringBean
     protected TetsimDatasetService tetsimDatasetService;
+
+    @SpringBean
+    protected ServiceMetadataService serviceMetadataService;
 
     @SpringBean
     protected SettingsUtils settingsUtils;
@@ -62,6 +70,7 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
         editForm.add(getBaseLineNumbers());
         editForm.add(getPriceAnalysisNumbers());
         editForm.add(getIndustryResponsesNumbers());
+        editForm.add(getService());
 
         editForm.add(new TetsimMarketSharePercentageValidator());
 
@@ -78,6 +87,14 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
         year.setEnabled(false);
 
         return year;
+    }
+
+    private Select2ChoiceBootstrapFormComponent<ServiceMetadata> getService() {
+        service = new Select2ChoiceBootstrapFormComponent<>("service",
+                new GenericChoiceProvider<>(serviceMetadataService.findAll()));
+        editForm.add(service);
+
+        return service;
     }
 
     @Override
