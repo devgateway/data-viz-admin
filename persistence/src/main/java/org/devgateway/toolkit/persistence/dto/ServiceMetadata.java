@@ -1,31 +1,27 @@
-package org.devgateway.toolkit.persistence.dao;
+package org.devgateway.toolkit.persistence.dto;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.envers.Audited;
-
-import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@Entity
-@Audited
-public class ServiceMetadata extends AbstractStatusAuditableEntity implements Serializable {
+public class ServiceMetadata  implements Serializable {
 
-    @NotNull
-    @Audited
+    private String id;
+
     private String name;
 
-    @Audited
     private String description;
 
-    @Audited
     private String url;
 
-    @Override
-    public AbstractAuditableEntity getParent() {
-        return null;
+    private String type;
+
+    private String status;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(final String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -52,8 +48,24 @@ public class ServiceMetadata extends AbstractStatusAuditableEntity implements Se
         this.url = url;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(final String type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return getName();
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(final String status) {
+        this.status = status;
     }
 }

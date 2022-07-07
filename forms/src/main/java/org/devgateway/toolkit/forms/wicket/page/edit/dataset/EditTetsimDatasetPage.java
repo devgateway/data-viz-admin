@@ -1,32 +1,34 @@
 package org.devgateway.toolkit.forms.wicket.page.edit.dataset;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.form.BootstrapCancelButton;
 import org.devgateway.toolkit.forms.wicket.components.form.Select2ChoiceBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.page.edit.AbstractEditStatusEntityPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListTetsimDatasetPage;
 import org.devgateway.toolkit.forms.wicket.providers.GenericChoiceProvider;
-import org.devgateway.toolkit.persistence.dao.ServiceMetadata;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
 import org.devgateway.toolkit.persistence.dao.data.TetsimPriceVariable;
 import org.devgateway.toolkit.persistence.dao.data.TetsimTobaccoProductValue;
-import org.devgateway.toolkit.persistence.service.ServiceMetadataService;
+import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
 import org.devgateway.toolkit.persistence.service.category.TobaccoProductService;
 import org.devgateway.toolkit.persistence.service.data.TetsimDatasetService;
 import org.devgateway.toolkit.web.util.SettingsUtils;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.wicketstuff.annotation.mount.MountPath;
 
-import javax.xml.ws.Service;
 import java.math.BigDecimal;
+import java.util.stream.Collectors;
 
 import static org.devgateway.toolkit.forms.WebConstants.MAXIMUM_PERCENTAGE;
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_YEAR;
@@ -42,13 +44,15 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
 
     protected Select2ChoiceBootstrapFormComponent<Integer> year;
 
-    protected Select2ChoiceBootstrapFormComponent<ServiceMetadata> service;
+    protected Select2ChoiceBootstrapFormComponent service;
+
+    private Model<String> serviceModel = Model.of("");
 
     @SpringBean
     protected TetsimDatasetService tetsimDatasetService;
 
     @SpringBean
-    protected ServiceMetadataService serviceMetadataService;
+    protected EurekaClientService eurekaClientService;
 
     @SpringBean
     protected SettingsUtils settingsUtils;
@@ -89,9 +93,29 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
         return year;
     }
 
-    private Select2ChoiceBootstrapFormComponent<ServiceMetadata> getService() {
-        service = new Select2ChoiceBootstrapFormComponent<>("service",
-                new GenericChoiceProvider<>(serviceMetadataService.findAll()));
+    private Select2ChoiceBootstrapFormComponent<String> getService() {
+        service = new Select2ChoiceBootstrapFormComponent<String>("service",
+                new GenericChoiceProvider<>(eurekaClientService.findAllWithData().stream()
+                        .map(ServiceMetadata::getName)
+                        .collect(Collectors.toList())), serviceModel) {
+            @Override
+            protected void onUpdate(final AjaxRequestTarget target) {
+                super.onUpdate(target);
+                if (serviceModel.getObject() != null) {
+                    saveApproveButton.setEnabled(true);
+                    approveButton.setEnabled(true);
+                } else {
+                    saveApproveButton.setEnabled(false);
+                    approveButton.setEnabled(false);
+                }
+
+                target.add(approveButton);
+                target.add(saveApproveButton);
+            }
+
+
+        };
+        service.setEnabled(true);
         editForm.add(service);
 
         return service;
@@ -197,7 +221,13 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
             approveButton.setEnabled(false);
             revertToDraftPageButton.setEnabled(false);
         }
+
+        if (StringUtils.isBlank(serviceModel.getObject())) {
+            saveApproveButton.setEnabled(false);
+            approveButton.setEnabled(false);
+        }
     }
+
 
     protected Integer getYearParam() {
         return getPageParameters().get(PARAM_YEAR).toOptionalInteger();
