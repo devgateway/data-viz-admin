@@ -121,6 +121,8 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
 
     protected TextContentModal saveFailedModal;
 
+    protected TextContentModal approveFailedModal;
+
     @SpringBean
     protected EntityManager entityManager;
 
@@ -243,6 +245,30 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
         return modal;
     }
 
+    protected TextContentModal createApproveFailedModal() {
+        final TextContentModal modal = new TextContentModal("approveFailedModal",
+                new ResourceModel("optimistic_lock_error_message"));
+        modal.header(new ResourceModel("error"));
+        final LaddaAjaxButton okButton = new LaddaAjaxButton("button", Buttons.Type.Info) {
+            @Override
+            protected void onSubmit(final AjaxRequestTarget target) {
+                setResponsePage(listPageClass);
+            }
+        };
+        okButton.setDefaultFormProcessing(false);
+        okButton.setLabel(Model.of("OK"));
+        modal.addButton(okButton);
+
+        modal.add(new AjaxEventBehavior("hidden.bs.modal") {
+            @Override
+            protected void onEvent(final AjaxRequestTarget target) {
+                setResponsePage(listPageClass);
+            }
+        });
+
+        return modal;
+    }
+
     protected void afterSaveEntity(final T saveable) {
     }
 
@@ -287,6 +313,9 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
 
             saveFailedModal = createSaveFailedModal();
             add(saveFailedModal);
+
+            approveFailedModal = createApproveFailedModal();
+            add(approveFailedModal);
 
             // don't display the delete button if we just create a new entity
             if (entityId == null) {

@@ -58,4 +58,10 @@ public class EurekaClientService {
         return services;
     }
 
+    public ServiceMetadata getServiceByName(String name) {
+        return findAll().stream()
+                .filter(s -> s.getName().equals(name))
+                .findFirst().get();
+    }
+
 }

@@ -174,7 +174,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
-                setStatusAppendComment(PUBLISHING);
+                onApprove(target);
                 super.onSubmit(target);
             }
         };
@@ -686,8 +686,14 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
-                setStatusAppendComment(PUBLISHING);
-                super.onSubmit(target);
+                approveModal.show(true);
+                target.add(approveModal);
+            }
+
+            @Override
+            protected void onError(final AjaxRequestTarget target) {
+                super.onError(target);
+                target.add(feedbackPanel);
             }
         };
         saveEditPageButton.setIconType(FontAwesome5IconType.thumbs_up_s);
@@ -736,6 +742,10 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     }
 
     protected void onAfterRevertToDraft(AjaxRequestTarget target) {
+
+    }
+
+    protected void onApprove(AjaxRequestTarget target) {
 
     }
 

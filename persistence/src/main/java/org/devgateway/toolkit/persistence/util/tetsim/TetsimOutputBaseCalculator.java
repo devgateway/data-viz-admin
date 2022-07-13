@@ -67,6 +67,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
     public TetsimOutput calculate(String tobaccoProduct) {
         TetsimOutput tetsimOutput = new TetsimOutput();
 
+        tetsimOutput.setYear(this.dataset.getYear());
         tetsimOutput.setShifting(getShifting());
         tetsimOutput.setTobaccoProduct(tobaccoProduct);
         tetsimOutput.setTaxChange(percentageChange.intValue());

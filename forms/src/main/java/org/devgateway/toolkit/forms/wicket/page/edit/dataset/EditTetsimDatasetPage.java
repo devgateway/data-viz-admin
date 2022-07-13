@@ -7,13 +7,15 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.devgateway.toolkit.forms.client.DataSetClientException;
+import org.devgateway.toolkit.forms.service.DatasetPublishingService;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.form.BootstrapCancelButton;
 import org.devgateway.toolkit.forms.wicket.components.form.Select2ChoiceBootstrapFormComponent;
+import org.devgateway.toolkit.forms.wicket.page.edit.AbstractEditPage;
 import org.devgateway.toolkit.forms.wicket.page.edit.AbstractEditStatusEntityPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListTetsimDatasetPage;
 import org.devgateway.toolkit.forms.wicket.providers.GenericChoiceProvider;
@@ -24,6 +26,8 @@ import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
 import org.devgateway.toolkit.persistence.service.category.TobaccoProductService;
 import org.devgateway.toolkit.persistence.service.data.TetsimDatasetService;
 import org.devgateway.toolkit.web.util.SettingsUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.wicketstuff.annotation.mount.MountPath;
 
@@ -33,6 +37,8 @@ import java.util.stream.Collectors;
 import static org.devgateway.toolkit.forms.WebConstants.MAXIMUM_PERCENTAGE;
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_YEAR;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DELETED;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.SAVED;
 
 /**
  * @author vchihai
@@ -42,17 +48,20 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
 
     private static final long serialVersionUID = -8460878260874111506L;
 
+    private static final Logger logger = LoggerFactory.getLogger(EditTetsimDatasetPage.class);
+
     protected Select2ChoiceBootstrapFormComponent<Integer> year;
 
-    protected Select2ChoiceBootstrapFormComponent service;
-
-    private Model<String> serviceModel = Model.of("");
+    protected Select2ChoiceBootstrapFormComponent destinationService;
 
     @SpringBean
     protected TetsimDatasetService tetsimDatasetService;
 
     @SpringBean
     protected EurekaClientService eurekaClientService;
+
+    @SpringBean
+    protected DatasetPublishingService datasetPublishingService;
 
     @SpringBean
     protected SettingsUtils settingsUtils;
@@ -94,14 +103,14 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
     }
 
     private Select2ChoiceBootstrapFormComponent<String> getService() {
-        service = new Select2ChoiceBootstrapFormComponent<String>("service",
+        destinationService = new Select2ChoiceBootstrapFormComponent<String>("destinationService",
                 new GenericChoiceProvider<>(eurekaClientService.findAllWithData().stream()
                         .map(ServiceMetadata::getName)
-                        .collect(Collectors.toList())), serviceModel) {
+                        .collect(Collectors.toList()))) {
             @Override
             protected void onUpdate(final AjaxRequestTarget target) {
                 super.onUpdate(target);
-                if (serviceModel.getObject() != null) {
+                if (editForm.getModelObject().getDestinationService() != null) {
                     saveApproveButton.setEnabled(true);
                     approveButton.setEnabled(true);
                 } else {
@@ -115,10 +124,9 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
 
 
         };
-        service.setEnabled(true);
-        editForm.add(service);
+        destinationService.setEnabled(true);
 
-        return service;
+        return destinationService;
     }
 
     @Override
@@ -141,6 +149,22 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
         } catch (ObjectOptimisticLockingFailureException e) {
             deleteFailedModal.show(target);
             target.add(deleteFailedModal);
+        }
+        setResponsePage(listPageClass);
+    }
+
+    protected void onApprove(final AjaxRequestTarget target) {
+        try {
+            TetsimDataset dataset = editForm.getModelObject();
+            String destinationService = dataset.getDestinationService();
+            ServiceMetadata serviceMetadata = eurekaClientService.getServiceByName(destinationService);
+
+            datasetPublishingService.publish(serviceMetadata, dataset);
+
+            dataset.setStatus(PUBLISHING);
+        } catch (DataSetClientException | Exception e) {
+            logger.error(e.getMessage(), e);
+            approveFailedModal.show(target);
         }
         setResponsePage(listPageClass);
     }
@@ -209,6 +233,15 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
     }
 
     @Override
+    protected void onBeforeRender() {
+        super.onBeforeRender();
+
+        if (SAVED.equals(editForm.getModelObject().getStatus())) {
+            destinationService.setEnabled(true);
+        }
+    }
+
+    @Override
     protected void enableDisableAutosaveFields(final AjaxRequestTarget target) {
         super.enableDisableAutosaveFields(target);
 
@@ -222,7 +255,7 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
             revertToDraftPageButton.setEnabled(false);
         }
 
-        if (StringUtils.isBlank(serviceModel.getObject())) {
+        if (StringUtils.isBlank(editForm.getModelObject().getDestinationService())) {
             saveApproveButton.setEnabled(false);
             approveButton.setEnabled(false);
         }

@@ -9,6 +9,8 @@ import java.io.Serializable;
  */
 public class TetsimOutput implements Serializable {
 
+    private Integer year;
+
     private Integer taxChange;
 
     private String tobaccoProduct;
@@ -36,6 +38,14 @@ public class TetsimOutput implements Serializable {
     private Double vat;
 
     private Double levy;
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(final Integer year) {
+        this.year = year;
+    }
 
     public Integer getTaxChange() {
         return taxChange;
