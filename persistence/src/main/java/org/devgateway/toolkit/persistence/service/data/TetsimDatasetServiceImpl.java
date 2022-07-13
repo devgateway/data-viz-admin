@@ -42,7 +42,7 @@ public class TetsimDatasetServiceImpl extends BaseJpaServiceImpl<TetsimDataset> 
 
     @Override
     public List<TetsimDataset> findAllPublishing() {
-        return null;
+        return tetsimDatasetRepository.findAllPublishing();
     }
 
     @Override
