@@ -15,7 +15,6 @@ import org.devgateway.toolkit.forms.service.DatasetPublishingService;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.form.BootstrapCancelButton;
 import org.devgateway.toolkit.forms.wicket.components.form.Select2ChoiceBootstrapFormComponent;
-import org.devgateway.toolkit.forms.wicket.page.edit.AbstractEditPage;
 import org.devgateway.toolkit.forms.wicket.page.edit.AbstractEditStatusEntityPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListTetsimDatasetPage;
 import org.devgateway.toolkit.forms.wicket.providers.GenericChoiceProvider;
@@ -153,13 +152,27 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
         setResponsePage(listPageClass);
     }
 
+    @Override
+    protected void onAfterRevertToDraft(final AjaxRequestTarget target) {
+        try {
+            TetsimDataset dataset = editForm.getModelObject();
+            String destinationService = dataset.getDestinationService();
+            ServiceMetadata serviceMetadata = eurekaClientService.getServiceByName(destinationService);
+
+            datasetPublishingService.unpublishDataset(serviceMetadata, dataset);
+
+        } catch (DataSetClientException | Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
     protected void onApprove(final AjaxRequestTarget target) {
         try {
             TetsimDataset dataset = editForm.getModelObject();
             String destinationService = dataset.getDestinationService();
             ServiceMetadata serviceMetadata = eurekaClientService.getServiceByName(destinationService);
 
-            datasetPublishingService.publish(serviceMetadata, dataset);
+            datasetPublishingService.publishDataset(serviceMetadata, dataset);
 
             dataset.setStatus(PUBLISHING);
         } catch (DataSetClientException | Exception e) {

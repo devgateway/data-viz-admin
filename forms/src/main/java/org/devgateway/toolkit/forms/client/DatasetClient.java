@@ -20,8 +20,8 @@ import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA_TYPE;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
 import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 import static org.devgateway.toolkit.forms.client.ClientConstants.CODE_PREFIX;
-import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_DATASETS;
 import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_CODE;
+import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_DATASETS;
 import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_HEALTH;
 import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_JOBS;
 
@@ -55,7 +55,25 @@ public class DatasetClient {
         throw new RuntimeException(("Service is not up"));
     }
 
-    public DatasetJobStatus publishDataset(TetsimDataset dataset, byte[] datasetContent) throws DataSetClientException {
+    public void unpublishDataset(TetsimDataset dataset) throws DataSetClientException {
+        if (isUp()) {
+            String code = CODE_PREFIX + dataset.getId();
+
+            Response jobStatusResponse = client.target(baseUrl)
+                    .path(PATH_DATASETS)
+                    .path(code)
+                    .request()
+                    .delete();
+
+            if (jobStatusResponse.getStatusInfo().getFamily() != SUCCESSFUL) {
+                throw new DataSetClientException("Error in unpublishing a dataset with code " + code);
+            }
+        } else {
+            throw new RuntimeException(("Service is not up"));
+        }
+    }
+
+    public DatasetJobStatus unpublishDataset(TetsimDataset dataset, byte[] datasetContent) throws DataSetClientException {
         if (isUp()) {
             File tempUploadFile;
             try {

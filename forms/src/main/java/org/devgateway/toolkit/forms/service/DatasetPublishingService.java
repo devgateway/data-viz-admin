@@ -62,10 +62,15 @@ public class DatasetPublishingService {
 
     }
 
-    public void publish(ServiceMetadata service, TetsimDataset dataset) throws DataSetClientException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException, IOException {
+    public void publishDataset(ServiceMetadata service, TetsimDataset dataset)
+            throws DataSetClientException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException, IOException {
         byte[] tetsimCSVDatasetOutputs = tetsimOutputService.getTetsimCSVDatasetOutputs(dataset.getId());
 
         DatasetClient client = new DatasetClient(service.getUrl());
-        client.publishDataset(dataset, tetsimCSVDatasetOutputs);
+        client.unpublishDataset(dataset, tetsimCSVDatasetOutputs);
+    }
+
+    public void unpublishDataset(ServiceMetadata service, TetsimDataset dataset) throws DataSetClientException {
+        new DatasetClient(service.getUrl()).unpublishDataset(dataset);
     }
 }
