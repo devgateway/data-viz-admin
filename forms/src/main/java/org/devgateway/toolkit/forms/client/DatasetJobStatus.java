@@ -12,7 +12,7 @@ public class DatasetJobStatus {
 
     private String status;
 
-    private String externalId;
+    private String code;
 
     private String message;
 
@@ -48,12 +48,12 @@ public class DatasetJobStatus {
         this.status = status;
     }
 
-    public String getExternalId() {
-        return externalId;
+    public String getCode() {
+        return code;
     }
 
-    public void setExternalId(final String externalId) {
-        this.externalId = externalId;
+    public void setCode(final String code) {
+        this.code = code;
     }
 
     public String getMessage() {
@@ -71,7 +71,7 @@ public class DatasetJobStatus {
                 ", createdDate=" + createdDate +
                 ", endDate=" + endDate +
                 ", status='" + status + '\'' +
-                ", externalId='" + externalId + '\'' +
+                ", code='" + code + '\'' +
                 ", message='" + message + '\'' +
                 '}';
     }

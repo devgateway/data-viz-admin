@@ -10,8 +10,8 @@ public class ClientConstants {
     public final static String PATH_HEALTH = "/actuator/health";
     public final static String PATH_JOBS = "/admin/jobs";
     public final static String PATH_DATASETS = "/admin/datasets";
-    public final static String PATH_EXTERNAL = "/external";
+    public final static String PATH_CODE = "/code";
 
-    public final static String EXTERNAL_ID_PREFIX = "tcdi-";
+    public final static String CODE_PREFIX = "tcdi-";
 
 }

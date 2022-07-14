@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
-import static org.devgateway.toolkit.forms.client.ClientConstants.EXTERNAL_ID_PREFIX;
+import static org.devgateway.toolkit.forms.client.ClientConstants.CODE_PREFIX;
 import static org.devgateway.toolkit.forms.client.ClientConstants.JobStatus.COMPLETED;
 import static org.devgateway.toolkit.forms.client.ClientConstants.JobStatus.ERROR;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.NOT_PUBLISHED;
@@ -44,7 +44,7 @@ public class DatasetPublishingService {
         tetsimDatasetService.findAllPublishing().forEach(d -> {
             ServiceMetadata serviceMetadata = eurekaClientService.getServiceByName(d.getDestinationService());
             DatasetClient client = new DatasetClient(serviceMetadata.getUrl());
-            String status = client.getDatasetJobStatus(EXTERNAL_ID_PREFIX + d.getId()).getStatus();
+            String status = client.getDatasetJobStatus(CODE_PREFIX + d.getId()).getStatus();
             if (COMPLETED.equals(status)) {
                 d.setStatus(PUBLISHED);
                 logger.info(String.format("The dataset with id %s changed the status from %s to %s",

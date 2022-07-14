@@ -19,9 +19,9 @@ import static javax.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM_TYPE;
 import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA_TYPE;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
 import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
-import static org.devgateway.toolkit.forms.client.ClientConstants.EXTERNAL_ID_PREFIX;
+import static org.devgateway.toolkit.forms.client.ClientConstants.CODE_PREFIX;
 import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_DATASETS;
-import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_EXTERNAL;
+import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_CODE;
 import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_HEALTH;
 import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_JOBS;
 
@@ -68,8 +68,7 @@ public class DatasetClient {
 
                 FormDataMultiPart multiPart = new FormDataMultiPart();
                 multiPart.field("name", "TETSIM dataset " + dataset.getYear());
-                multiPart.field("externalId", EXTERNAL_ID_PREFIX + dataset.getId());
-                multiPart.field("year", dataset.getYear().toString());
+                multiPart.field("code", CODE_PREFIX + dataset.getId());
                 multiPart.field("file", tempUploadFile.getName(), TEXT_PLAIN_TYPE)
                         .bodyPart(fileDataBodyPart);
 
@@ -91,11 +90,11 @@ public class DatasetClient {
         throw new RuntimeException(("Service is not up"));
     }
 
-    public DatasetJobStatus getDatasetJobStatus(String externalId) {
+    public DatasetJobStatus getDatasetJobStatus(String code) {
         Response jobStatusResponse = client.target(baseUrl)
                 .path(PATH_JOBS)
-                .path(PATH_EXTERNAL)
-                .path(externalId)
+                .path(PATH_CODE)
+                .path(code)
                 .request(APPLICATION_JSON).get();
 
         if (jobStatusResponse.getStatusInfo().getFamily() == SUCCESSFUL) {
