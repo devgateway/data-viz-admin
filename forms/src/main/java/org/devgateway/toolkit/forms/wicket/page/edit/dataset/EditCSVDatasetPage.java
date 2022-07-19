@@ -1,41 +1,38 @@
 package org.devgateway.toolkit.forms.wicket.page.edit.dataset;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.FormComponent;
-import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.client.DataSetClientException;
 import org.devgateway.toolkit.forms.service.DatasetPublishingService;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.form.BootstrapCancelButton;
+import org.devgateway.toolkit.forms.wicket.components.form.FileInputBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.form.Select2ChoiceBootstrapFormComponent;
+import org.devgateway.toolkit.forms.wicket.components.form.TextAreaFieldBootstrapFormComponent;
+import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.page.edit.AbstractEditStatusEntityPage;
-import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListTetsimDatasetPage;
+import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListCSVDatasetPage;
 import org.devgateway.toolkit.forms.wicket.providers.GenericChoiceProvider;
-import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
-import org.devgateway.toolkit.persistence.dao.data.TetsimPriceVariable;
-import org.devgateway.toolkit.persistence.dao.data.TetsimTobaccoProductValue;
+import org.devgateway.toolkit.persistence.dao.FileMetadata;
+import org.devgateway.toolkit.persistence.dao.data.CSVDataset;
+import org.devgateway.toolkit.persistence.dao.data.Dataset;
 import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
 import org.devgateway.toolkit.persistence.service.category.TobaccoProductService;
-import org.devgateway.toolkit.persistence.service.data.TetsimDatasetService;
-import org.devgateway.toolkit.persistence.service.tetsim.TetsimOutputService;
+import org.devgateway.toolkit.persistence.service.data.CSVDatasetService;
 import org.devgateway.toolkit.web.util.SettingsUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.wicketstuff.annotation.mount.MountPath;
 
-import java.math.BigDecimal;
+import java.io.File;
 import java.util.stream.Collectors;
 
-import static org.devgateway.toolkit.forms.WebConstants.MAXIMUM_PERCENTAGE;
-import static org.devgateway.toolkit.forms.WebConstants.PARAM_YEAR;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DELETED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
@@ -44,22 +41,19 @@ import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.SAVED;
 /**
  * @author vchihai
  */
-@MountPath(value = "/editTetsimDataset")
-public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDataset> {
+@MountPath(value = "/editCSVDataset")
+public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset> {
 
-    private static final long serialVersionUID = -8460878260874111506L;
+    private static final long serialVersionUID = -5231470856974604314L;
 
-    private static final Logger logger = LoggerFactory.getLogger(EditTetsimDatasetPage.class);
+    private static final Logger logger = LoggerFactory.getLogger(EditCSVDatasetPage.class);
 
     protected Select2ChoiceBootstrapFormComponent<Integer> year;
 
     protected Select2ChoiceBootstrapFormComponent destinationService;
 
     @SpringBean
-    protected TetsimDatasetService tetsimDatasetService;
-
-    @SpringBean
-    protected TetsimOutputService tetsimOutputService;
+    protected CSVDatasetService csvDatasetService;
 
     @SpringBean
     protected EurekaClientService eurekaClientService;
@@ -73,10 +67,10 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
     @SpringBean
     protected TobaccoProductService tobaccoProductService;
 
-    public EditTetsimDatasetPage(final PageParameters parameters) {
+    public EditCSVDatasetPage(final PageParameters parameters) {
         super(parameters);
-        this.jpaService = tetsimDatasetService;
-        this.listPageClass = ListTetsimDatasetPage.class;
+        this.jpaService = csvDatasetService;
+        this.listPageClass = ListCSVDatasetPage.class;
     }
 
     @Override
@@ -84,16 +78,20 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
         super.onInitialize();
 
         editForm.add(getYear());
-        editForm.add(getBaseLineNumbers());
-        editForm.add(getPriceAnalysisNumbers());
-        editForm.add(getIndustryResponsesNumbers());
+
+        final TextFieldBootstrapFormComponent<String> description =
+                new TextFieldBootstrapFormComponent<>("description");
+        description.getField().add(WebConstants.StringValidators.MAXIMUM_LENGTH_VALIDATOR_ONE_LINE_TEXT);
+        editForm.add(description);
+
+        final FileInputBootstrapFormComponent files = new FileInputBootstrapFormComponent("files");
+        files.allowedFileExtensions("csv");
+        files.required();
+        files.maxFiles(1);
+        files.getFileInputBootstrapFormComponentWrapper().setAllowDownloadWhenReadonly(true);
+        editForm.add(files);
         editForm.add(getService());
 
-        editForm.add(new TetsimMarketSharePercentageValidator());
-
-        if (editForm.getModelObject().isNew() && getYearParam() != null) {
-            editForm.getModelObject().setYear(getYearParam());
-        }
     }
 
     private Select2ChoiceBootstrapFormComponent<Integer> getYear() {
@@ -101,7 +99,6 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
                 new GenericChoiceProvider<>(settingsUtils.getYearsRange()));
         editForm.add(year);
         year.required();
-        year.setEnabled(false);
 
         return year;
     }
@@ -137,7 +134,7 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
     protected void onDelete(final AjaxRequestTarget target) {
         try {
             // save the object and go back to the list page
-            TetsimDataset saveable = editForm.getModelObject();
+            CSVDataset saveable = editForm.getModelObject();
             saveable.setStatus(DELETED);
 
             beforeSaveEntity(saveable);
@@ -170,12 +167,13 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
 
     protected void onApprove(final AjaxRequestTarget target) {
         try {
-            TetsimDataset dataset = editForm.getModelObject();
-            String fileName = dataset.getYear() + "_tetsim.csv";
-            byte[] content = tetsimOutputService.getTetsimCSVDatasetOutputs(dataset.getId());
+            CSVDataset dataset = editForm.getModelObject();
+
+            FileMetadata fileMetadata = dataset.getFiles().stream().findFirst().get();
+            String fileName = fileMetadata.getName();
+            byte[] content = fileMetadata.getContent().getBytes();
 
             datasetPublishingService.publishDataset(dataset, fileName, content);
-
             dataset.setStatus(PUBLISHING);
         } catch (DataSetClientException | Exception e) {
             logger.error(e.getMessage(), e);
@@ -202,51 +200,6 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
         }
     }
 
-    private TetsimBaselineNumbersPanel getBaseLineNumbers() {
-        return new TetsimBaselineNumbersPanel("baseLineNumbers", editForm.getModel());
-    }
-
-    private Component getPriceAnalysisNumbers() {
-        if (tobaccoProductsNotDefined()) {
-            return new NoTobaccoProductsPanel("priceAnalysisNumbers");
-        }
-
-        return new TetsimPriceAnalysisPanel("priceAnalysisNumbers", editForm.getModel());
-    }
-
-    private Component getIndustryResponsesNumbers() {
-        if (tobaccoProductsNotDefined()) {
-            return new NoTobaccoProductsPanel("industryResponsesNumbers");
-        }
-
-        return new TetsimIndustryResponsesPanel("industryResponsesNumbers", editForm.getModel());
-    }
-
-    private class TetsimMarketSharePercentageValidator extends AbstractFormValidator {
-
-        @Override
-        public FormComponent<?>[] getDependentFormComponents() {
-            return new FormComponent[0];
-        }
-
-        @Override
-        public void validate(final Form<?> form) {
-            TetsimPriceVariable marketShare = editForm.getModelObject().getMarketShare();
-            BigDecimal sum = marketShare.getValues().stream()
-                    .map(TetsimTobaccoProductValue::getValue)
-                    .filter(v -> v != null)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-            if (sum.intValue() > MAXIMUM_PERCENTAGE) {
-                editForm.error(getString("error.form.validation.marketShare.percentage"));
-            }
-        }
-    }
-
-    private boolean tobaccoProductsNotDefined() {
-        return tobaccoProductService.count() == 0;
-    }
-
     @Override
     protected void onBeforeRender() {
         super.onBeforeRender();
@@ -260,25 +213,11 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
     protected void enableDisableAutosaveFields(final AjaxRequestTarget target) {
         super.enableDisableAutosaveFields(target);
 
-        if (tobaccoProductsNotDefined()) {
-            saveDraftContinueButton.setEnabled(false);
-            saveButton.setEnabled(false);
-            submitAndNext.setEnabled(false);
-            saveSubmitButton.setEnabled(false);
-            saveApproveButton.setEnabled(false);
-            approveButton.setEnabled(false);
-            revertToDraftPageButton.setEnabled(false);
-        }
-
         if (StringUtils.isBlank(editForm.getModelObject().getDestinationService())) {
             saveApproveButton.setEnabled(false);
             approveButton.setEnabled(false);
         }
     }
 
-
-    protected Integer getYearParam() {
-        return getPageParameters().get(PARAM_YEAR).toOptionalInteger();
-    }
-
+    // upload file
 }

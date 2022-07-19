@@ -31,11 +31,11 @@ public abstract class Dataset extends AbstractStatusAuditableEntity implements S
         this.year = year;
     }
 
-    public String getDestinationService() {
-        return destinationService;
-    }
-
     public void setDestinationService(final String destinationService) {
         this.destinationService = destinationService;
+    }
+
+    public String getDestinationService() {
+        return destinationService;
     }
 }

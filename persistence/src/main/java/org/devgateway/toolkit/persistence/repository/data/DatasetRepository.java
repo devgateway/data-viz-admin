@@ -11,7 +11,4 @@ import java.util.List;
 @NoRepositoryBean
 public interface DatasetRepository<T extends Dataset> extends BaseJpaRepository<T, Long> {
 
-    @Query("select td from TetsimDataset td where td.status like 'PUBLISHING'")
-    List<T> findAllPublishing();
-
 }

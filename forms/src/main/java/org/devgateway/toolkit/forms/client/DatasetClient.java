@@ -1,7 +1,7 @@
 package org.devgateway.toolkit.forms.client;
 
 import org.apache.commons.io.FileUtils;
-import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
+import org.devgateway.toolkit.persistence.dao.data.Dataset;
 import org.glassfish.jersey.client.JerseyClient;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -55,10 +55,8 @@ public class DatasetClient {
         throw new RuntimeException(("Service is not up"));
     }
 
-    public void unpublishDataset(TetsimDataset dataset) throws DataSetClientException {
+    public void unpublishDataset(String code) throws DataSetClientException {
         if (isUp()) {
-            String code = CODE_PREFIX + dataset.getId();
-
             Response jobStatusResponse = client.target(baseUrl)
                     .path(PATH_DATASETS)
                     .path(code)
@@ -73,11 +71,11 @@ public class DatasetClient {
         }
     }
 
-    public DatasetJobStatus unpublishDataset(TetsimDataset dataset, byte[] datasetContent) throws DataSetClientException {
+    public DatasetJobStatus publishDataset(Dataset dataset, byte[] datasetContent) throws DataSetClientException {
         if (isUp()) {
             File tempUploadFile;
             try {
-                tempUploadFile = File.createTempFile(dataset.getYear() + "_tetsim.csv", ".csv");
+                tempUploadFile = File.createTempFile(dataset.getYear() + "_tetsim", "csv");
                 tempUploadFile.deleteOnExit();
 
                 FileUtils.writeByteArrayToFile(tempUploadFile, datasetContent);
@@ -103,6 +101,33 @@ public class DatasetClient {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+        throw new RuntimeException(("Service is not up"));
+    }
+
+    public DatasetJobStatus publishDataset(String name, String code, File file) throws DataSetClientException {
+        if (isUp()) {
+            FileDataBodyPart fileDataBodyPart = new FileDataBodyPart("file", file, APPLICATION_OCTET_STREAM_TYPE);
+            fileDataBodyPart.setContentDisposition(FormDataContentDisposition.name("file")
+                    .fileName(file.getName())
+                    .build());
+
+            FormDataMultiPart multiPart = new FormDataMultiPart();
+            multiPart.field("name", name);
+            multiPart.field("code", code);
+            multiPart.field("file", file.getName(), TEXT_PLAIN_TYPE).bodyPart(fileDataBodyPart);
+
+            Response jobStatusResponse = client.target(baseUrl)
+                    .path(PATH_DATASETS)
+                    .request()
+                    .post(Entity.entity(multiPart, MULTIPART_FORM_DATA_TYPE));
+
+            if (jobStatusResponse.getStatusInfo().getFamily() == SUCCESSFUL) {
+                return jobStatusResponse.readEntity(DatasetJobStatus.class);
+            }
+
+            throw new DataSetClientException(jobStatusResponse.toString());
         }
 
         throw new RuntimeException(("Service is not up"));

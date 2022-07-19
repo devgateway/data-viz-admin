@@ -63,6 +63,7 @@ import org.wicketstuff.select2.Select2Choice;
 
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_AUTO_SAVE;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DRAFT;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.NOT_PUBLISHED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.SAVED;
@@ -476,6 +477,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
             case PUBLISHED:
                 return "label-success";
             case DRAFT:
+            case NOT_PUBLISHED:
                 return "label-danger";
             case SAVED:
                 return "label-primary";
@@ -800,7 +802,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, getValidatorRole());
         MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, getCommaCombinedRoles());
         button.setVisibilityAllowed(button.isVisibilityAllowed()
-                && (PUBLISHING.equals(editForm.getModelObject().getStatus())
+                && (NOT_PUBLISHED.equals(editForm.getModelObject().getStatus())
                 || PUBLISHED.equals(editForm.getModelObject().getStatus())));
     }
 
@@ -817,7 +819,8 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         MetaDataRoleAuthorizationStrategy.authorize(
                 button, Component.RENDER, getValidatorRole());
         button.setVisibilityAllowed(button.isVisibilityAllowed()
-                && SAVED.equals(editForm.getModelObject().getStatus()));
+                && (SAVED.equals(editForm.getModelObject().getStatus())
+                || NOT_PUBLISHED.equals(editForm.getModelObject().getStatus())));
     }
 
     protected void addSaveButtonsPermissions(final Component button) {

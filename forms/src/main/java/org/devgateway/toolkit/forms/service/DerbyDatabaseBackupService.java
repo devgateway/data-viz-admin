@@ -53,7 +53,6 @@ public class DerbyDatabaseBackupService {
      * use a cron format and invoke it every day at 21:00 server time. That
      * should be a good time for backup for both EST and CET
      */
-    @Scheduled(cron = "0 0 21 * * ?")
     public void backupDatabase() {
         String databaseProductName;
 

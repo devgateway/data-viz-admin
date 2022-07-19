@@ -49,4 +49,5 @@ public class TetsimDatasetServiceImpl extends BaseJpaServiceImpl<TetsimDataset> 
     public long countByNonPublished(final Integer year) {
         return tetsimDatasetRepository.countByNonPublished(year);
     }
+
 }

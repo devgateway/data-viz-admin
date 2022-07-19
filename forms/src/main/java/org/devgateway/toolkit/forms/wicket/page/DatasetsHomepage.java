@@ -22,6 +22,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.wicket.components.BigLinkDefinition;
 import org.devgateway.toolkit.forms.wicket.components.BigLinksPanel;
+import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListCSVDatasetPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListTetsimDatasetPage;
 import org.wicketstuff.annotation.mount.MountPath;
 
@@ -37,6 +38,8 @@ public class DatasetsHomepage extends BasePage {
     private static final List<BigLinkDefinition> LINKS = new ImmutableList.Builder<BigLinkDefinition>()
             .add(new BigLinkDefinition("tetsimDataset", ListTetsimDatasetPage.class,
                     FontAwesome5IconType.percentage_s))
+            .add(new BigLinkDefinition("csvDataset", ListCSVDatasetPage.class,
+                    FontAwesome5IconType.file_csv_s))
             .build();
 
     public DatasetsHomepage(final PageParameters parameters) {

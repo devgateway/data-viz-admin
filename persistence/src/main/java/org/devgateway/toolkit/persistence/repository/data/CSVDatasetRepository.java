@@ -1,5 +1,6 @@
 package org.devgateway.toolkit.persistence.repository.data;
 
+import org.devgateway.toolkit.persistence.dao.data.CSVDataset;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
 import org.devgateway.toolkit.persistence.repository.norepository.UniquePropertyRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,14 +10,14 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Transactional
-public interface TetsimDatasetRepository extends DatasetRepository<TetsimDataset>,
-        UniquePropertyRepository<TetsimDataset, Long> {
+public interface CSVDatasetRepository extends DatasetRepository<CSVDataset>,
+        UniquePropertyRepository<CSVDataset, Long> {
 
-    @Query("select td from TetsimDataset td where td.status like 'DELETED'")
-    List<TetsimDataset> findAllDeleted();
+    @Query("select td from CSVDataset td where td.status like 'DELETED'")
+    List<CSVDataset> findAllDeleted();
 
-    @Query("select td from TetsimDataset td where td.status like 'PUBLISHING'")
-    List<TetsimDataset> findAllPublishing();
+    @Query("select td from CSVDataset td where td.status like 'PUBLISHING'")
+    List<CSVDataset> findAllPublishing();
 
     @Query ("select count(e) from #{#entityName} e where (:year is null or e.year=:year) "
             + "and e.status not in ('DELETED')")

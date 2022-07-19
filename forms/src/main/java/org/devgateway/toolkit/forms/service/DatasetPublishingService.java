@@ -1,20 +1,24 @@
 package org.devgateway.toolkit.forms.service;
 
-import com.opencsv.exceptions.CsvDataTypeMismatchException;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import org.apache.commons.io.FileUtils;
 import org.devgateway.toolkit.forms.client.DataSetClientException;
 import org.devgateway.toolkit.forms.client.DatasetClient;
+import org.devgateway.toolkit.persistence.dao.data.CSVDataset;
+import org.devgateway.toolkit.persistence.dao.data.Dataset;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
 import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
+import org.devgateway.toolkit.persistence.service.data.CSVDatasetService;
 import org.devgateway.toolkit.persistence.service.data.TetsimDatasetService;
-import org.devgateway.toolkit.persistence.service.tetsim.TetsimOutputService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.devgateway.toolkit.forms.client.ClientConstants.CODE_PREFIX;
 import static org.devgateway.toolkit.forms.client.ClientConstants.JobStatus.COMPLETED;
@@ -29,19 +33,26 @@ public class DatasetPublishingService {
     private static final Logger logger = LoggerFactory.getLogger(DatasetPublishingService.class);
 
     @Autowired
-    private TetsimOutputService tetsimOutputService;
+    private TetsimDatasetService tetsimDatasetService;
 
     @Autowired
-    private TetsimDatasetService tetsimDatasetService;
+    private CSVDatasetService csvDatasetService;
 
     @Autowired
     private EurekaClientService eurekaClientService;
 
     @Scheduled(cron = "0 * * * * *")
     public void triggerCheckDatasetsJob() {
-        logger.info("Fired triggerCheckDatasetsJob");
+        logger.debug("Fired triggerCheckDatasetsJob");
+        List<Dataset> datasets = new ArrayList<>();
+        datasets.addAll(tetsimDatasetService.findAllPublishing());
+        datasets.addAll(csvDatasetService.findAllPublishing());
 
-        tetsimDatasetService.findAllPublishing().forEach(d -> {
+        checkDatasetJobs(datasets);
+    }
+
+    private void checkDatasetJobs(List<Dataset> datasets) {
+        datasets.forEach(d -> {
             ServiceMetadata serviceMetadata = eurekaClientService.getServiceByName(d.getDestinationService());
             DatasetClient client = new DatasetClient(serviceMetadata.getUrl());
             String status = client.getDatasetJobStatus(CODE_PREFIX + d.getId()).getStatus();
@@ -56,21 +67,46 @@ public class DatasetPublishingService {
             }
 
             if (!PUBLISHING.equals(d.getStatus())) {
-                tetsimDatasetService.save(d);
+                if (d instanceof TetsimDataset) {
+                    tetsimDatasetService.save((TetsimDataset) d);
+                } else if (d instanceof CSVDataset) {
+                    csvDatasetService.save((CSVDataset) d);
+                } else {
+                    throw new RuntimeException("Invalid dataset class");
+                }
             }
         });
-
     }
 
-    public void publishDataset(ServiceMetadata service, TetsimDataset dataset)
-            throws DataSetClientException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException, IOException {
-        byte[] tetsimCSVDatasetOutputs = tetsimOutputService.getTetsimCSVDatasetOutputs(dataset.getId());
+    public void publishDataset(Dataset dataset, String fileName, byte[] content) throws DataSetClientException {
 
-        DatasetClient client = new DatasetClient(service.getUrl());
-        client.unpublishDataset(dataset, tetsimCSVDatasetOutputs);
+        String serviceURL = getDestinationService(dataset).getUrl();
+        DatasetClient client = new DatasetClient(serviceURL);
+
+        String name = "Dataset " + dataset.getYear();
+        String code = CODE_PREFIX + dataset.getId();
+
+        File tempUploadFile;
+        try {
+            tempUploadFile = File.createTempFile(fileName, null);
+            tempUploadFile.deleteOnExit();
+            FileUtils.writeByteArrayToFile(tempUploadFile, content);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        client.publishDataset(name, code, tempUploadFile);
     }
 
-    public void unpublishDataset(ServiceMetadata service, TetsimDataset dataset) throws DataSetClientException {
-        new DatasetClient(service.getUrl()).unpublishDataset(dataset);
+    public void unpublishDataset(Dataset dataset) throws DataSetClientException {
+        String code = CODE_PREFIX + dataset.getId();
+        String serviceURL = getDestinationService(dataset).getUrl();
+
+        new DatasetClient(serviceURL).unpublishDataset(code);
+    }
+
+    private ServiceMetadata getDestinationService(Dataset dataset) {
+        String destinationService = dataset.getDestinationService();
+        return eurekaClientService.getServiceByName(destinationService);
     }
 }
