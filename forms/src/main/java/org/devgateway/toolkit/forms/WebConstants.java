@@ -39,6 +39,10 @@ public final class WebConstants {
     public static final String PARAM_YEAR = "year";
 
     public static final String PARAM_ID = "id";
+
+    public static final String PARAM_SERVICE = "service";
+
+    public static final String PARAM_ENTITY = "entity";
     public static final String V_POSITION = "vPosition";
     public static final String MAX_HEIGHT = "maxPosition";
     public static final String PARAM_REVISION_ID = "revisionId";
