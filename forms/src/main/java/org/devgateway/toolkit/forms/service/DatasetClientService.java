@@ -7,6 +7,7 @@ import org.devgateway.toolkit.persistence.dao.data.CSVDataset;
 import org.devgateway.toolkit.persistence.dao.data.Dataset;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
 import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
+import org.devgateway.toolkit.persistence.dto.ServiceMetadataDimension;
 import org.devgateway.toolkit.persistence.service.data.CSVDatasetService;
 import org.devgateway.toolkit.persistence.service.data.TetsimDatasetService;
 import org.slf4j.Logger;
@@ -28,9 +29,9 @@ import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHE
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
 
 @Service
-public class DatasetPublishingService {
+public class DatasetClientService {
 
-    private static final Logger logger = LoggerFactory.getLogger(DatasetPublishingService.class);
+    private static final Logger logger = LoggerFactory.getLogger(DatasetClientService.class);
 
     @Autowired
     private TetsimDatasetService tetsimDatasetService;
@@ -79,7 +80,6 @@ public class DatasetPublishingService {
     }
 
     public void publishDataset(Dataset dataset, String fileName, byte[] content) throws DataSetClientException {
-
         String serviceURL = getDestinationService(dataset).getUrl();
         DatasetClient client = new DatasetClient(serviceURL);
 
@@ -108,5 +108,10 @@ public class DatasetPublishingService {
     private ServiceMetadata getDestinationService(Dataset dataset) {
         String destinationService = dataset.getDestinationService();
         return eurekaClientService.getServiceByName(destinationService);
+    }
+
+    public List<ServiceMetadataDimension> getDimensions(final String serviceName) {
+        ServiceMetadata service = eurekaClientService.getServiceByName(serviceName);
+        return new DatasetClient(service.getUrl()).getDimensions();
     }
 }

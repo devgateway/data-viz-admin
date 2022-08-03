@@ -1,8 +1,10 @@
 package org.devgateway.toolkit.persistence.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ServiceMetadata  implements Serializable {
+public class ServiceMetadata implements Serializable {
 
     private String id;
 
@@ -15,6 +17,8 @@ public class ServiceMetadata  implements Serializable {
     private String type;
 
     private String status;
+
+    private List<ServiceMetadataDimension> dimensions = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -67,5 +71,13 @@ public class ServiceMetadata  implements Serializable {
 
     public void setStatus(final String status) {
         this.status = status;
+    }
+
+    public List<ServiceMetadataDimension> getDimensions() {
+        return dimensions;
+    }
+
+    public void setDimensions(final List<ServiceMetadataDimension> dimensions) {
+        this.dimensions = dimensions;
     }
 }

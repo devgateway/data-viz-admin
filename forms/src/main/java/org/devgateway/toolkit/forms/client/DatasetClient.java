@@ -2,6 +2,7 @@ package org.devgateway.toolkit.forms.client;
 
 import org.apache.commons.io.FileUtils;
 import org.devgateway.toolkit.persistence.dao.data.Dataset;
+import org.devgateway.toolkit.persistence.dto.ServiceMetadataDimension;
 import org.glassfish.jersey.client.JerseyClient;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -10,9 +11,11 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM_TYPE;
@@ -22,6 +25,7 @@ import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 import static org.devgateway.toolkit.forms.client.ClientConstants.CODE_PREFIX;
 import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_CODE;
 import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_DATASETS;
+import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_DIMENSIONS;
 import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_HEALTH;
 import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_JOBS;
 
@@ -156,5 +160,21 @@ public class DatasetClient {
         }
 
         return false;
+    }
+
+    public List<ServiceMetadataDimension> getDimensions() {
+        if (isUp()) {
+            Response dimensionsResponse = client.target(baseUrl)
+                    .path(PATH_DIMENSIONS)
+                    .request(APPLICATION_JSON).get();
+
+            if (dimensionsResponse.getStatusInfo().getFamily() == SUCCESSFUL) {
+                return dimensionsResponse.readEntity(new GenericType<List<ServiceMetadataDimension>>() {});
+            }
+
+            return null;
+        }
+
+        throw new RuntimeException(("Service is not up"));
     }
 }

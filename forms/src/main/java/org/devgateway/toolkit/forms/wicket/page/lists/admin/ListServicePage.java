@@ -36,8 +36,6 @@ import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.LinkTargetBlankPanel;
 import org.devgateway.toolkit.forms.wicket.components.table.AjaxFallbackBootstrapDataTable;
 import org.devgateway.toolkit.forms.wicket.page.BasePage;
-import org.devgateway.toolkit.forms.wicket.page.RevisionsPage;
-import org.devgateway.toolkit.forms.wicket.page.lists.AbstractListPage;
 import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
 import org.wicketstuff.annotation.mount.MountPath;
 
@@ -150,7 +148,7 @@ public class ListServicePage extends BasePage {
             serviceEntityPageParameters.set(WebConstants.PARAM_ENTITY, entity);
 
             BootstrapBookmarkablePageLink<Void> entityLink = new BootstrapBookmarkablePageLink<>(entity,
-                    ListServicePage.class, serviceEntityPageParameters, Buttons.Type.Info);
+                    ListServiceDimensionsPage.class, serviceEntityPageParameters, Buttons.Type.Info);
             entityLink.setIconType(FontAwesome5IconType.clock_s).setSize(Buttons.Size.Small)
                     .setLabel(new StringResourceModel(entity, ListServicePage.this, null));
 

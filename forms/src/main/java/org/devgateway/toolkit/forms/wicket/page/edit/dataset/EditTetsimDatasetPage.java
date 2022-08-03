@@ -11,7 +11,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.client.DataSetClientException;
-import org.devgateway.toolkit.forms.service.DatasetPublishingService;
+import org.devgateway.toolkit.forms.service.DatasetClientService;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.form.BootstrapCancelButton;
 import org.devgateway.toolkit.forms.wicket.components.form.Select2ChoiceBootstrapFormComponent;
@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 import static org.devgateway.toolkit.forms.WebConstants.MAXIMUM_PERCENTAGE;
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_YEAR;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DELETED;
-import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.SAVED;
 
@@ -65,7 +64,7 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
     protected EurekaClientService eurekaClientService;
 
     @SpringBean
-    protected DatasetPublishingService datasetPublishingService;
+    protected DatasetClientService datasetClientService;
 
     @SpringBean
     protected SettingsUtils settingsUtils;
@@ -159,12 +158,10 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
 
     @Override
     protected void onAfterRevertToDraft(final AjaxRequestTarget target) {
-        if (PUBLISHED.equals(editForm.getModelObject().getStatus())) {
-            try {
-                datasetPublishingService.unpublishDataset(editForm.getModelObject());
-            } catch (DataSetClientException | Exception e) {
-                logger.error(e.getMessage(), e);
-            }
+        try {
+            datasetClientService.unpublishDataset(editForm.getModelObject());
+        } catch (DataSetClientException | Exception e) {
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -174,7 +171,7 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
             String fileName = dataset.getYear() + "_tetsim.csv";
             byte[] content = tetsimOutputService.getTetsimCSVDatasetOutputs(dataset.getId());
 
-            datasetPublishingService.publishDataset(dataset, fileName, content);
+            datasetClientService.publishDataset(dataset, fileName, content);
 
             dataset.setStatus(PUBLISHING);
         } catch (DataSetClientException | Exception e) {

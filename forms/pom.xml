@@ -163,6 +163,12 @@
             <version>${wicketstuff.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.wicketstuff</groupId>
+            <artifactId>wicketstuff-editable-grid</artifactId>
+            <version>${wicketstuff.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.apache.wicket</groupId>

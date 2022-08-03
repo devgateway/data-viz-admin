@@ -8,19 +8,17 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.client.DataSetClientException;
-import org.devgateway.toolkit.forms.service.DatasetPublishingService;
+import org.devgateway.toolkit.forms.service.DatasetClientService;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.form.BootstrapCancelButton;
 import org.devgateway.toolkit.forms.wicket.components.form.FileInputBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.form.Select2ChoiceBootstrapFormComponent;
-import org.devgateway.toolkit.forms.wicket.components.form.TextAreaFieldBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.page.edit.AbstractEditStatusEntityPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListCSVDatasetPage;
 import org.devgateway.toolkit.forms.wicket.providers.GenericChoiceProvider;
 import org.devgateway.toolkit.persistence.dao.FileMetadata;
 import org.devgateway.toolkit.persistence.dao.data.CSVDataset;
-import org.devgateway.toolkit.persistence.dao.data.Dataset;
 import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
 import org.devgateway.toolkit.persistence.service.category.TobaccoProductService;
 import org.devgateway.toolkit.persistence.service.data.CSVDatasetService;
@@ -30,11 +28,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.wicketstuff.annotation.mount.MountPath;
 
-import java.io.File;
 import java.util.stream.Collectors;
 
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DELETED;
-import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.SAVED;
 
@@ -59,7 +55,7 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
     protected EurekaClientService eurekaClientService;
 
     @SpringBean
-    protected DatasetPublishingService datasetPublishingService;
+    protected DatasetClientService datasetClientService;
 
     @SpringBean
     protected SettingsUtils settingsUtils;
@@ -156,12 +152,10 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
 
     @Override
     protected void onAfterRevertToDraft(final AjaxRequestTarget target) {
-        if (PUBLISHED.equals(editForm.getModelObject().getStatus())) {
-            try {
-                datasetPublishingService.unpublishDataset(editForm.getModelObject());
-            } catch (DataSetClientException | Exception e) {
-                logger.error(e.getMessage(), e);
-            }
+        try {
+            datasetClientService.unpublishDataset(editForm.getModelObject());
+        } catch (DataSetClientException | Exception e) {
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -173,7 +167,7 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
             String fileName = fileMetadata.getName();
             byte[] content = fileMetadata.getContent().getBytes();
 
-            datasetPublishingService.publishDataset(dataset, fileName, content);
+            datasetClientService.publishDataset(dataset, fileName, content);
             dataset.setStatus(PUBLISHING);
         } catch (DataSetClientException | Exception e) {
             logger.error(e.getMessage(), e);

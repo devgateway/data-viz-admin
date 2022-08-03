@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Data provider used to provide information about the data submissions
+ * Data provider used to provide information about the services
  *
  * @author Viorel Chihai
  */
@@ -28,7 +28,7 @@ public class ServiceMetadataProvider extends SortableDataProvider<ServiceMetadat
 
     @Override
     public Iterator<ServiceMetadata> iterator(final long first, final long count) {
-        List<ServiceMetadata> services = eurekaClientService.findAll();
+        List<ServiceMetadata> services = eurekaClientService.findAllWithData();
 
         if (first > services.size()) {
             return Collections.emptyIterator();
@@ -54,7 +54,7 @@ public class ServiceMetadataProvider extends SortableDataProvider<ServiceMetadat
 
     @Override
     public long size() {
-        return eurekaClientService.findAll().size();
+        return eurekaClientService.findAllWithData().size();
     }
 
     @Override
