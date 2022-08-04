@@ -21,9 +21,11 @@ public class TetsimOutputOvershiftCalculatorOverallTest extends TetsimOutputBase
         TetsimOutput output = tetsimOutputCalculator.calculate("Popular");
 
         assertAll("TETSIM Overshift Baseline",
-                () -> assertEquals(754.40, output.getConsumptionLegal(), delta, "TETSIM Overshift - Consumption Legal"),
+                () -> assertEquals(754.40, output.getLegalConsumption(), delta, "TETSIM Overshift - Consumption Legal"),
+                () -> assertEquals(0, output.getLegalConsumptionChange(), delta, "TETSIM Overshift - Consumption Legal Change"),
                 () -> assertEquals(395.60, output.getConsumptionIllicit(), delta, "TETSIM Overshift - Consumption Illicit"),
                 () -> assertEquals(14167.63, output.getExciseRev(), delta, "TETSIM Overshift - Excise Revenue"),
+                () -> assertEquals(0, output.getExciseRevChange(), delta, "TETSIM Overshift - Excise Revenue Change"),
                 () -> assertEquals(18051.37, output.getTotalGovRev(), delta, "TETSIM Overshift - Government Revenue"),
                 () -> assertEquals(46.95, output.getExciseBurden(), delta, "TETSIM Overshift - Excise Burden"),
                 () -> assertEquals(60.00, output.getTotalTaxBurden(), delta, "TETSIM Overshift - Total Tax Burden"),
@@ -40,9 +42,11 @@ public class TetsimOutputOvershiftCalculatorOverallTest extends TetsimOutputBase
         TetsimOutput output = tetsimOutputCalculator.calculate("Popular");
 
         assertAll("TETSIM Overshift With 30% Tax Change",
-                () -> assertEquals(648.79, output.getConsumptionLegal(), delta, "TETSIM Overshift - Consumption Legal"),
+                () -> assertEquals(648.79, output.getLegalConsumption(), delta, "TETSIM Overshift - Consumption Legal"),
+                () -> assertEquals(-13.99, output.getLegalConsumptionChange(), delta, "TETSIM Overshift - Consumption Legal Change"),
                 () -> assertEquals(383.73, output.getConsumptionIllicit(), delta, "TETSIM Overshift - Consumption Illicit"),
                 () -> assertEquals(15839.61, output.getExciseRev(), delta, "TETSIM Overshift - Excise Revenue"),
+                () -> assertEquals(11.80, output.getExciseRevChange(), delta, "TETSIM Overshift - Excise Revenue Change"),
                 () -> assertEquals(19873.25, output.getTotalGovRev(), delta, "TETSIM Overshift - Government Revenue"),
                 () -> assertEquals(51.10, output.getExciseBurden(), delta, "TETSIM Overshift - Excise Burden"),
                 () -> assertEquals(64.15, output.getTotalTaxBurden(), delta, "TETSIM Overshift - Total Tax Burden"),

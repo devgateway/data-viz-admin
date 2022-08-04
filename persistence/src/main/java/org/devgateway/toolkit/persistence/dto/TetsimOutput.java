@@ -17,11 +17,15 @@ public class TetsimOutput implements Serializable {
 
     private String shifting;
 
-    private Double consumptionLegal;
+    private Double legalConsumption;
+
+    private Double legalConsumptionChange;
 
     private Double consumptionIllicit;
 
     private Double exciseRev;
+
+    private Double exciseRevChange;
 
     private Double totalGovRev;
 
@@ -71,12 +75,12 @@ public class TetsimOutput implements Serializable {
         this.shifting = shifting;
     }
 
-    public Double getConsumptionLegal() {
-        return consumptionLegal;
+    public Double getLegalConsumption() {
+        return legalConsumption;
     }
 
-    public void setConsumptionLegal(final Double consumptionLegal) {
-        this.consumptionLegal = consumptionLegal;
+    public void setLegalConsumption(final Double legalConsumption) {
+        this.legalConsumption = legalConsumption;
     }
 
     public Double getConsumptionIllicit() {
@@ -157,5 +161,21 @@ public class TetsimOutput implements Serializable {
 
     public void setLevy(final Double levy) {
         this.levy = levy;
+    }
+
+    public Double getLegalConsumptionChange() {
+        return legalConsumptionChange;
+    }
+
+    public void setLegalConsumptionChange(final Double legalConsumptionChange) {
+        this.legalConsumptionChange = legalConsumptionChange;
+    }
+
+    public Double getExciseRevChange() {
+        return exciseRevChange;
+    }
+
+    public void setExciseRevChange(final Double exciseRevChange) {
+        this.exciseRevChange = exciseRevChange;
     }
 }

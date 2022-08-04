@@ -91,4 +91,16 @@ public class TetsimOutputCalculatorBaselineNumbersTest extends TetsimOutputBaseC
                 .setScale(2, ROUND_HALF_UP).doubleValue(), "Check baseline Total Tax Burden for Premium Product");
     }
 
+    public void testBaselineTotalLegalConsumption() {
+        TetsimOutputOvershiftCalculator tetsimOutputCalculator = new TetsimOutputOvershiftCalculator(datasetWithAllTobaccoProducts, 20);
+        assertEquals(754.4, tetsimOutputCalculator.calculateBaselineTotalLegalConsumption()
+                .setScale(1, ROUND_HALF_UP).doubleValue(), "Check baseline Total Legal Consumption");
+    }
+
+    public void testBaselineExciseRevenue() {
+        TetsimOutputOvershiftCalculator tetsimOutputCalculator = new TetsimOutputOvershiftCalculator(datasetWithAllTobaccoProducts, 20);
+        assertEquals(14167.6, tetsimOutputCalculator.calculateBaselineTotalExciseRevenue()
+                .setScale(2, ROUND_HALF_UP).doubleValue(), "Check baseline Total Excise Revenue");
+    }
+
 }

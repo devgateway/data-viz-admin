@@ -21,9 +21,11 @@ public class TetsimOutputUndershiftCalculatorOverallTest extends TetsimOutputBas
         TetsimOutput output = tetsimOutputCalculator.calculate("Popular");
 
         assertAll("TETSIM Undershift Baseline",
-                () -> assertEquals(754.40, output.getConsumptionLegal(), delta, "TETSIM Undershift - Consumption Legal"),
+                () -> assertEquals(754.40, output.getLegalConsumption(), delta, "TETSIM Undershift - Consumption Legal"),
+                () -> assertEquals(0, output.getLegalConsumptionChange(), delta, "TETSIM Undershift - Consumption Legal Change"),
                 () -> assertEquals(395.60, output.getConsumptionIllicit(), delta, "TETSIM Undershift - Consumption Illicit"),
                 () -> assertEquals(14167.63, output.getExciseRev(), delta, "TETSIM Undershift - Excise Revenue"),
+                () -> assertEquals(0, output.getExciseRevChange(), delta, "TETSIM Undershift - Excise Revenue Change"),
                 () -> assertEquals(18051.37, output.getTotalGovRev(), delta, "TETSIM Undershift - Government Revenue"),
                 () -> assertEquals(46.95, output.getExciseBurden(), delta, "TETSIM Undershift - Excise Burden"),
                 () -> assertEquals(60.00, output.getTotalTaxBurden(), delta, "TETSIM Undershift - Total Tax Burden"),
@@ -40,9 +42,11 @@ public class TetsimOutputUndershiftCalculatorOverallTest extends TetsimOutputBas
         TetsimOutput output = tetsimOutputCalculator.calculate("Popular");
 
         assertAll("TETSIM Undershift With 30% Tax Change",
-                () -> assertEquals(694.62, output.getConsumptionLegal(), delta, "TETSIM Undershift - Consumption Legal"),
+                () -> assertEquals(694.62, output.getLegalConsumption(), delta, "TETSIM Undershift - Consumption Legal"),
+                () -> assertEquals(-7.92, output.getLegalConsumptionChange(), delta, "TETSIM Undershift - Consumption Legal Change"),
                 () -> assertEquals(390.14, output.getConsumptionIllicit(), delta, "TETSIM Undershift - Consumption Illicit"),
                 () -> assertEquals(16958.46, output.getExciseRev(), delta, "TETSIM Undershift - Excise Revenue"),
+                () -> assertEquals(19.69, output.getExciseRevChange(), delta, "TETSIM Undershift - Excise Revenue Change"),
                 () -> assertEquals(20945.90, output.getTotalGovRev(), delta, "TETSIM Undershift - Government Revenue"),
                 () -> assertEquals(54.82, output.getExciseBurden(), delta, "TETSIM Undershift - Excise Burden"),
                 () -> assertEquals(67.86, output.getTotalTaxBurden(), delta, "TETSIM Undershift - Total Tax Burden"),

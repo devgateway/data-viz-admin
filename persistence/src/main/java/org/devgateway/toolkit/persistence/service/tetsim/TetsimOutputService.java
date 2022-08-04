@@ -33,8 +33,9 @@ public class TetsimOutputService {
             .build();
 
     public static final List<String> TETSIM_CSV_FIELDS = new ImmutableList.Builder()
-            .add("year", "taxChange", "tobaccoProduct", "shifting", "consumptionLegal", "consumptionIllicit", "exciseRev",
-                    "totalGovRev", "exciseBurden", "totalTaxBurden", "retailPrice", "not", "exciseTax", "vat", "levy")
+            .add("year", "taxChange", "tobaccoProduct", "shifting", "legalConsumption", "legalConsumptionChange",
+                    "consumptionIllicit", "exciseRev", "exciseRevChange", "totalGovRev", "exciseBurden",
+                    "totalTaxBurden", "retailPrice", "not", "exciseTax", "vat", "levy")
             .build();
     @Autowired
     private TetsimDatasetService tetsimDatasetService;
