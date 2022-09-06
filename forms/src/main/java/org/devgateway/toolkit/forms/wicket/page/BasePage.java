@@ -249,7 +249,7 @@ public abstract class BasePage extends GenericWebPage<Void> {
     protected NavbarDropDownButton newAdminMenu() {
 
         // admin menu
-        NavbarDropDownButton adminMenu = new NavbarDropDownButton(new StringResourceModel("navbar.admin", this, null)) {
+        NavbarDropDownButton configurationsMenu = new NavbarDropDownButton(new StringResourceModel("navbar.configurations", this, null)) {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -301,10 +301,10 @@ public abstract class BasePage extends GenericWebPage<Void> {
             }
         };
 
-        adminMenu.setIconType(FontAwesome5IconType.cog_s);
-        MetaDataRoleAuthorizationStrategy.authorize(adminMenu, RENDER, ROLE_USER);
+        configurationsMenu.setIconType(FontAwesome5IconType.cog_s);
+        MetaDataRoleAuthorizationStrategy.authorize(configurationsMenu, RENDER, ROLE_USER);
 
-        return adminMenu;
+        return configurationsMenu;
     }
 
     protected NavbarButton newDatasetsMenu() {
