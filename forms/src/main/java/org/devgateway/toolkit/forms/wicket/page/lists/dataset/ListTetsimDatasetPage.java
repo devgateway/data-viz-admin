@@ -51,6 +51,7 @@ public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
     private static final long serialVersionUID = -324298525712620234L;
     @SpringBean
     protected SettingsUtils settingsUtils;
+
     protected Select2ChoiceBootstrapFormComponent<Integer> year;
     protected Fragment yearSelectorFragment;
     private Integer selectedYear;
@@ -192,5 +193,10 @@ public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
     @Override
     public JpaFilterState<TetsimDataset> newFilterState() {
         return new TetsimDatasetFilterState();
+    }
+
+    protected Label getPageTitle() {
+        return new Label("pageTitle", new StringResourceModel("page.title", this,
+                Model.of(settingsUtils.getSetting())));
     }
 }

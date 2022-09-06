@@ -161,9 +161,13 @@ public abstract class BasePage extends GenericWebPage<Void> {
         mainFooter = new Footer("mainFooter");
         add(mainFooter);
 
-        pageTitle = new Label("pageTitle", new ResourceModel("page.title"));
+        pageTitle = getPageTitle();
         add(pageTitle);
 
+    }
+
+    protected Label getPageTitle() {
+        return new Label("pageTitle", new ResourceModel("page.title"));
     }
 
     protected NotificationPanel createFeedbackPanel() {
