@@ -27,7 +27,8 @@ public class BigLinksPanel extends GenericPanel<List<BigLinkDefinition>> {
                 BigLinkDefinition def = item.getModelObject();
                 item.add(new AttributeAppender("class", "col-md-" + colSpan, " "));
                 item.add(new HomepageButton<>("button",
-                        def.getPageClass(), def.getLabelModel(), def.getDescModel(), def.getIconType()));
+                        def.getPageClass(), def.getPageParameters(),
+                        def.getLabelModel(), def.getDescModel(), def.getIconType()));
             }
         });
     }

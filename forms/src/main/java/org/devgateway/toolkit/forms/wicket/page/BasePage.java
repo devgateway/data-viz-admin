@@ -246,7 +246,7 @@ public abstract class BasePage extends GenericWebPage<Void> {
         return homeMenu;
     }
 
-    protected NavbarDropDownButton newAdminMenu() {
+    protected NavbarDropDownButton newConifugrationsMenu() {
 
         // admin menu
         NavbarDropDownButton configurationsMenu = new NavbarDropDownButton(new StringResourceModel("navbar.configurations", this, null)) {
@@ -263,34 +263,6 @@ public abstract class BasePage extends GenericWebPage<Void> {
                         new StringResourceModel("navbar.groups", this, null))
                         .setIconType(FontAwesome5IconType.tags_s));
 
-                list.add(new MenuBookmarkablePageLink<ListGroupPage>(ListServicePage.class, null,
-                        new StringResourceModel("navbar.services", this, null))
-                        .setIconType(FontAwesome5IconType.servicestack));
-
-//                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTestFormPage.class, null,
-//                        new StringResourceModel("navbar.testcomponents", this, null))
-//                        .setIconType(FontAwesome5IconType.android));
-
-//                list.add(new MenuDivider());
-//
-//                final BootstrapBookmarkablePageLink swagger = new MenuBookmarkablePageLink<Void>(SwaggerPage.class,
-//                        new StringResourceModel("navbar.swagger", BasePage.this, null))
-//                        .setIconType(FontAwesome5IconType.code_s);
-//                MetaDataRoleAuthorizationStrategy.authorize(swagger, Component.RENDER,
-//                        SecurityConstants.Roles.ROLE_ADMIN);
-//                list.add(swagger);
-//
-//                final BootstrapBookmarkablePageLink javamelody = new MenuBookmarkablePageLink<Void>(
-//                        JavamelodyPage.class, new StringResourceModel("navbar.javamelody",
-//                        BasePage.this, null)).setIconType(FontAwesome5IconType.eye_s);
-//                MetaDataRoleAuthorizationStrategy.authorize(javamelody, Component.RENDER,
-//                        SecurityConstants.Roles.ROLE_ADMIN);
-//                list.add(javamelody);
-//
-//                list.add(new MenuBookmarkablePageLink<SpringEndpointsPage>(SpringEndpointsPage.class, null,
-//                        new StringResourceModel("navbar.springendpoints", this, null))
-//                        .setIconType(FontAwesome5IconType.anchor_s));
-//
                 list.add(new MenuDivider());
 
                 list.add(new MenuBookmarkablePageLink<Void>(EditAdminSettingsPage.class,
@@ -307,25 +279,15 @@ public abstract class BasePage extends GenericWebPage<Void> {
         return configurationsMenu;
     }
 
-    protected NavbarButton newDatasetsMenu() {
-        NavbarButton dataSetsMenu = new NavbarButton(DatasetsHomepage.class,
-                new StringResourceModel("navbar.datasets", this, null))
+    protected NavbarButton newDataMenu() {
+        NavbarButton dataSetsMenu = new NavbarButton(DataPage.class,
+                new StringResourceModel("navbar.data", this, null))
                 .setIconType(FontAwesome5IconType.table_s);
 
         dataSetsMenu.setIconType(FontAwesome5IconType.table_s);
         MetaDataRoleAuthorizationStrategy.authorize(dataSetsMenu, RENDER, ROLE_USER);
 
         return dataSetsMenu;
-    }
-
-    protected NavbarButton newCategoriesMenu() {
-        NavbarButton categoriesMenu = new NavbarButton(CategoriesHomepage.class,
-                new StringResourceModel("navbar.categories", this, null))
-                .setIconType(FontAwesome5IconType.list_alt_r);
-
-        MetaDataRoleAuthorizationStrategy.authorize(categoriesMenu, RENDER, ROLE_USER);
-
-        return categoriesMenu;
     }
 
     /**
@@ -347,9 +309,8 @@ public abstract class BasePage extends GenericWebPage<Void> {
         navbar.setBrandImage(new PackageResourceReference(BaseStyles.class, "assets/img/tcdi-horizontal-logo.svg"),
                 new StringResourceModel("brandImageAltText", this, null));
 
-        navbar.addComponents(NavbarComponents.transform(Navbar.ComponentPosition.RIGHT, newHomeMenu(), newAdminMenu(),
-                newDatasetsMenu(), newCategoriesMenu(),
-                newAccountMenu(), newLogoutMenu()));
+        navbar.addComponents(NavbarComponents.transform(Navbar.ComponentPosition.RIGHT, newHomeMenu(), newConifugrationsMenu(),
+                newDataMenu(), newAccountMenu(), newLogoutMenu()));
 
 //        navbar.addComponents(NavbarComponents.transform(Navbar.ComponentPosition.RIGHT, newLanguageMenu()));
 

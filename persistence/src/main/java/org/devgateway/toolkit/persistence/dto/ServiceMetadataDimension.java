@@ -1,7 +1,10 @@
 package org.devgateway.toolkit.persistence.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.io.Serializable;
 
+@JsonIgnoreProperties({"position", "labels", "descriptions", "field", "fieldType", "aClass", "categoryStyle"})
 public class ServiceMetadataDimension implements Serializable {
 
     private Long id;
@@ -11,6 +14,10 @@ public class ServiceMetadataDimension implements Serializable {
     private String label;
 
     private String type;
+
+    private String code;
+
+    private String value;
 
     public ServiceMetadataDimension() {
 
@@ -52,5 +59,21 @@ public class ServiceMetadataDimension implements Serializable {
 
     public void setType(final String type) {
         this.type = type;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(final String code) {
+        this.code = code;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(final String value) {
+        this.value = value;
     }
 }

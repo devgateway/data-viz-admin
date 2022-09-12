@@ -100,8 +100,8 @@ public class ListServiceDimensionsPage extends BasePage {
 
     private List<PropertyColumn<ServiceMetadataDimension, String>> getColumns() {
         List<PropertyColumn<ServiceMetadataDimension, String>> columns = new ArrayList<>();
-        columns.add(new PropertyColumn<>(new Model("Name"), "name"));
-        columns.add(new RequiredEditableTextFieldColumn(new Model("Label"), "label"));
+        columns.add(new PropertyColumn<>(new Model("Name"), "code"));
+        columns.add(new RequiredEditableTextFieldColumn(new Model("Label"), "value"));
         return columns;
     }
 }
