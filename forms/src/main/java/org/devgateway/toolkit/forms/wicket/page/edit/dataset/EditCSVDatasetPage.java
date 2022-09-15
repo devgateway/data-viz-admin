@@ -19,7 +19,6 @@ import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListCSVDatasetPage
 import org.devgateway.toolkit.forms.wicket.providers.GenericChoiceProvider;
 import org.devgateway.toolkit.persistence.dao.FileMetadata;
 import org.devgateway.toolkit.persistence.dao.data.CSVDataset;
-import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
 import org.devgateway.toolkit.persistence.service.category.TobaccoProductService;
 import org.devgateway.toolkit.persistence.service.data.CSVDatasetService;
 import org.devgateway.toolkit.web.util.SettingsUtils;
@@ -27,8 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.wicketstuff.annotation.mount.MountPath;
-
-import java.util.stream.Collectors;
 
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DELETED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
@@ -46,7 +43,7 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
 
     protected Select2ChoiceBootstrapFormComponent<Integer> year;
 
-    protected Select2ChoiceBootstrapFormComponent destinationService;
+    protected TextFieldBootstrapFormComponent destinationService;
 
     @SpringBean
     protected CSVDatasetService csvDatasetService;
@@ -72,6 +69,11 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
     @Override
     protected void onInitialize() {
         super.onInitialize();
+
+        if (entityId == null) {
+            String service = getPageParameters().get(WebConstants.PARAM_SERVICE).toString();
+            editForm.getModelObject().setDestinationService(service);
+        }
 
         editForm.add(getYear());
 
@@ -99,29 +101,9 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
         return year;
     }
 
-    private Select2ChoiceBootstrapFormComponent<String> getService() {
-        destinationService = new Select2ChoiceBootstrapFormComponent<String>("destinationService",
-                new GenericChoiceProvider<>(eurekaClientService.findAllWithData().stream()
-                        .map(ServiceMetadata::getName)
-                        .collect(Collectors.toList()))) {
-            @Override
-            protected void onUpdate(final AjaxRequestTarget target) {
-                super.onUpdate(target);
-                if (editForm.getModelObject().getDestinationService() != null) {
-                    saveApproveButton.setEnabled(true);
-                    approveButton.setEnabled(true);
-                } else {
-                    saveApproveButton.setEnabled(false);
-                    approveButton.setEnabled(false);
-                }
-
-                target.add(approveButton);
-                target.add(saveApproveButton);
-            }
-
-
-        };
-        destinationService.setEnabled(true);
+    private TextFieldBootstrapFormComponent<String> getService() {
+        destinationService = new TextFieldBootstrapFormComponent("destinationService");
+        destinationService.setEnabled(false);
 
         return destinationService;
     }
@@ -213,5 +195,21 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
         }
     }
 
-    // upload file
+    @Override
+    protected PageParameters getSaveEditParameters() {
+        return getParamsWithServiceInformation();
+    }
+
+    @Override
+    protected PageParameters getCancelPageParameters() {
+        return getParamsWithServiceInformation();
+    }
+
+    protected PageParameters getParamsWithServiceInformation() {
+        PageParameters pageParams = new PageParameters();
+        // add service to the page parameters
+        pageParams.add(WebConstants.PARAM_SERVICE, editForm.getModelObject().getDestinationService());
+
+        return pageParams;
+    }
 }

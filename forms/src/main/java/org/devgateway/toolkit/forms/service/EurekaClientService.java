@@ -8,10 +8,10 @@ import org.springframework.cloud.netflix.eureka.EurekaServiceInstance;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.devgateway.toolkit.forms.WebConstants.ALLOWED_SERVICES_TYPES;
 
 @Service
 public class EurekaClientService {
@@ -39,26 +39,11 @@ public class EurekaClientService {
 
     public List<ServiceMetadata> findAllWithData() {
         return findAll().stream()
-                .filter(s -> "data".equals(s.getType()))
+                .filter(s -> ALLOWED_SERVICES_TYPES.contains(s.getType()))
                 .collect(Collectors.toList());
     }
 
-
-    public Set<String> getServiceByMetadataType(String type) {
-        Set<String> services = new HashSet<>();
-        discoveryClient.getServices().forEach(s -> {
-            System.out.print(s + "-");
-            discoveryClient.getInstances(s).stream().forEach(instance -> {
-                if ("data".equals(instance.getMetadata().getOrDefault("type", ""))) {
-                    services.add(s);
-                }
-            });
-        });
-
-        return services;
-    }
-
-    public ServiceMetadata getServiceByName(String name) {
+    public ServiceMetadata findByName(String name) {
         return findAll().stream()
                 .filter(s -> s.getName().equals(name))
                 .findFirst().get();

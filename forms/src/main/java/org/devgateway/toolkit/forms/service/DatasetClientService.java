@@ -54,7 +54,7 @@ public class DatasetClientService {
 
     private void checkDatasetJobs(List<Dataset> datasets) {
         datasets.forEach(d -> {
-            ServiceMetadata serviceMetadata = eurekaClientService.getServiceByName(d.getDestinationService());
+            ServiceMetadata serviceMetadata = eurekaClientService.findByName(d.getDestinationService());
             DatasetClient client = new DatasetClient(serviceMetadata.getUrl());
             String status = client.getDatasetJobStatus(CODE_PREFIX + d.getId()).getStatus();
             if (COMPLETED.equals(status)) {
@@ -107,11 +107,11 @@ public class DatasetClientService {
 
     private ServiceMetadata getDestinationService(Dataset dataset) {
         String destinationService = dataset.getDestinationService();
-        return eurekaClientService.getServiceByName(destinationService);
+        return eurekaClientService.findByName(destinationService);
     }
 
     public List<ServiceMetadataDimension> getDimensions(final String serviceName) {
-        ServiceMetadata service = eurekaClientService.getServiceByName(serviceName);
+        ServiceMetadata service = eurekaClientService.findByName(serviceName);
         return new DatasetClient(service.getUrl()).getDimensions();
     }
 }

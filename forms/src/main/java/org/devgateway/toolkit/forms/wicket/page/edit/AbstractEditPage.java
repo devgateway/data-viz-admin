@@ -186,7 +186,7 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
                 cancelModal.appendCloseDialogJavaScript(target);
-                setResponsePage(listPageClass);
+                setResponsePage(listPageClass, getCancelPageParameters());
             }
         };
 
@@ -407,7 +407,7 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
          * @return
          */
         protected PageParameters getParameterPage() {
-            return null;
+            return getSaveEditParameters();
         }
 
         @Override
@@ -453,6 +453,14 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
         public boolean isRedirectToSelf() {
             return redirectToSelf;
         }
+    }
+
+    protected PageParameters getSaveEditParameters() {
+        return null;
+    }
+
+    protected PageParameters getCancelPageParameters() {
+        return null;
     }
 
     protected void beforeSaveEntity(final T saveable) {

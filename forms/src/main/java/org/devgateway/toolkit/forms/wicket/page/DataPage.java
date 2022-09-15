@@ -23,6 +23,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.BigLinkDefinition;
@@ -58,8 +59,10 @@ public class DataPage extends BasePage {
         for (ServiceMetadata service : services) {
             PageParameters pageParameters = new PageParameters();
             pageParameters.add("service", service.getName());
-            links.add(new BigLinkDefinition(service.getId(), DataServicePage.class, pageParameters,
-                    FontAwesome5IconType.table_s) {
+
+            FontAwesome5IconType serviceIcon = getServiceIcon(service.getType());
+
+            links.add(new BigLinkDefinition(service.getId(), DataServicePage.class, pageParameters, serviceIcon) {
 
                 @Override
                 public IModel<String> getLabelModel() {
@@ -74,10 +77,24 @@ public class DataPage extends BasePage {
         }
 
         add(new BigLinksPanel("links", Model.ofList(links)));
+        Label noServiceError = new Label("noServiceError", new StringResourceModel("noServiceError", this, null));
+        noServiceError.setVisible(links.isEmpty());
+        add(noServiceError);
+    }
+
+    private FontAwesome5IconType getServiceIcon(final String type) {
+        if (type.equals(WebConstants.SERVICE_TETSIM_TYPE)) {
+            return FontAwesome5IconType.wpforms;
+        } else if (type.equals(WebConstants.SERVICE_DATA_TYPE)) {
+            return FontAwesome5IconType.table_s;
+        }
+
+        throw new IllegalArgumentException("Unknown service type: " + type);
     }
 
     protected Label getPageTitle() {
         return new Label("pageTitle", new StringResourceModel("page.title", this,
                 Model.of(settingsUtils.getSetting())));
     }
+
 }

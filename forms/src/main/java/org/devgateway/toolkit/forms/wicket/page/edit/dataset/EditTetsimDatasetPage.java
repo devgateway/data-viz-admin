@@ -10,11 +10,13 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.client.DataSetClientException;
 import org.devgateway.toolkit.forms.service.DatasetClientService;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.form.BootstrapCancelButton;
 import org.devgateway.toolkit.forms.wicket.components.form.Select2ChoiceBootstrapFormComponent;
+import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.page.edit.AbstractEditStatusEntityPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListTetsimDatasetPage;
 import org.devgateway.toolkit.forms.wicket.providers.GenericChoiceProvider;
@@ -52,7 +54,7 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
 
     protected Select2ChoiceBootstrapFormComponent<Integer> year;
 
-    protected Select2ChoiceBootstrapFormComponent destinationService;
+    protected TextFieldBootstrapFormComponent destinationService;
 
     @SpringBean
     protected TetsimDatasetService tetsimDatasetService;
@@ -90,6 +92,11 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
 
         editForm.add(new TetsimMarketSharePercentageValidator());
 
+        if (editForm.getModelObject().getDestinationService() == null) {
+            String service = getPageParameters().get(WebConstants.PARAM_SERVICE).toString();
+            editForm.getModelObject().setDestinationService(service);
+        }
+
         if (editForm.getModelObject().isNew() && getYearParam() != null) {
             editForm.getModelObject().setYear(getYearParam());
         }
@@ -105,30 +112,9 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
         return year;
     }
 
-    private Select2ChoiceBootstrapFormComponent<String> getService() {
-        destinationService = new Select2ChoiceBootstrapFormComponent<String>("destinationService",
-                new GenericChoiceProvider<>(eurekaClientService.findAllWithData().stream()
-                        .map(ServiceMetadata::getName)
-                        .collect(Collectors.toList()))) {
-            @Override
-            protected void onUpdate(final AjaxRequestTarget target) {
-                super.onUpdate(target);
-                if (editForm.getModelObject().getDestinationService() != null) {
-                    saveApproveButton.setEnabled(true);
-                    approveButton.setEnabled(true);
-                } else {
-                    saveApproveButton.setEnabled(false);
-                    approveButton.setEnabled(false);
-                }
-
-                target.add(approveButton);
-                target.add(saveApproveButton);
-            }
-
-
-        };
-        destinationService.setEnabled(true);
-
+    private TextFieldBootstrapFormComponent getService() {
+        destinationService = new TextFieldBootstrapFormComponent<>("destinationService");
+        destinationService.setEnabled(false);
         return destinationService;
     }
 
@@ -245,15 +231,6 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
     }
 
     @Override
-    protected void onBeforeRender() {
-        super.onBeforeRender();
-
-        if (SAVED.equals(editForm.getModelObject().getStatus())) {
-            destinationService.setEnabled(true);
-        }
-    }
-
-    @Override
     protected void enableDisableAutosaveFields(final AjaxRequestTarget target) {
         super.enableDisableAutosaveFields(target);
 
@@ -266,16 +243,29 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
             approveButton.setEnabled(false);
             revertToDraftPageButton.setEnabled(false);
         }
-
-        if (StringUtils.isBlank(editForm.getModelObject().getDestinationService())) {
-            saveApproveButton.setEnabled(false);
-            approveButton.setEnabled(false);
-        }
     }
 
 
     protected Integer getYearParam() {
         return getPageParameters().get(PARAM_YEAR).toOptionalInteger();
+    }
+
+    @Override
+    protected PageParameters getSaveEditParameters() {
+        return getParamsWithServiceInformation();
+    }
+
+    @Override
+    protected PageParameters getCancelPageParameters() {
+        return getParamsWithServiceInformation();
+    }
+
+    protected PageParameters getParamsWithServiceInformation() {
+        PageParameters pageParams = new PageParameters();
+        // add service to the page parameters
+        pageParams.add(WebConstants.PARAM_SERVICE, editForm.getModelObject().getDestinationService());
+
+        return pageParams;
     }
 
 }

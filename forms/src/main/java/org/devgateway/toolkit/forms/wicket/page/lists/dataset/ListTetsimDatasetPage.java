@@ -38,11 +38,13 @@ import org.devgateway.toolkit.web.util.SettingsUtils;
 import org.springframework.util.ObjectUtils;
 import org.wicketstuff.annotation.mount.MountPath;
 
+import java.text.MessageFormat;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 
+import static org.devgateway.toolkit.forms.WebConstants.PARAM_SERVICE;
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_YEAR;
 
 @AuthorizeInstantiation(SecurityConstants.Roles.ROLE_USER)
@@ -51,6 +53,8 @@ public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
     private static final long serialVersionUID = -324298525712620234L;
     @SpringBean
     protected SettingsUtils settingsUtils;
+
+    TetsimDatasetFilterState filterState;
 
     protected Select2ChoiceBootstrapFormComponent<Integer> year;
     protected Fragment yearSelectorFragment;
@@ -81,6 +85,11 @@ public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
             }
         });
         columns.add(new PropertyColumn<>(new StringResourceModel("status"), "status", "status"));
+
+
+        String service = pageParameters.get(PARAM_SERVICE).toString();
+        filterState = new TetsimDatasetFilterState();
+        filterState.setService(service);
 
     }
 
@@ -166,6 +175,13 @@ public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
         target.add(editPageLink);
     }
 
+    @Override
+    protected PageParameters getEditPageParameters() {
+        PageParameters pageParams = super.getEditPageParameters();
+        pageParams.set(PARAM_SERVICE, getPageParameters().get(PARAM_SERVICE).toString());
+        return pageParams;
+    }
+
     protected List<String> getAddButtonErrors() {
         long c = countByNonPublished();
         if (c > 0) {
@@ -196,7 +212,8 @@ public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
     }
 
     protected Label getPageTitle() {
-        return new Label("pageTitle", new StringResourceModel("page.title", this,
-                Model.of(settingsUtils.getSetting())));
+        String service = getPageParameters().get("service").toString();
+        return new Label("pageTitle", Model.of(MessageFormat.format(getString("page.title"), service)));
     }
+
 }

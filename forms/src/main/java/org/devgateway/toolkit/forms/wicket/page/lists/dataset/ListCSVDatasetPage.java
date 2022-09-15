@@ -16,6 +16,7 @@ import org.apache.wicket.authroles.authorization.strategies.role.annotations.Aut
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
@@ -30,8 +31,11 @@ import org.devgateway.toolkit.persistence.dao.data.CSVDataset;
 import org.devgateway.toolkit.persistence.service.data.CSVDatasetService;
 import org.wicketstuff.annotation.mount.MountPath;
 
+import java.text.MessageFormat;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+
+import static org.devgateway.toolkit.forms.WebConstants.PARAM_SERVICE;
 
 @AuthorizeInstantiation(SecurityConstants.Roles.ROLE_USER)
 @MountPath(value = "/listCSVDataset")
@@ -41,8 +45,13 @@ public class ListCSVDatasetPage extends AbstractListPage<CSVDataset> {
     @SpringBean
     private CSVDatasetService datasetService;
 
+    CSVDatasetFilterState filterState;
+
     public ListCSVDatasetPage(final PageParameters pageParameters) {
         super(pageParameters);
+
+        String service = pageParameters.get("service").toString();
+
         this.jpaService = datasetService;
         this.editPageClass = EditCSVDatasetPage.class;
 
@@ -62,9 +71,18 @@ public class ListCSVDatasetPage extends AbstractListPage<CSVDataset> {
                 return Model.of(modifiedDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
             }
         });
-        columns.add(new PropertyColumn<>(new StringResourceModel("destinationService"), "destinationService", "destinationService"));
         columns.add(new PropertyColumn<>(new StringResourceModel("status"), "status", "status"));
 
+        filterState = new CSVDatasetFilterState();
+        filterState.setService(service);
+
+    }
+
+    @Override
+    protected PageParameters getEditPageParameters() {
+        PageParameters pageParams = super.getEditPageParameters();
+        pageParams.set(PARAM_SERVICE, getPageParameters().get(PARAM_SERVICE).toString());
+        return pageParams;
     }
 
     @Override
@@ -83,6 +101,12 @@ public class ListCSVDatasetPage extends AbstractListPage<CSVDataset> {
 
     @Override
     public JpaFilterState<CSVDataset> newFilterState() {
-        return new CSVDatasetFilterState();
+        return filterState;
     }
+
+    protected Label getPageTitle() {
+        String service = getPageParameters().get("service").toString();
+        return new Label("pageTitle", Model.of(MessageFormat.format(getString("page.title"), service)));
+    }
+
 }
