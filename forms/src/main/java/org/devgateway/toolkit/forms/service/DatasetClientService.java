@@ -7,7 +7,7 @@ import org.devgateway.toolkit.persistence.dao.data.CSVDataset;
 import org.devgateway.toolkit.persistence.dao.data.Dataset;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
 import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
-import org.devgateway.toolkit.persistence.dto.ServiceMetadataDimension;
+import org.devgateway.toolkit.persistence.dto.ServiceDimension;
 import org.devgateway.toolkit.persistence.service.data.CSVDatasetService;
 import org.devgateway.toolkit.persistence.service.data.TetsimDatasetService;
 import org.slf4j.Logger;
@@ -110,8 +110,23 @@ public class DatasetClientService {
         return eurekaClientService.findByName(destinationService);
     }
 
-    public List<ServiceMetadataDimension> getDimensions(final String serviceName) {
+    public List<ServiceDimension> getDimensions(final String serviceName) {
         ServiceMetadata service = eurekaClientService.findByName(serviceName);
         return new DatasetClient(service.getUrl()).getDimensions();
+    }
+
+    public ServiceDimension getDimensionById(final String serviceName, final long id) {
+        ServiceMetadata service = eurekaClientService.findByName(serviceName);
+        return new DatasetClient(service.getUrl()).getDimensionById(id);
+    }
+
+    public void updateDimension(final String serviceName, final ServiceDimension dimension) {
+        ServiceMetadata service = eurekaClientService.findByName(serviceName);
+        new DatasetClient(service.getUrl()).updateDimension(dimension);
+    }
+
+    public void addDimensionToService(final String service, final ServiceDimension serviceDimension) {
+        ServiceMetadata serviceMetadata = eurekaClientService.findByName(service);
+        new DatasetClient(serviceMetadata.getUrl()).addDimension(serviceDimension);
     }
 }

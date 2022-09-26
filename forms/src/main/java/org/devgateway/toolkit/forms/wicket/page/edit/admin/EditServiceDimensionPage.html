@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<body>
+<wicket:extend>
+    <div class="row">
+        <div class="col-xs-12">
+            <form wicket:id="editForm" role="form">
+                <div class="row">
+                    <div class="col-md-4" wicket:id="code"/>
+                </div>
+                <div class="row">
+                    <div class="col-md-4" wicket:id="value"/>
+                </div>
+                <div class="row">
+                    <div class="col-md-4" wicket:id="position"/>
+                </div>
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1">
+                        <button wicket:id="save" type="button" class="btn btn-green btn-form-action">Save</button>
+                        <button wicket:id="cancel" type="button" class="btn btn-grey btn-form-action">Cancel</button>
+                    </div>
+                </div>
+                <div id="modals">
+                    <div wicket:id="cancelModal"></div>
+                    <div wicket:id="saveFailedModal"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</wicket:extend>
+
+</body>
+</html>

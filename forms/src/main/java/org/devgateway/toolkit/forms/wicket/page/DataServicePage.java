@@ -69,7 +69,6 @@ public class DataServicePage extends BasePage {
     private BigLinkDefinition getEntityLink(final String entity, Class<? extends Page> pageClass, IconType iconType) {
         PageParameters pageParams = new PageParameters();
         pageParams.set(PARAM_SERVICE, getPageParameters().get(PARAM_SERVICE).toString());
-        pageParams.set(PARAM_ENTITY, entity);
 
         return new BigLinkDefinition(entity, pageClass, pageParams, iconType);
     }

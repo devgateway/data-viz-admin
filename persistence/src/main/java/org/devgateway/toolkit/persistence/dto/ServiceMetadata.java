@@ -18,7 +18,7 @@ public class ServiceMetadata implements Serializable {
 
     private String status;
 
-    private List<ServiceMetadataDimension> dimensions = new ArrayList<>();
+    private List<ServiceDimension> dimensions = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -73,11 +73,11 @@ public class ServiceMetadata implements Serializable {
         this.status = status;
     }
 
-    public List<ServiceMetadataDimension> getDimensions() {
+    public List<ServiceDimension> getDimensions() {
         return dimensions;
     }
 
-    public void setDimensions(final List<ServiceMetadataDimension> dimensions) {
+    public void setDimensions(final List<ServiceDimension> dimensions) {
         this.dimensions = dimensions;
     }
 }

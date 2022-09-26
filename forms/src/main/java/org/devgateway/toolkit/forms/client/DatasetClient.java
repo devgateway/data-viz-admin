@@ -2,7 +2,7 @@ package org.devgateway.toolkit.forms.client;
 
 import org.apache.commons.io.FileUtils;
 import org.devgateway.toolkit.persistence.dao.data.Dataset;
-import org.devgateway.toolkit.persistence.dto.ServiceMetadataDimension;
+import org.devgateway.toolkit.persistence.dto.ServiceDimension;
 import org.glassfish.jersey.client.JerseyClient;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -162,19 +162,68 @@ public class DatasetClient {
         return false;
     }
 
-    public List<ServiceMetadataDimension> getDimensions() {
+    public List<ServiceDimension> getDimensions() {
         if (isUp()) {
             Response dimensionsResponse = client.target(baseUrl)
                     .path(PATH_DIMENSIONS)
                     .request(APPLICATION_JSON).get();
 
             if (dimensionsResponse.getStatusInfo().getFamily() == SUCCESSFUL) {
-                return dimensionsResponse.readEntity(new GenericType<List<ServiceMetadataDimension>>() {});
+                return dimensionsResponse.readEntity(new GenericType<List<ServiceDimension>>() {});
             }
 
             return null;
         }
 
         throw new RuntimeException(("Service is not up"));
+    }
+
+    public ServiceDimension getDimensionById(final Long id) {
+        if (isUp()) {
+            Response dimensionsResponse = client.target(baseUrl)
+                    .path(PATH_DIMENSIONS)
+                    .path(id.toString())
+                    .request(APPLICATION_JSON).get();
+
+            if (dimensionsResponse.getStatusInfo().getFamily() == SUCCESSFUL) {
+                return dimensionsResponse.readEntity(new GenericType<ServiceDimension>() {});
+            }
+
+            return null;
+        }
+
+        throw new RuntimeException(("Service is not up"));
+    }
+
+    public void addDimension(final ServiceDimension dimension) {
+        if (isUp()) {
+            Response dimensionsResponse = client.target(baseUrl)
+                    .path(PATH_DIMENSIONS)
+                    .request(APPLICATION_JSON)
+                    .post(Entity.entity(dimension, APPLICATION_JSON));
+
+            if (dimensionsResponse.getStatusInfo().getFamily() != SUCCESSFUL) {
+                throw new RuntimeException("Error in adding dimension");
+            }
+        } else {
+            throw new RuntimeException(("Service is not up"));
+        }
+    }
+
+
+    public void updateDimension(final ServiceDimension dimension) {
+        if (isUp()) {
+            Response dimensionsResponse = client.target(baseUrl)
+                    .path(PATH_DIMENSIONS)
+                    .path(dimension.getId().toString())
+                    .request(APPLICATION_JSON)
+                    .put(Entity.entity(dimension, APPLICATION_JSON));
+
+            if (dimensionsResponse.getStatusInfo().getFamily() != SUCCESSFUL) {
+                throw new RuntimeException("Error in updating dimension");
+            }
+        } else {
+            throw new RuntimeException(("Service is not up"));
+        }
     }
 }
