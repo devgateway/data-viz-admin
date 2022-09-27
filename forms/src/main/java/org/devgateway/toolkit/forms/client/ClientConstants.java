@@ -12,6 +12,9 @@ public class ClientConstants {
     public final static String PATH_DATASETS = "/admin/datasets";
 
     public final static String PATH_DIMENSIONS = "/admin/dimensions";
+
+    public final static String PATH_MEASURES = "/admin/measures";
+
     public final static String PATH_CODE = "/code";
 
     public final static String CODE_PREFIX = "tcdi-";

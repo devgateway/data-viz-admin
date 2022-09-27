@@ -27,6 +27,7 @@ import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.BigLinkDefinition;
 import org.devgateway.toolkit.forms.wicket.components.BigLinksPanel;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceDimensionsPage;
+import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceMeasuresPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListCSVDatasetPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListTetsimDatasetPage;
 import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
@@ -39,7 +40,6 @@ import static de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAw
 import static de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType.database_s;
 import static de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType.layer_group_s;
 import static de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType.ruler_s;
-import static org.devgateway.toolkit.forms.WebConstants.PARAM_ENTITY;
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_SERVICE;
 
 /**
@@ -59,7 +59,7 @@ public class DataServicePage extends BasePage {
 
         List<BigLinkDefinition> links = new ArrayList<>();
         links.add(getEntityLink("datasets", getServicePageClass(serviceMetadata.getType()), database_s));
-        links.add(getEntityLink("measures", ListServiceDimensionsPage.class, ruler_s));
+        links.add(getEntityLink("measures", ListServiceMeasuresPage.class, ruler_s));
         links.add(getEntityLink("dimensions", ListServiceDimensionsPage.class, chart_bar_s));
         links.add(getEntityLink("categories", ListServiceDimensionsPage.class, layer_group_s));
 

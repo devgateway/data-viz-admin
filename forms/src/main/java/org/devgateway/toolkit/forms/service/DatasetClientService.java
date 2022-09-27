@@ -6,6 +6,7 @@ import org.devgateway.toolkit.forms.client.DatasetClient;
 import org.devgateway.toolkit.persistence.dao.data.CSVDataset;
 import org.devgateway.toolkit.persistence.dao.data.Dataset;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
+import org.devgateway.toolkit.persistence.dto.ServiceMeasure;
 import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
 import org.devgateway.toolkit.persistence.dto.ServiceDimension;
 import org.devgateway.toolkit.persistence.service.data.CSVDatasetService;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static org.devgateway.toolkit.forms.client.ClientConstants.CODE_PREFIX;
@@ -129,4 +131,25 @@ public class DatasetClientService {
         ServiceMetadata serviceMetadata = eurekaClientService.findByName(service);
         new DatasetClient(serviceMetadata.getUrl()).addDimension(serviceDimension);
     }
+
+    public List<ServiceMeasure> getMeasures(final String serviceName) {
+        ServiceMetadata service = eurekaClientService.findByName(serviceName);
+        return new DatasetClient(service.getUrl()).getMeasures();
+    }
+
+    public ServiceMeasure getMeasureById(final String serviceName, final long id) {
+        ServiceMetadata service = eurekaClientService.findByName(serviceName);
+        return new DatasetClient(service.getUrl()).getMeasureById(id);
+    }
+
+    public void updateMeasure(final String serviceName, final ServiceMeasure measure) {
+        ServiceMetadata service = eurekaClientService.findByName(serviceName);
+        new DatasetClient(service.getUrl()).updateMeasure(measure);
+    }
+
+    public void addMeasureToService(final String service, final ServiceMeasure serviceMeasure) {
+        ServiceMetadata serviceMetadata = eurekaClientService.findByName(service);
+        new DatasetClient(serviceMetadata.getUrl()).addMeasure(serviceMeasure);
+    }
+
 }

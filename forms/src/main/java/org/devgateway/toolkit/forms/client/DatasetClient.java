@@ -3,6 +3,7 @@ package org.devgateway.toolkit.forms.client;
 import org.apache.commons.io.FileUtils;
 import org.devgateway.toolkit.persistence.dao.data.Dataset;
 import org.devgateway.toolkit.persistence.dto.ServiceDimension;
+import org.devgateway.toolkit.persistence.dto.ServiceMeasure;
 import org.glassfish.jersey.client.JerseyClient;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -28,6 +29,7 @@ import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_DATASETS;
 import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_DIMENSIONS;
 import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_HEALTH;
 import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_JOBS;
+import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_MEASURES;
 
 
 public class DatasetClient {
@@ -225,5 +227,69 @@ public class DatasetClient {
         } else {
             throw new RuntimeException(("Service is not up"));
         }
+    }
+
+    public ServiceMeasure getMeasureById(final Long id) {
+        if (isUp()) {
+            Response measuresResponse = client.target(baseUrl)
+                    .path(PATH_MEASURES)
+                    .path(id.toString())
+                    .request(APPLICATION_JSON).get();
+
+            if (measuresResponse.getStatusInfo().getFamily() == SUCCESSFUL) {
+                return measuresResponse.readEntity(new GenericType<ServiceMeasure>() {});
+            }
+
+            return null;
+        }
+
+        throw new RuntimeException(("Service is not up"));
+    }
+
+    public void addMeasure(final ServiceMeasure measure) {
+        if (isUp()) {
+            Response measuresResponse = client.target(baseUrl)
+                    .path(PATH_MEASURES)
+                    .request(APPLICATION_JSON)
+                    .post(Entity.entity(measure, APPLICATION_JSON));
+
+            if (measuresResponse.getStatusInfo().getFamily() != SUCCESSFUL) {
+                throw new RuntimeException("Error in adding measure");
+            }
+        } else {
+            throw new RuntimeException(("Service is not up"));
+        }
+    }
+
+    public void updateMeasure(final ServiceMeasure measure) {
+        if (isUp()) {
+            Response measuresResponse = client.target(baseUrl)
+                    .path(PATH_MEASURES)
+                    .path(measure.getId().toString())
+                    .request(APPLICATION_JSON)
+                    .put(Entity.entity(measure, APPLICATION_JSON));
+
+            if (measuresResponse.getStatusInfo().getFamily() != SUCCESSFUL) {
+                throw new RuntimeException("Error in updating measure");
+            }
+        } else {
+            throw new RuntimeException(("Service is not up"));
+        }
+    }
+
+    public List<ServiceMeasure> getMeasures() {
+        if (isUp()) {
+            Response measuresResponse = client.target(baseUrl)
+                    .path(PATH_MEASURES)
+                    .request(APPLICATION_JSON).get();
+
+            if (measuresResponse.getStatusInfo().getFamily() == SUCCESSFUL) {
+                return measuresResponse.readEntity(new GenericType<List<ServiceMeasure>>() {});
+            }
+
+            return null;
+        }
+
+        throw new RuntimeException(("Service is not up"));
     }
 }
