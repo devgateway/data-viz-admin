@@ -9,17 +9,23 @@ import java.io.Serializable;
  */
 public class TetsimOutput implements Serializable {
 
+    private Integer year;
+
     private Integer taxChange;
 
     private String tobaccoProduct;
 
     private String shifting;
 
-    private Double consumptionLegal;
+    private Double legalConsumption;
+
+    private Double legalConsumptionChange;
 
     private Double consumptionIllicit;
 
     private Double exciseRev;
+
+    private Double exciseRevChange;
 
     private Double totalGovRev;
 
@@ -36,6 +42,14 @@ public class TetsimOutput implements Serializable {
     private Double vat;
 
     private Double levy;
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(final Integer year) {
+        this.year = year;
+    }
 
     public Integer getTaxChange() {
         return taxChange;
@@ -61,12 +75,12 @@ public class TetsimOutput implements Serializable {
         this.shifting = shifting;
     }
 
-    public Double getConsumptionLegal() {
-        return consumptionLegal;
+    public Double getLegalConsumption() {
+        return legalConsumption;
     }
 
-    public void setConsumptionLegal(final Double consumptionLegal) {
-        this.consumptionLegal = consumptionLegal;
+    public void setLegalConsumption(final Double legalConsumption) {
+        this.legalConsumption = legalConsumption;
     }
 
     public Double getConsumptionIllicit() {
@@ -147,5 +161,21 @@ public class TetsimOutput implements Serializable {
 
     public void setLevy(final Double levy) {
         this.levy = levy;
+    }
+
+    public Double getLegalConsumptionChange() {
+        return legalConsumptionChange;
+    }
+
+    public void setLegalConsumptionChange(final Double legalConsumptionChange) {
+        this.legalConsumptionChange = legalConsumptionChange;
+    }
+
+    public Double getExciseRevChange() {
+        return exciseRevChange;
+    }
+
+    public void setExciseRevChange(final Double exciseRevChange) {
+        this.exciseRevChange = exciseRevChange;
     }
 }

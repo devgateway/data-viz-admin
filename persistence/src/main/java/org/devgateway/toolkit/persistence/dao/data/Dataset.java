@@ -15,6 +15,9 @@ public abstract class Dataset extends AbstractStatusAuditableEntity implements S
     @Audited
     private Integer year;
 
+    @Audited
+    private String destinationService;
+
     @Override
     public AbstractAuditableEntity getParent() {
         return null;
@@ -28,4 +31,11 @@ public abstract class Dataset extends AbstractStatusAuditableEntity implements S
         this.year = year;
     }
 
+    public void setDestinationService(final String destinationService) {
+        this.destinationService = destinationService;
+    }
+
+    public String getDestinationService() {
+        return destinationService;
+    }
 }

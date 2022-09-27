@@ -31,8 +31,12 @@
             // disable the upload button
             $(this).closest('.file-input').find('.fileinput-upload-button').show();
             $(this).closest('.file-input').find('.fileinput-upload-button').prop("disabled", true);
+
+            // Cover form buttons with a div (will be hidden again in FileInputBootstrapFormComponentWrapper.html)
+            $('.cover-buttons-div').css("z-index", 100);
         } else {
             $(this).closest('.file-input').find('.fileinput-upload-button').hide();
+            $('.cover-buttons-div').css("z-index", -1);
         }
     });
 })();

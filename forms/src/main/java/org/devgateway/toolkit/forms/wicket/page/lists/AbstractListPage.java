@@ -156,8 +156,7 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
             setDataTableForFilteredColumns();
         }
 
-        PageParameters pageParameters = new PageParameters();
-        pageParameters.set(WebConstants.PARAM_ID, null);
+        PageParameters pageParameters = getEditPageParameters();
 
         editPageLink = new BootstrapBookmarkablePageLink<T>("new", editPageClass, pageParameters, Buttons.Type.Success);
         editPageLink.setIconType(FontAwesome5IconType.plus_circle_s).setSize(Size.Large)
@@ -165,6 +164,12 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
         editPageLink.setOutputMarkupId(true);
 
         add(editPageLink);
+    }
+
+    protected PageParameters getEditPageParameters() {
+        PageParameters pageParameters = new PageParameters();
+        pageParameters.set(WebConstants.PARAM_ID, null);
+        return pageParameters;
     }
 
     public class ActionPanel extends GenericPanel<T> {

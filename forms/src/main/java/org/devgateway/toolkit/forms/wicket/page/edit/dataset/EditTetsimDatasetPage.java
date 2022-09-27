@@ -1,5 +1,6 @@
 package org.devgateway.toolkit.forms.wicket.page.edit.dataset;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
@@ -9,25 +10,37 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.devgateway.toolkit.forms.WebConstants;
+import org.devgateway.toolkit.forms.client.DataSetClientException;
+import org.devgateway.toolkit.forms.service.DatasetClientService;
+import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.form.BootstrapCancelButton;
 import org.devgateway.toolkit.forms.wicket.components.form.Select2ChoiceBootstrapFormComponent;
+import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.page.edit.AbstractEditStatusEntityPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListTetsimDatasetPage;
 import org.devgateway.toolkit.forms.wicket.providers.GenericChoiceProvider;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
 import org.devgateway.toolkit.persistence.dao.data.TetsimPriceVariable;
 import org.devgateway.toolkit.persistence.dao.data.TetsimTobaccoProductValue;
+import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
 import org.devgateway.toolkit.persistence.service.category.TobaccoProductService;
 import org.devgateway.toolkit.persistence.service.data.TetsimDatasetService;
+import org.devgateway.toolkit.persistence.service.tetsim.TetsimOutputService;
 import org.devgateway.toolkit.web.util.SettingsUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.wicketstuff.annotation.mount.MountPath;
 
 import java.math.BigDecimal;
+import java.util.stream.Collectors;
 
 import static org.devgateway.toolkit.forms.WebConstants.MAXIMUM_PERCENTAGE;
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_YEAR;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DELETED;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.SAVED;
 
 /**
  * @author vchihai
@@ -37,10 +50,23 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
 
     private static final long serialVersionUID = -8460878260874111506L;
 
+    private static final Logger logger = LoggerFactory.getLogger(EditTetsimDatasetPage.class);
+
     protected Select2ChoiceBootstrapFormComponent<Integer> year;
+
+    protected TextFieldBootstrapFormComponent destinationService;
 
     @SpringBean
     protected TetsimDatasetService tetsimDatasetService;
+
+    @SpringBean
+    protected TetsimOutputService tetsimOutputService;
+
+    @SpringBean
+    protected EurekaClientService eurekaClientService;
+
+    @SpringBean
+    protected DatasetClientService datasetClientService;
 
     @SpringBean
     protected SettingsUtils settingsUtils;
@@ -62,8 +88,14 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
         editForm.add(getBaseLineNumbers());
         editForm.add(getPriceAnalysisNumbers());
         editForm.add(getIndustryResponsesNumbers());
+        editForm.add(getService());
 
         editForm.add(new TetsimMarketSharePercentageValidator());
+
+        if (editForm.getModelObject().getDestinationService() == null) {
+            String service = getPageParameters().get(WebConstants.PARAM_SERVICE).toString();
+            editForm.getModelObject().setDestinationService(service);
+        }
 
         if (editForm.getModelObject().isNew() && getYearParam() != null) {
             editForm.getModelObject().setYear(getYearParam());
@@ -78,6 +110,12 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
         year.setEnabled(false);
 
         return year;
+    }
+
+    private TextFieldBootstrapFormComponent getService() {
+        destinationService = new TextFieldBootstrapFormComponent<>("destinationService");
+        destinationService.setEnabled(false);
+        return destinationService;
     }
 
     @Override
@@ -100,6 +138,31 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
         } catch (ObjectOptimisticLockingFailureException e) {
             deleteFailedModal.show(target);
             target.add(deleteFailedModal);
+        }
+        setResponsePage(listPageClass);
+    }
+
+    @Override
+    protected void onAfterRevertToDraft(final AjaxRequestTarget target) {
+        try {
+            datasetClientService.unpublishDataset(editForm.getModelObject());
+        } catch (DataSetClientException | Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    protected void onApprove(final AjaxRequestTarget target) {
+        try {
+            TetsimDataset dataset = editForm.getModelObject();
+            String fileName = dataset.getYear() + "_tetsim.csv";
+            byte[] content = tetsimOutputService.getTetsimCSVDatasetOutputs(dataset.getId());
+
+            datasetClientService.publishDataset(dataset, fileName, content);
+
+            dataset.setStatus(PUBLISHING);
+        } catch (DataSetClientException | Exception e) {
+            logger.error(e.getMessage(), e);
+            approveFailedModal.show(target);
         }
         setResponsePage(listPageClass);
     }
@@ -182,8 +245,27 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
         }
     }
 
+
     protected Integer getYearParam() {
         return getPageParameters().get(PARAM_YEAR).toOptionalInteger();
+    }
+
+    @Override
+    protected PageParameters getSaveEditParameters() {
+        return getParamsWithServiceInformation();
+    }
+
+    @Override
+    protected PageParameters getCancelPageParameters() {
+        return getParamsWithServiceInformation();
+    }
+
+    protected PageParameters getParamsWithServiceInformation() {
+        PageParameters pageParams = new PageParameters();
+        // add service to the page parameters
+        pageParams.add(WebConstants.PARAM_SERVICE, editForm.getModelObject().getDestinationService());
+
+        return pageParams;
     }
 
 }

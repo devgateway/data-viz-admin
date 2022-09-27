@@ -13,7 +13,7 @@
                 <tbody>
                     <tr wicket:id="list">
                         <td class="col-md-10">
-                            <a wicket:id="downloadLink"><span wicket:id="downloadText"/></a>
+                            <a wicket:id="downloadLink" target="_blank"><span wicket:id="downloadText"/></a>
                         </td>
                         <td class="col-md-2">
                             <i style="cursor: pointer;" wicket:id="download"/>
@@ -45,6 +45,10 @@
                 </tbody>
             </table>
         </div>
+        <script type="application/javascript">
+            // Hide overlay div that covers buttons while loading files.
+            $('.cover-buttons-div').css("z-index", -1);
+        </script>
     </div>
 
     <div wicket:id="fileUploadFeedback" class="col-md-12"></div>

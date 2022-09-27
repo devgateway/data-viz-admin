@@ -73,6 +73,8 @@ public class EditAdminSettingsPage extends AbstractEditPage<AdminSettings> {
         currency.required();
         editForm.add(currency);
 
+        editForm.add(new TextFieldBootstrapFormComponent<>("countryName"));
+
         autosaveTime = new TextFieldBootstrapFormComponent<>("autosaveTime");
         autosaveTime.integer().required();
         autosaveTime.getField().add(RangeValidator.range(0, 60));

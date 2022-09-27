@@ -8,6 +8,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 public class HomepageButton<T> extends BootstrapBookmarkablePageLink<T> {
 
@@ -18,7 +19,13 @@ public class HomepageButton<T> extends BootstrapBookmarkablePageLink<T> {
 
     public <P extends Page> HomepageButton(String componentId, Class<P> pageClass, IModel<String> labelModel,
                                            IModel<String> descriptionModel, IconType iconType) {
-        super(componentId, pageClass, Buttons.Type.Default);
+        this(componentId, pageClass, new PageParameters(), labelModel, descriptionModel, iconType);
+    }
+
+    public <P extends Page> HomepageButton(String componentId, Class<P> pageClass, PageParameters pageParameters,
+                                           IModel<String> labelModel,
+                                           IModel<String> descriptionModel, IconType iconType) {
+        super(componentId, pageClass, pageParameters, Buttons.Type.Default);
 
         setLabel(labelModel == null
                 ? new ResourceModel(componentId + ".label")

@@ -63,7 +63,9 @@ import org.wicketstuff.select2.Select2Choice;
 
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_AUTO_SAVE;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DRAFT;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.NOT_PUBLISHED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHED;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.SAVED;
 
 /**
@@ -173,7 +175,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
-                setStatusAppendComment(PUBLISHED);
+                onApprove(target);
                 super.onSubmit(target);
             }
         };
@@ -475,8 +477,11 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
             case PUBLISHED:
                 return "label-success";
             case DRAFT:
+            case NOT_PUBLISHED:
                 return "label-danger";
             case SAVED:
+                return "label-primary";
+            case PUBLISHING:
                 return "label-warning";
             default:
                 return "";
@@ -683,8 +688,14 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
-                setStatusAppendComment(PUBLISHED);
-                super.onSubmit(target);
+                approveModal.show(true);
+                target.add(approveModal);
+            }
+
+            @Override
+            protected void onError(final AjaxRequestTarget target) {
+                super.onError(target);
+                target.add(feedbackPanel);
             }
         };
         saveEditPageButton.setIconType(FontAwesome5IconType.thumbs_up_s);
@@ -736,6 +747,10 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
     }
 
+    protected void onApprove(AjaxRequestTarget target) {
+
+    }
+
     protected void setStatusAppendComment(final String status) {
         final T saveable = editForm.getModelObject();
 
@@ -776,7 +791,8 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     protected void addDeleteButtonPermissions(final Component button) {
         MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, SecurityConstants.Roles.ROLE_ADMIN);
         button.setVisibilityAllowed(entityId != null && !isViewMode()
-                && !PUBLISHED.equals(editForm.getModelObject().getStatus()));
+                && (!PUBLISHING.equals(editForm.getModelObject().getStatus())
+                || !PUBLISHED.equals(editForm.getModelObject().getStatus())));
         MetaDataRoleAuthorizationStrategy.authorize(
                 button, Component.RENDER, getCommaCombinedRoles());
     }
@@ -786,7 +802,8 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, getValidatorRole());
         MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, getCommaCombinedRoles());
         button.setVisibilityAllowed(button.isVisibilityAllowed()
-                && PUBLISHED.equals(editForm.getModelObject().getStatus()));
+                && (NOT_PUBLISHED.equals(editForm.getModelObject().getStatus())
+                || PUBLISHED.equals(editForm.getModelObject().getStatus())));
     }
 
     protected void addSaveApproveButtonPermissions(final Component button) {
@@ -802,7 +819,8 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         MetaDataRoleAuthorizationStrategy.authorize(
                 button, Component.RENDER, getValidatorRole());
         button.setVisibilityAllowed(button.isVisibilityAllowed()
-                && SAVED.equals(editForm.getModelObject().getStatus()));
+                && (SAVED.equals(editForm.getModelObject().getStatus())
+                || NOT_PUBLISHED.equals(editForm.getModelObject().getStatus())));
     }
 
     protected void addSaveButtonsPermissions(final Component button) {

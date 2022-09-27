@@ -30,6 +30,8 @@ public class AdminSettings extends AbstractAuditableEntity {
 
     private Currency defaultCurrency;
 
+    private String countryName;
+
     @Override
     public AbstractAuditableEntity getParent() {
         return null;
@@ -69,5 +71,13 @@ public class AdminSettings extends AbstractAuditableEntity {
 
     public void setDefaultCurrency(final Currency defaultCurrency) {
         this.defaultCurrency = defaultCurrency;
+    }
+
+    public String getCountryName() {
+        return countryName;
+    }
+
+    public void setCountryName(final String countryName) {
+        this.countryName = countryName;
     }
 }

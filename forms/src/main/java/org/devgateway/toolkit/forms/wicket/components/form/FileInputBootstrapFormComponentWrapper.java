@@ -96,6 +96,8 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
 
     private Boolean disableDeleteButton = false;
 
+    private boolean allowDownloadWhenReadonly = true;
+
     private boolean requireAtLeastOneItem = false;
 
     /**
@@ -133,7 +135,7 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
         addFileUploadFeedbackComponent();
         addBootstrapFileInputComponent();
 
-        bootstrapFileInput.withShowUpload(true).withShowRemove(false).withShowPreview(true).withShowCaption(true);
+        bootstrapFileInput.withShowUpload(true).withShowRemove(false).withShowPreview(false).withShowCaption(true);
     }
 
     public boolean isVisibleAlreadyUploadedFiles() {
@@ -209,10 +211,16 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
                             }
                         };
 
+
                         ResourceStreamRequestHandler handler =
                                 new ResourceStreamRequestHandler(rstream, modelObject.getName());
                         handler.setContentDisposition(ContentDisposition.ATTACHMENT);
                         getRequestCycle().scheduleRequestHandlerAfterCurrent(handler);
+                    }
+
+                    @Override
+                    public boolean isEnabledInHierarchy() {
+                        return isLinkEnabledInHierarchy(this, super.isEnabledInHierarchy());
                     }
                 };
                 downloadLink.add(new Label("downloadText", item.getModelObject().getName()));
@@ -457,6 +465,7 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
 
                 target.add(fileUploadFeedback);
                 target.add(pendingFiles);
+                target.appendJavaScript("$('.cover-buttons-div').css(\"z-index\", -1);");
                 FileInputBootstrapFormComponentWrapper.this.onUpdate(target);
             }
         };
@@ -562,6 +571,21 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
 
     public void requireAtLeastOneItem() {
         requireAtLeastOneItem = true;
+    }
+
+    public boolean isAllowDownloadWhenReadonly() {
+        return allowDownloadWhenReadonly;
+    }
+
+    public void setAllowDownloadWhenReadonly(final boolean allowDownloadWhenReadonly) {
+        this.allowDownloadWhenReadonly = allowDownloadWhenReadonly;
+    }
+
+    private boolean isLinkEnabledInHierarchy(final Component component, final boolean defaultState) {
+        if (allowDownloadWhenReadonly) {
+            return component.isEnableAllowed() && component.isEnabled();
+        }
+        return defaultState;
     }
 
     @Override

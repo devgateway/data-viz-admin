@@ -39,6 +39,10 @@ public final class WebConstants {
     public static final String PARAM_YEAR = "year";
 
     public static final String PARAM_ID = "id";
+
+    public static final String PARAM_SERVICE = "service";
+
+    public static final String PARAM_ENTITY = "entity";
     public static final String V_POSITION = "vPosition";
     public static final String MAX_HEIGHT = "maxPosition";
     public static final String PARAM_REVISION_ID = "revisionId";
@@ -46,6 +50,10 @@ public final class WebConstants {
     public static final String PARAM_AUTO_SAVE = "autosave";
 
     public static final String LANGUAGE_PARAM = "lang";
+
+    public static final String SERVICE_DATA_TYPE = "data";
+
+    public static final String SERVICE_TETSIM_TYPE = "tetsim";
 
     public static final class StringValidators {
         public static final StringValidator MAXIMUM_LENGTH_VALIDATOR_STD_DEFAULT_TEXT =
@@ -62,5 +70,8 @@ public final class WebConstants {
     // wicket i18n is in .properties files so we need
     // to change the src code anyway.
     public static final List<Locale> AVAILABLE_LOCALES = Collections.unmodifiableList(Arrays.asList(new Locale("en")));
+
+    public static final List<String> ALLOWED_SERVICES_TYPES = Collections.unmodifiableList(
+            Arrays.asList(SERVICE_DATA_TYPE, SERVICE_TETSIM_TYPE));
 
 }

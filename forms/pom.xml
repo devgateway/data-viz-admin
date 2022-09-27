@@ -32,7 +32,7 @@
         <java.version>1.8</java.version>
         <wicket.version>8.10.0</wicket.version>
         <wicketstuff.version>8.10.0</wicketstuff.version>
-        <wicket.bootstrap.version>2.0.15</wicket.bootstrap.version>
+        <wicket.bootstrap.version>2.0.11</wicket.bootstrap.version>
         <zt.zip.version>1.13</zt.zip.version>
         <wicket.webjars.version>2.0.19</wicket.webjars.version>
         <closure.compiler.version>v20200406</closure.compiler.version>
@@ -40,6 +40,7 @@
         <yuicompressor.version>2.4.8</yuicompressor.version>
         <javamelody.version>1.86.0</javamelody.version>
         <font.awesome.version>5.15.3</font.awesome.version>
+        <jersey.version>2.36</jersey.version>
     </properties>
 
     <dependencies>
@@ -162,6 +163,12 @@
             <version>${wicketstuff.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.wicketstuff</groupId>
+            <artifactId>wicketstuff-editable-grid</artifactId>
+            <version>${wicketstuff.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.apache.wicket</groupId>
@@ -259,6 +266,40 @@
             <version>2.0.0</version>
             <type>pom</type>
         </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-common</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <version>2.2.10.RELEASE</version>
+        </dependency>
+
     </dependencies>
 
     <build>

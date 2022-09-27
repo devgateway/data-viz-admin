@@ -52,6 +52,7 @@ import org.devgateway.toolkit.forms.security.SecurityUtil;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListGroupPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListTestFormPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListUserPage;
+import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServicePage;
 import org.devgateway.toolkit.forms.wicket.page.user.EditUserPage;
 import org.devgateway.toolkit.forms.wicket.page.user.LogoutPage;
 import org.devgateway.toolkit.forms.wicket.styles.BaseStyles;
@@ -160,9 +161,13 @@ public abstract class BasePage extends GenericWebPage<Void> {
         mainFooter = new Footer("mainFooter");
         add(mainFooter);
 
-        pageTitle = new Label("pageTitle", new ResourceModel("page.title"));
+        pageTitle = getPageTitle();
         add(pageTitle);
 
+    }
+
+    protected Label getPageTitle() {
+        return new Label("pageTitle", new ResourceModel("page.title"));
     }
 
     protected NotificationPanel createFeedbackPanel() {
@@ -241,10 +246,10 @@ public abstract class BasePage extends GenericWebPage<Void> {
         return homeMenu;
     }
 
-    protected NavbarDropDownButton newAdminMenu() {
+    protected NavbarDropDownButton newConifugrationsMenu() {
 
         // admin menu
-        NavbarDropDownButton adminMenu = new NavbarDropDownButton(new StringResourceModel("navbar.admin", this, null)) {
+        NavbarDropDownButton configurationsMenu = new NavbarDropDownButton(new StringResourceModel("navbar.configurations", this, null)) {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -258,30 +263,6 @@ public abstract class BasePage extends GenericWebPage<Void> {
                         new StringResourceModel("navbar.groups", this, null))
                         .setIconType(FontAwesome5IconType.tags_s));
 
-//                list.add(new MenuBookmarkablePageLink<ListTestFormPage>(ListTestFormPage.class, null,
-//                        new StringResourceModel("navbar.testcomponents", this, null))
-//                        .setIconType(FontAwesome5IconType.android));
-
-//                list.add(new MenuDivider());
-//
-//                final BootstrapBookmarkablePageLink swagger = new MenuBookmarkablePageLink<Void>(SwaggerPage.class,
-//                        new StringResourceModel("navbar.swagger", BasePage.this, null))
-//                        .setIconType(FontAwesome5IconType.code_s);
-//                MetaDataRoleAuthorizationStrategy.authorize(swagger, Component.RENDER,
-//                        SecurityConstants.Roles.ROLE_ADMIN);
-//                list.add(swagger);
-//
-//                final BootstrapBookmarkablePageLink javamelody = new MenuBookmarkablePageLink<Void>(
-//                        JavamelodyPage.class, new StringResourceModel("navbar.javamelody",
-//                        BasePage.this, null)).setIconType(FontAwesome5IconType.eye_s);
-//                MetaDataRoleAuthorizationStrategy.authorize(javamelody, Component.RENDER,
-//                        SecurityConstants.Roles.ROLE_ADMIN);
-//                list.add(javamelody);
-//
-//                list.add(new MenuBookmarkablePageLink<SpringEndpointsPage>(SpringEndpointsPage.class, null,
-//                        new StringResourceModel("navbar.springendpoints", this, null))
-//                        .setIconType(FontAwesome5IconType.anchor_s));
-//
                 list.add(new MenuDivider());
 
                 list.add(new MenuBookmarkablePageLink<Void>(EditAdminSettingsPage.class,
@@ -292,31 +273,21 @@ public abstract class BasePage extends GenericWebPage<Void> {
             }
         };
 
-        adminMenu.setIconType(FontAwesome5IconType.cog_s);
-        MetaDataRoleAuthorizationStrategy.authorize(adminMenu, RENDER, ROLE_USER);
+        configurationsMenu.setIconType(FontAwesome5IconType.cog_s);
+        MetaDataRoleAuthorizationStrategy.authorize(configurationsMenu, RENDER, ROLE_USER);
 
-        return adminMenu;
+        return configurationsMenu;
     }
 
-    protected NavbarButton newDatasetsMenu() {
-        NavbarButton dataSetsMenu = new NavbarButton(DatasetsHomepage.class,
-                new StringResourceModel("navbar.datasets", this, null))
+    protected NavbarButton newDataMenu() {
+        NavbarButton dataSetsMenu = new NavbarButton(DataPage.class,
+                new StringResourceModel("navbar.data", this, null))
                 .setIconType(FontAwesome5IconType.table_s);
 
         dataSetsMenu.setIconType(FontAwesome5IconType.table_s);
         MetaDataRoleAuthorizationStrategy.authorize(dataSetsMenu, RENDER, ROLE_USER);
 
         return dataSetsMenu;
-    }
-
-    protected NavbarButton newCategoriesMenu() {
-        NavbarButton categoriesMenu = new NavbarButton(CategoriesHomepage.class,
-                new StringResourceModel("navbar.categories", this, null))
-                .setIconType(FontAwesome5IconType.list_alt_r);
-
-        MetaDataRoleAuthorizationStrategy.authorize(categoriesMenu, RENDER, ROLE_USER);
-
-        return categoriesMenu;
     }
 
     /**
@@ -338,9 +309,8 @@ public abstract class BasePage extends GenericWebPage<Void> {
         navbar.setBrandImage(new PackageResourceReference(BaseStyles.class, "assets/img/tcdi-horizontal-logo.svg"),
                 new StringResourceModel("brandImageAltText", this, null));
 
-        navbar.addComponents(NavbarComponents.transform(Navbar.ComponentPosition.RIGHT, newHomeMenu(), newAdminMenu(),
-                newDatasetsMenu(), newCategoriesMenu(),
-                newAccountMenu(), newLogoutMenu()));
+        navbar.addComponents(NavbarComponents.transform(Navbar.ComponentPosition.RIGHT, newHomeMenu(), newConifugrationsMenu(),
+                newDataMenu(), newAccountMenu(), newLogoutMenu()));
 
 //        navbar.addComponents(NavbarComponents.transform(Navbar.ComponentPosition.RIGHT, newLanguageMenu()));
 
