@@ -19,6 +19,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulato
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
@@ -36,6 +37,7 @@ import org.devgateway.toolkit.forms.wicket.page.edit.dataset.EditTetsimDatasetPa
 import org.devgateway.toolkit.persistence.dto.ServiceDimension;
 import org.wicketstuff.annotation.mount.MountPath;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -132,5 +134,10 @@ public class ListServiceDimensionsPage extends BasePage {
                     .setLabel(new StringResourceModel("edit", this, null));
             add(editItemPageLink);
         }
+    }
+
+    protected Label getPageTitle() {
+        String service = getPageParameters().get("service").toString();
+        return new Label("pageTitle", Model.of(MessageFormat.format(getString("page.title"), service)));
     }
 }

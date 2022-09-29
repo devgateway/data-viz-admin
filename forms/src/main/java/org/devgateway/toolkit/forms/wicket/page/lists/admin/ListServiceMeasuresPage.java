@@ -11,14 +11,17 @@
  *******************************************************************************/
 package org.devgateway.toolkit.forms.wicket.page.lists.admin;
 
+import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.CssClassNameAppender;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapBookmarkablePageLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
@@ -35,6 +38,7 @@ import org.devgateway.toolkit.forms.wicket.page.edit.admin.EditServiceMeasurePag
 import org.devgateway.toolkit.persistence.dto.ServiceMeasure;
 import org.wicketstuff.annotation.mount.MountPath;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +71,16 @@ public class ListServiceMeasuresPage extends BasePage {
         columns.add(new PropertyColumn<>(new Model<>("Code"), "code", "code"));
         columns.add(new PropertyColumn<>(new Model<>("Value"), "value", "value"));
         columns.add(new PropertyColumn<>(new Model<>("Position"), "position", "position"));
+        columns.add(new PropertyColumn<ServiceMeasure, String>(new Model<>("Color"), "categoryStyle.color",
+                "categoryStyle.color") {
+            @Override
+            public void populateItem(final Item<ICellPopulator<ServiceMeasure>> item, final String componentId, final IModel<ServiceMeasure> rowModel) {
+                item.add(new Label(componentId, "")
+                        .add(new AttributeModifier("style", "background-color: " + rowModel.getObject().getCategoryStyle().getColor()))
+                        .add(new CssClassNameAppender("color-box"))
+                );
+            }
+        });
     }
 
     @Override
@@ -131,5 +145,10 @@ public class ListServiceMeasuresPage extends BasePage {
                     .setLabel(new StringResourceModel("edit", this, null));
             add(editItemPageLink);
         }
+    }
+
+    protected Label getPageTitle() {
+        String service = getPageParameters().get("service").toString();
+        return new Label("pageTitle", Model.of(MessageFormat.format(getString("page.title"), service)));
     }
 }

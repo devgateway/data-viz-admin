@@ -7,6 +7,7 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.ladda.LaddaAjaxBut
 import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -25,6 +26,10 @@ import org.devgateway.toolkit.forms.wicket.components.form.visitors.GenericBoots
 import org.devgateway.toolkit.forms.wicket.page.BasePage;
 import org.devgateway.toolkit.persistence.dto.ServiceEntity;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+
+import java.text.MessageFormat;
+
+import static org.devgateway.toolkit.forms.WebConstants.PARAM_SERVICE;
 
 public abstract class AbstractEditServiceEntityPage<T extends ServiceEntity> extends BasePage {
     private static final long serialVersionUID = -2184956023986944919L;
@@ -315,7 +320,7 @@ public abstract class AbstractEditServiceEntityPage<T extends ServiceEntity> ext
         // section in child
         pageTitle.setDefaultModel(getTitleModel());
 
-        serviceName = getPageParameters().get(WebConstants.PARAM_SERVICE).toString();
+        serviceName = getPageParameters().get(PARAM_SERVICE).toString();
     }
 
     @Override
@@ -345,19 +350,20 @@ public abstract class AbstractEditServiceEntityPage<T extends ServiceEntity> ext
 
     }
 
-    protected StringResourceModel getTitleModel() {
+    protected Model<String> getTitleModel() {
+        String service = getPageParameters().get(PARAM_SERVICE).toString();
         if (entityId == null) {
-            return new StringResourceModel("page.title.add", this, null);
+            return Model.of(MessageFormat.format(getString("page.title.add"), service));
         } else {
-            return new StringResourceModel("page.title.edit", this, null);
+            return Model.of(MessageFormat.format(getString("page.title.edit"), service));
         }
     }
 
     protected PageParameters getParamsWithServiceInformation() {
-        String service = getPageParameters().get(WebConstants.PARAM_SERVICE).toString();
+        String service = getPageParameters().get(PARAM_SERVICE).toString();
 
         PageParameters pageParams = new PageParameters();
-        pageParams.add(WebConstants.PARAM_SERVICE, service);
+        pageParams.add(PARAM_SERVICE, service);
 
         return pageParams;
     }

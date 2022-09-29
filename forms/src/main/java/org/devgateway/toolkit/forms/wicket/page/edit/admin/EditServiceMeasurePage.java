@@ -1,6 +1,8 @@
 package org.devgateway.toolkit.forms.wicket.page.edit.admin;
 
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.devgateway.toolkit.forms.wicket.components.form.ColorPickerBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceDimensionsPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceMeasuresPage;
@@ -35,6 +37,26 @@ public class EditServiceMeasurePage extends AbstractEditServiceEntityPage<Servic
         final TextFieldBootstrapFormComponent<Integer> position = new TextFieldBootstrapFormComponent<>("position");
         position.getField().setRequired(true);
         editForm.add(position);
+
+        final TextFieldBootstrapFormComponent<String> expression = new TextFieldBootstrapFormComponent<>("expression");
+        expression.setEnabled(false);
+        editForm.add(expression);
+
+        ColorPickerBootstrapFormComponent colorPicker = new ColorPickerBootstrapFormComponent("color",
+                new PropertyModel<>(editForm.getModelObject(), "categoryStyle.color"));
+        editForm.add(colorPicker);
+
+        final TextFieldBootstrapFormComponent<String> className = new TextFieldBootstrapFormComponent<>("className",
+                new PropertyModel<>(editForm.getModelObject(), "categoryStyle.className"));
+        editForm.add(className);
+
+        ColorPickerBootstrapFormComponent textColorPicker = new ColorPickerBootstrapFormComponent("textColor",
+                new PropertyModel<>(editForm.getModelObject(), "categoryStyle.textColor"));
+        editForm.add(textColorPicker);
+
+        ColorPickerBootstrapFormComponent bckColorPicker = new ColorPickerBootstrapFormComponent("backgroundColor",
+                new PropertyModel<>(editForm.getModelObject(), "categoryStyle.backgroundColor"));
+        editForm.add(bckColorPicker);
     }
 
     @Override

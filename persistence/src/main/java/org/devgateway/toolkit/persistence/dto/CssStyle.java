@@ -1,6 +1,8 @@
 package org.devgateway.toolkit.persistence.dto;
 
-public class CssStyle {
+import java.io.Serializable;
+
+public class CssStyle implements Serializable {
     private String backgroundColor;
 
     private String textColor;
