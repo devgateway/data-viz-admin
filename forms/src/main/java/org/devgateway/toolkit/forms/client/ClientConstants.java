@@ -15,6 +15,9 @@ public class ClientConstants {
 
     public final static String PATH_MEASURES = "/admin/measures";
 
+    public static final String PATH_CATEGORIES = "/admin/categories";
+
+
     public final static String PATH_CODE = "/code";
 
     public final static String CODE_PREFIX = "tcdi-";

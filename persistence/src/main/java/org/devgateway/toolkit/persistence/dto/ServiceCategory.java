@@ -13,6 +13,8 @@ public class ServiceCategory extends ServiceEntity {
 
     private CssStyle categoryStyle;
 
+    private String type;
+
     public String getCode() {
         return code;
     }
@@ -45,4 +47,11 @@ public class ServiceCategory extends ServiceEntity {
         this.categoryStyle = categoryStyle;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(final String type) {
+        this.type = type;
+    }
 }

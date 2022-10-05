@@ -19,12 +19,14 @@ import org.apache.wicket.validation.ValidationError;
 import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.exceptions.NullListPageClassException;
 import org.devgateway.toolkit.forms.service.DatasetClientService;
+import org.devgateway.toolkit.forms.service.admin.BaseServiceEntityService;
 import org.devgateway.toolkit.forms.wicket.components.form.BootstrapCancelButton;
 import org.devgateway.toolkit.forms.wicket.components.form.BootstrapSubmitButton;
 import org.devgateway.toolkit.forms.wicket.components.form.GenericBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.form.visitors.GenericBootstrapValidationVisitor;
 import org.devgateway.toolkit.forms.wicket.page.BasePage;
 import org.devgateway.toolkit.persistence.dto.ServiceEntity;
+import org.devgateway.toolkit.persistence.service.BaseJpaService;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 import java.text.MessageFormat;
@@ -46,13 +48,12 @@ public abstract class AbstractEditServiceEntityPage<T extends ServiceEntity> ext
      */
     protected Class<? extends BasePage> listPageClass;
 
-    @SpringBean
-    protected DatasetClientService datasetClientService;
-
     /**
      * The form used by all subclasses
      */
     protected EditForm editForm;
+
+    protected BaseServiceEntityService<T> entityService;
 
     private CompoundPropertyModel<T> compoundModel;
 
@@ -202,9 +203,9 @@ public abstract class AbstractEditServiceEntityPage<T extends ServiceEntity> ext
                 T entity = editForm.getModelObject();
 
                 if (editForm.getModelObject().getId() != null) {
-                    updateEntity(entity);
+                    entityService.update(serviceName, entity);
                 } else {
-                    createEntity(entity);
+                    entityService.save(serviceName, entity);
                 }
 
                 // only redirect if redirect is true
@@ -335,10 +336,10 @@ public abstract class AbstractEditServiceEntityPage<T extends ServiceEntity> ext
         IModel<T> model = null;
 
         if (entityId != null) {
-            T entity = getEntityById(entityId);
+            T entity = entityService.findOne(serviceName, entityId);
             model = Model.of(entity);
         } else {
-            T entity = newInstance();
+            T entity = entityService.newInstance();
             if (entity != null) {
                 model = Model.of(entity);
             }
@@ -367,13 +368,5 @@ public abstract class AbstractEditServiceEntityPage<T extends ServiceEntity> ext
 
         return pageParams;
     }
-
-    protected abstract T newInstance();
-
-    protected abstract T getEntityById(Long id);
-
-    protected abstract void createEntity(T entity);
-
-    protected abstract void updateEntity(T entity);
 
 }

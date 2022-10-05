@@ -26,6 +26,7 @@ import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.BigLinkDefinition;
 import org.devgateway.toolkit.forms.wicket.components.BigLinksPanel;
+import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceCategoriesPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceDimensionsPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceMeasuresPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListCSVDatasetPage;
@@ -61,7 +62,7 @@ public class DataServicePage extends BasePage {
         links.add(getEntityLink("datasets", getServicePageClass(serviceMetadata.getType()), database_s));
         links.add(getEntityLink("measures", ListServiceMeasuresPage.class, ruler_s));
         links.add(getEntityLink("dimensions", ListServiceDimensionsPage.class, chart_bar_s));
-        links.add(getEntityLink("categories", ListServiceDimensionsPage.class, layer_group_s));
+        links.add(getEntityLink("categories", ListServiceCategoriesPage.class, layer_group_s));
 
         add(new BigLinksPanel("links", Model.ofList(links)));
     }
