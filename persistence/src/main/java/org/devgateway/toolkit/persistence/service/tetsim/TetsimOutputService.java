@@ -8,6 +8,7 @@ import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
+import org.devgateway.toolkit.persistence.dto.TetsimExportOutput;
 import org.devgateway.toolkit.persistence.dto.TetsimOutput;
 import org.devgateway.toolkit.persistence.service.data.TetsimDatasetService;
 import org.devgateway.toolkit.persistence.util.tetsim.TetsimOutputOvershiftCalculator;
@@ -33,9 +34,14 @@ public class TetsimOutputService {
             .build();
 
     public static final List<String> TETSIM_CSV_FIELDS = new ImmutableList.Builder()
-            .add("year", "taxChange", "tobaccoProduct", "shifting", "legalConsumption", "legalConsumptionChange",
-                    "consumptionIllicit", "exciseRev", "exciseRevChange", "totalGovRev", "exciseBurden",
-                    "totalTaxBurden", "retailPrice", "not", "exciseTax", "vat", "levy")
+            .add("year", "taxChange", "tobaccoProduct", "legalConsumptionOvershift", "legalConsumptionChangeOvershift",
+                    "consumptionIllicitOvershift", "exciseRevOvershift", "exciseRevChangeOvershift",
+                    "totalGovRevOvershift", "exciseBurdenOvershift", "totalTaxBurdenOvershift", "retailPriceOvershift",
+                    "notOvershift", "exciseTaxOvershift", "vatOvershift", "levyOvershift",
+                    "legalConsumptionUndershift", "legalConsumptionChangeUndershift","consumptionIllicitUndershift",
+                    "exciseRevUndershift", "exciseRevChangeUndershift", "totalGovRevUndershift", "exciseBurdenUndershift",
+                    "totalTaxBurdenUndershift", "retailPriceUndershift", "notUndershift", "exciseTaxUndershift",
+                    "vatUndershift", "levyUndershift")
             .build();
     @Autowired
     private TetsimDatasetService tetsimDatasetService;
@@ -46,14 +52,15 @@ public class TetsimOutputService {
      * @param datasetId
      * @return
      */
-    public List<TetsimOutput> getTetsimOutputs(Long datasetId) {
+    public List<TetsimExportOutput> getTetsimOutputs(Long datasetId) {
         TetsimDataset dataset = tetsimDatasetService.findById(datasetId).get();
-        List<TetsimOutput> outputs = new ArrayList<>();
+        List<TetsimExportOutput> outputs = new ArrayList<>();
 
         for (int i = 0; i <= MAX_TAX_CHANGE; i++) {
             for (String t : TOBACCO_PRODUCTS) {
-                outputs.add(new TetsimOutputOvershiftCalculator(dataset, i).calculate(t));
-                outputs.add(new TetsimOutputUndershiftCalculator(dataset, i).calculate(t));
+                TetsimOutput overShift = new TetsimOutputOvershiftCalculator(dataset, i).calculate(t);
+                TetsimOutput underShift = new TetsimOutputUndershiftCalculator(dataset, i).calculate(t);
+                outputs.add(new TetsimExportOutput(overShift, underShift));
             }
         }
 
@@ -79,8 +86,8 @@ public class TetsimOutputService {
                 .map(String::toUpperCase)
                 .collect(Collectors.toList());
 
-        HeaderColumnNameMappingStrategy<TetsimOutput> columnStrategy = new HeaderColumnNameMappingStrategy<>();
-        columnStrategy.setType(TetsimOutput.class);
+        HeaderColumnNameMappingStrategy<TetsimExportOutput> columnStrategy = new HeaderColumnNameMappingStrategy<>();
+        columnStrategy.setType(TetsimExportOutput.class);
         columnStrategy.setColumnOrderOnWrite(Comparator.comparingInt(columns::indexOf));
 
         StatefulBeanToCsv sbc = new StatefulBeanToCsvBuilder(streamWriter)

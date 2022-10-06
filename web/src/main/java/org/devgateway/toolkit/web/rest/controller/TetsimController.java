@@ -3,7 +3,7 @@ package org.devgateway.toolkit.web.rest.controller;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import io.swagger.annotations.ApiOperation;
-import org.devgateway.toolkit.persistence.dto.TetsimOutput;
+import org.devgateway.toolkit.persistence.dto.TetsimExportOutput;
 import org.devgateway.toolkit.persistence.service.tetsim.TetsimOutputService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +34,8 @@ public class TetsimController {
 
     @ApiOperation(value = "TETSIM Output API")
     @GetMapping(value = "/output", produces = "application/json")
-    public List<TetsimOutput> getTetsimOutput(@RequestParam() final Long id) {
-        List<TetsimOutput> outputs = tetsimOutputService.getTetsimOutputs(id);
+    public List<TetsimExportOutput> getTetsimOutput(@RequestParam() final Long id) {
+        List<TetsimExportOutput> outputs = tetsimOutputService.getTetsimOutputs(id);
 
         return outputs;
     }
