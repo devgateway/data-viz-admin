@@ -51,8 +51,8 @@ import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.security.SecurityUtil;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListGroupPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListTestFormPage;
+import org.devgateway.toolkit.forms.wicket.page.lists.ListTobaccoProductPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListUserPage;
-import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServicePage;
 import org.devgateway.toolkit.forms.wicket.page.user.EditUserPage;
 import org.devgateway.toolkit.forms.wicket.page.user.LogoutPage;
 import org.devgateway.toolkit.forms.wicket.styles.BaseStyles;
@@ -262,6 +262,12 @@ public abstract class BasePage extends GenericWebPage<Void> {
                 list.add(new MenuBookmarkablePageLink<ListGroupPage>(ListGroupPage.class, null,
                         new StringResourceModel("navbar.groups", this, null))
                         .setIconType(FontAwesome5IconType.tags_s));
+
+                list.add(new MenuDivider());
+
+                list.add(new MenuBookmarkablePageLink<ListGroupPage>(ListTobaccoProductPage.class, null,
+                        new StringResourceModel("navbar.tobaccoproducts", this, null))
+                        .setIconType(FontAwesome5IconType.smoking_s));
 
                 list.add(new MenuDivider());
 
