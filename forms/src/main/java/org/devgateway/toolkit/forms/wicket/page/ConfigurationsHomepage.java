@@ -12,6 +12,7 @@ import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.wicket.components.BigLinkDefinition;
 import org.devgateway.toolkit.forms.wicket.components.BigLinksPanel;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListGroupPage;
+import org.devgateway.toolkit.forms.wicket.page.lists.ListTobaccoProductPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListUserPage;
 import org.devgateway.toolkit.web.util.SettingsUtils;
 
@@ -30,6 +31,7 @@ public class ConfigurationsHomepage extends BasePage {
     private static final List<BigLinkDefinition> LINKS = new ImmutableList.Builder<BigLinkDefinition>()
             .add(new BigLinkDefinition("users", ListUserPage.class, FontAwesome5IconType.users_s))
             .add(new BigLinkDefinition("groups", ListGroupPage.class, FontAwesome5IconType.tags_s))
+            .add(new BigLinkDefinition("tobaccoProducts", ListTobaccoProductPage.class, FontAwesome5IconType.smoking_s))
             .add(new BigLinkDefinition("settings", EditAdminSettingsPage.class, FontAwesome5IconType.cogs_s))
             .build();
 
