@@ -1,6 +1,12 @@
 package org.devgateway.toolkit.persistence.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.devgateway.toolkit.persistence.serializer.ServiceTextTranslationDeserializer;
+import org.devgateway.toolkit.persistence.serializer.ServiceTextTranslationSerializer;
+
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ServiceCategory extends ServiceEntity {
@@ -14,6 +20,10 @@ public class ServiceCategory extends ServiceEntity {
     private CssStyle categoryStyle;
 
     private String type;
+
+    @JsonDeserialize(using = ServiceTextTranslationDeserializer.class)
+    @JsonSerialize(using = ServiceTextTranslationSerializer.class)
+    private List<ServiceTextTranslation> labels;
 
     public String getCode() {
         return code;
@@ -53,5 +63,13 @@ public class ServiceCategory extends ServiceEntity {
 
     public void setType(final String type) {
         this.type = type;
+    }
+
+    public List<ServiceTextTranslation> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(final List<ServiceTextTranslation> labels) {
+        this.labels = labels;
     }
 }

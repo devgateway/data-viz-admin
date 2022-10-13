@@ -6,6 +6,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.service.admin.ServiceCategoryService;
 import org.devgateway.toolkit.forms.wicket.components.form.ColorPickerBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
+import org.devgateway.toolkit.forms.wicket.page.edit.admin.panel.ListViewTextTranslationSectionPanel;
+import org.devgateway.toolkit.forms.wicket.page.edit.panel.TestFormChildPanel;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceCategoriesPage;
 import org.devgateway.toolkit.persistence.dto.ServiceCategory;
 import org.hibernate.envers.Audited;
@@ -60,6 +62,8 @@ public class EditServiceCategoryPage extends AbstractEditServiceEntityPage<Servi
         ColorPickerBootstrapFormComponent bckColorPicker = new ColorPickerBootstrapFormComponent("backgroundColor",
                 new PropertyModel<>(editForm.getModelObject(), "categoryStyle.backgroundColor"));
         editForm.add(bckColorPicker);
+
+        editForm.add(new ListViewTextTranslationSectionPanel("labels"));
     }
 
 }

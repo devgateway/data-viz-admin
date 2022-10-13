@@ -295,3 +295,12 @@ button .btn-home-label {
     display: inline-block;
     margin-right: 5px;
 }
+
+.row-list-item-button {
+    min-height: 58px;
+}
+
+.pull-down {
+    position: absolute;
+    bottom: 0;
+}
