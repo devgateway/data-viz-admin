@@ -4,14 +4,12 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.service.admin.ServiceCategoryService;
+import org.devgateway.toolkit.forms.validators.UniqueLanguageTranslationValidator;
 import org.devgateway.toolkit.forms.wicket.components.form.ColorPickerBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.page.edit.admin.panel.ListViewTextTranslationSectionPanel;
-import org.devgateway.toolkit.forms.wicket.page.edit.panel.TestFormChildPanel;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceCategoriesPage;
 import org.devgateway.toolkit.persistence.dto.ServiceCategory;
-import org.hibernate.envers.Audited;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.wicketstuff.annotation.mount.MountPath;
 
 @MountPath(value = "/editServiceCategory")
@@ -64,6 +62,7 @@ public class EditServiceCategoryPage extends AbstractEditServiceEntityPage<Servi
         editForm.add(bckColorPicker);
 
         editForm.add(new ListViewTextTranslationSectionPanel("labels"));
+        editForm.add(new UniqueLanguageTranslationValidator());
     }
 
 }

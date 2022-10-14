@@ -3,6 +3,7 @@ package org.devgateway.toolkit.forms.wicket.page.edit.admin;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.service.admin.ServiceDimensionService;
+import org.devgateway.toolkit.forms.validators.UniqueLanguageTranslationValidator;
 import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.page.edit.admin.panel.ListViewTextTranslationSectionPanel;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceDimensionsPage;
@@ -40,7 +41,7 @@ public class EditServiceDimensionPage extends AbstractEditServiceEntityPage<Serv
         editForm.add(position);
 
         editForm.add(new ListViewTextTranslationSectionPanel("labels"));
-
+        editForm.add(new UniqueLanguageTranslationValidator());
     }
 
 }

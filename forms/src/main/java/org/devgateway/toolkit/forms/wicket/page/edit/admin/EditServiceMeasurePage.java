@@ -4,6 +4,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.service.admin.ServiceMeasureService;
+import org.devgateway.toolkit.forms.validators.UniqueLanguageTranslationValidator;
 import org.devgateway.toolkit.forms.wicket.components.form.ColorPickerBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.page.edit.admin.panel.ListViewTextTranslationSectionPanel;
@@ -62,6 +63,7 @@ public class EditServiceMeasurePage extends AbstractEditServiceEntityPage<Servic
         editForm.add(bckColorPicker);
 
         editForm.add(new ListViewTextTranslationSectionPanel("labels"));
+        editForm.add(new UniqueLanguageTranslationValidator());
     }
 
 }
