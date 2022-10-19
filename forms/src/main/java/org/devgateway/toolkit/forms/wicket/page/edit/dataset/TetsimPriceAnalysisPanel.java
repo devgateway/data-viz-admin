@@ -265,7 +265,7 @@ public class TetsimPriceAnalysisPanel extends Panel {
     }
 
     private String getDefaultCurrency() {
-        return adminSettingsService.get().getDefaultCurrency().getLabel();
+        return adminSettingsService.get().getTetsimCurrency();
     }
 
 }

@@ -8,15 +8,10 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.wicket.components.form.CheckBoxToggleBootstrapFormComponent;
-import org.devgateway.toolkit.forms.wicket.components.form.Select2ChoiceBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.page.edit.AbstractEditPage;
-import org.devgateway.toolkit.forms.wicket.providers.GenericPersistableJpaTextChoiceProvider;
 import org.devgateway.toolkit.persistence.dao.AdminSettings;
-import org.devgateway.toolkit.persistence.dao.categories.Currency;
 import org.devgateway.toolkit.persistence.service.AdminSettingsService;
-import org.devgateway.toolkit.persistence.service.category.CurrencyService;
-import org.springframework.data.domain.Sort;
 import org.wicketstuff.annotation.mount.MountPath;
 
 import java.util.List;
@@ -30,9 +25,6 @@ import java.util.List;
 public class EditAdminSettingsPage extends AbstractEditPage<AdminSettings> {
 
     private static final long serialVersionUID = 5742724046825803877L;
-
-    @SpringBean
-    private CurrencyService currencyService;
 
     private CheckBoxToggleBootstrapFormComponent rebootServer;
 
@@ -67,11 +59,9 @@ public class EditAdminSettingsPage extends AbstractEditPage<AdminSettings> {
 
         editForm.add(new Label("appSettingsTitle", new StringResourceModel("appSettingsTitle", this, null)));
 
-        Select2ChoiceBootstrapFormComponent<Currency> currency = new Select2ChoiceBootstrapFormComponent<>(
-                "defaultCurrency",
-                new GenericPersistableJpaTextChoiceProvider<>(currencyService).setSort(Sort.Direction.ASC, "label"));
-        currency.required();
-        editForm.add(currency);
+        TextFieldBootstrapFormComponent<String> tetsimCurrency = new TextFieldBootstrapFormComponent<>("tetsimCurrency");
+        tetsimCurrency.required();
+        editForm.add(tetsimCurrency);
 
         editForm.add(new TextFieldBootstrapFormComponent<>("countryName"));
 
