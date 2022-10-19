@@ -295,3 +295,10 @@ button .btn-home-label {
     display: inline-block;
     margin-right: 5px;
 }
+
+.required .control-label:before {
+    content: "*";
+    color: #a94442;
+    display: inline;
+    margin-right: 5px;
+}
