@@ -1,6 +1,5 @@
 package org.devgateway.toolkit.persistence.dao;
 
-import org.devgateway.toolkit.persistence.dao.categories.Currency;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.envers.Audited;
@@ -28,7 +27,7 @@ public class AdminSettings extends AbstractAuditableEntity {
 
     private Integer autosaveTime = AUTOSAVE_TIME_DEFAULT;
 
-    private Currency defaultCurrency;
+    private String tetsimCurrency;
 
     private String countryName;
 
@@ -65,12 +64,12 @@ public class AdminSettings extends AbstractAuditableEntity {
         this.autosaveTime = autosaveTime;
     }
 
-    public Currency getDefaultCurrency() {
-        return defaultCurrency;
+    public String getTetsimCurrency() {
+        return tetsimCurrency;
     }
 
-    public void setDefaultCurrency(final Currency defaultCurrency) {
-        this.defaultCurrency = defaultCurrency;
+    public void setTetsimCurrency(String tetsimCurrency) {
+        this.tetsimCurrency = tetsimCurrency;
     }
 
     public String getCountryName() {
