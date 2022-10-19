@@ -84,9 +84,9 @@ public class DataPage extends BasePage {
 
     private FontAwesome5IconType getServiceIcon(final String type) {
         if (type.equals(WebConstants.SERVICE_TETSIM_TYPE)) {
-            return FontAwesome5IconType.wpforms;
+            return FontAwesome5IconType.list_alt_r;
         } else if (type.equals(WebConstants.SERVICE_DATA_TYPE)) {
-            return FontAwesome5IconType.table_s;
+            return FontAwesome5IconType.file_csv_s;
         }
 
         throw new IllegalArgumentException("Unknown service type: " + type);
