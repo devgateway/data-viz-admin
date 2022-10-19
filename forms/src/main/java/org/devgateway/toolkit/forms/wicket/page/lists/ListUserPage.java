@@ -38,7 +38,6 @@ public class ListUserPage extends AbstractListPage<Person> {
 
         this.editPageClass = EditUserPageElevated.class;
         columns.add(new PropertyColumn<>(new Model<>("Name"), "username", "username"));
-        columns.add(new PropertyColumn<>(new Model<>("Group"), "group", "group"));
         columns.add(new PropertyColumn<>(new Model<>("Roles"), "roles", "roles"));
     }
 
