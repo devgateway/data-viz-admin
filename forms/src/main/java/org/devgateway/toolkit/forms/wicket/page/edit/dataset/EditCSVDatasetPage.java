@@ -19,7 +19,6 @@ import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListCSVDatasetPage
 import org.devgateway.toolkit.forms.wicket.providers.GenericChoiceProvider;
 import org.devgateway.toolkit.persistence.dao.FileMetadata;
 import org.devgateway.toolkit.persistence.dao.data.CSVDataset;
-import org.devgateway.toolkit.persistence.service.category.TobaccoProductService;
 import org.devgateway.toolkit.persistence.service.data.CSVDatasetService;
 import org.devgateway.toolkit.web.util.SettingsUtils;
 import org.slf4j.Logger;
@@ -56,9 +55,6 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
 
     @SpringBean
     protected SettingsUtils settingsUtils;
-
-    @SpringBean
-    protected TobaccoProductService tobaccoProductService;
 
     public EditCSVDatasetPage(final PageParameters parameters) {
         super(parameters);
