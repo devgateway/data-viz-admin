@@ -168,6 +168,13 @@
         </update>
     </changeSet>
 
-
+    <changeSet id="TOBACCO-1060-remove-tobacco-products" author="vchihai">
+        <preConditions onFail="CONTINUE">
+            <tableExists tableName="CATEGORY" />
+        </preConditions>
+        <delete tableName="CATEGORY">
+            <where>DTYPE = 'TobaccoProduct'</where>
+        </delete>
+    </changeSet>
 
 </databaseChangeLog>

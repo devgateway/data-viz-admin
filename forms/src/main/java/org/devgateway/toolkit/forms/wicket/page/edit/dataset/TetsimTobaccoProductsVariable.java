@@ -7,16 +7,15 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
-import org.devgateway.toolkit.persistence.dao.categories.TobaccoProduct;
 import org.devgateway.toolkit.persistence.dao.data.TetsimPriceVariable;
 import org.devgateway.toolkit.persistence.dao.data.TetsimTobaccoProductValue;
-import org.devgateway.toolkit.persistence.service.category.TobaccoProductService;
+import org.devgateway.toolkit.persistence.dao.data.TobaccoProduct;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Viorel Chihai
@@ -32,9 +31,6 @@ public class TetsimTobaccoProductsVariable extends Panel {
     private final boolean illicitOnly;
 
     protected final IModel<TetsimPriceVariable> variableModel;
-
-    @SpringBean
-    protected TobaccoProductService tobaccoProductService;
 
     protected RepeatingView inputFields;
 
@@ -75,7 +71,7 @@ public class TetsimTobaccoProductsVariable extends Panel {
 
     protected RepeatingView createInputFields() {
         RepeatingView fields = new RepeatingView("tobaccoProducts");
-        List<TobaccoProduct> tobaccoProducts = tobaccoProductService.findAllSorted();
+        List<TobaccoProduct> tobaccoProducts = TobaccoProduct.ALL.stream().collect(Collectors.toList());
         TetsimPriceVariable priceVariable = variableModel.getObject();
 
         for (TobaccoProduct tobaccoProduct: tobaccoProducts) {
@@ -104,7 +100,7 @@ public class TetsimTobaccoProductsVariable extends Panel {
                 : priceVariable.getValues();
 
         TetsimTobaccoProductValue productValue = tobaccoProductValues.stream()
-                .filter(t -> t.getProduct().getId().equals(product.getId())).findAny()
+                .filter(t -> t.getProduct().getLabel().equals(product.getLabel())).findAny()
                 .orElse(null);
 
         if (productValue == null) {

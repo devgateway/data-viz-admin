@@ -1,6 +1,7 @@
 package org.devgateway.toolkit.persistence.util.tetsim;
 
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
+import org.devgateway.toolkit.persistence.dao.data.TobaccoProduct;
 
 import java.math.BigDecimal;
 
@@ -21,7 +22,7 @@ public class TetsimOutputUndershiftCalculator extends TetsimOutputBaseCalculator
     }
 
     @Override
-    public BigDecimal calculateAbsChangeShift(final String tobaccoProduct) {
+    public BigDecimal calculateAbsChangeShift(final TobaccoProduct tobaccoProduct) {
         BigDecimal exciseTax = getTobaccoProductValueFromVariable(dataset.getExciseTax(), tobaccoProduct);
         BigDecimal undershifting = getTobaccoProductValueFromVariable(dataset.getUndershifting(), tobaccoProduct);
 

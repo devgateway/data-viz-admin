@@ -8,6 +8,7 @@ import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
+import org.devgateway.toolkit.persistence.dao.data.TobaccoProduct;
 import org.devgateway.toolkit.persistence.dto.TetsimExportOutput;
 import org.devgateway.toolkit.persistence.dto.TetsimOutput;
 import org.devgateway.toolkit.persistence.service.data.TetsimDatasetService;
@@ -28,10 +29,6 @@ import java.util.stream.Collectors;
 public class TetsimOutputService {
 
     public static final int MAX_TAX_CHANGE = 100;
-
-    public static final List<String> TOBACCO_PRODUCTS = new ImmutableList.Builder()
-            .add("Imported", "Premium", "Popular", "Discount", "Illicit")
-            .build();
 
     public static final List<String> TETSIM_CSV_FIELDS = new ImmutableList.Builder()
             .add("year", "taxChange", "tobaccoProduct", "legalConsumptionOvershift", "legalConsumptionChangeOvershift",
@@ -57,7 +54,7 @@ public class TetsimOutputService {
         List<TetsimExportOutput> outputs = new ArrayList<>();
 
         for (int i = 0; i <= MAX_TAX_CHANGE; i++) {
-            for (String t : TOBACCO_PRODUCTS) {
+            for (TobaccoProduct t : TobaccoProduct.values()) {
                 TetsimOutput overShift = new TetsimOutputOvershiftCalculator(dataset, i).calculate(t);
                 TetsimOutput underShift = new TetsimOutputUndershiftCalculator(dataset, i).calculate(t);
                 outputs.add(new TetsimExportOutput(overShift, underShift));

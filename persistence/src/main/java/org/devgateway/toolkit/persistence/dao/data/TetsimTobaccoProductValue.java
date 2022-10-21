@@ -1,7 +1,6 @@
 package org.devgateway.toolkit.persistence.dao.data;
 
 import org.devgateway.toolkit.persistence.dao.AbstractAuditableEntity;
-import org.devgateway.toolkit.persistence.dao.categories.TobaccoProduct;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.envers.Audited;
@@ -19,7 +18,6 @@ public class TetsimTobaccoProductValue extends AbstractAuditableEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private TetsimPriceVariable priceVariable;
 
-    @ManyToOne
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private TobaccoProduct product;
 

@@ -12,13 +12,13 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.devgateway.toolkit.forms.validators.PositiveBigDecimalValidator;
 import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
-import org.devgateway.toolkit.persistence.dao.categories.TobaccoProduct;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
+import org.devgateway.toolkit.persistence.dao.data.TobaccoProduct;
 import org.devgateway.toolkit.persistence.service.AdminSettingsService;
-import org.devgateway.toolkit.persistence.service.category.TobaccoProductService;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.devgateway.toolkit.forms.WebConstants.MAXIMUM_PERCENTAGE;
 
@@ -28,9 +28,6 @@ import static org.devgateway.toolkit.forms.WebConstants.MAXIMUM_PERCENTAGE;
 public class TetsimPriceAnalysisPanel extends Panel {
 
     protected final IModel<TetsimDataset> tetsimDatasetIModel;
-
-    @SpringBean
-    protected TobaccoProductService tobaccoProductService;
 
     @SpringBean
     protected AdminSettingsService adminSettingsService;
@@ -52,7 +49,7 @@ public class TetsimPriceAnalysisPanel extends Panel {
         analysisHeaders.add(new Label(analysisHeaders.newChildId(), Model.of("Price Variable")));
         analysisHeaders.add(new Label(analysisHeaders.newChildId(), Model.of("Unit")));
 
-        List<TobaccoProduct> tobaccoProducts = tobaccoProductService.findAllSorted();
+        List<TobaccoProduct> tobaccoProducts = TobaccoProduct.ALL.stream().collect(Collectors.toList());
         for (TobaccoProduct tobaccoProduct : tobaccoProducts) {
             analysisHeaders.add(new Label(analysisHeaders.newChildId(),
                     new PropertyModel<>(tobaccoProduct, "label")));

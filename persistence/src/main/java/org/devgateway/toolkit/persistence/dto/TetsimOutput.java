@@ -1,5 +1,7 @@
 package org.devgateway.toolkit.persistence.dto;
 
+import org.devgateway.toolkit.persistence.dao.data.TobaccoProduct;
+
 import java.io.Serializable;
 
 /**
@@ -13,7 +15,7 @@ public class TetsimOutput implements Serializable {
 
     private Integer taxChange;
 
-    private String tobaccoProduct;
+    private TobaccoProduct tobaccoProduct;
 
     private String shifting;
 
@@ -59,11 +61,11 @@ public class TetsimOutput implements Serializable {
         this.taxChange = taxChange;
     }
 
-    public String getTobaccoProduct() {
+    public TobaccoProduct getTobaccoProduct() {
         return tobaccoProduct;
     }
 
-    public void setTobaccoProduct(final String tobaccoProduct) {
+    public void setTobaccoProduct(final TobaccoProduct tobaccoProduct) {
         this.tobaccoProduct = tobaccoProduct;
     }
 
