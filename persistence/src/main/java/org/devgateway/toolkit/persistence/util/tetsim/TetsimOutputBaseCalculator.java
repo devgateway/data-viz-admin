@@ -7,10 +7,7 @@ import org.devgateway.toolkit.persistence.dto.TetsimOutput;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.TEN;

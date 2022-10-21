@@ -14,7 +14,6 @@
  */
 package org.devgateway.toolkit.forms.wicket.page;
 
-import com.google.common.collect.ImmutableList;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
@@ -28,14 +27,15 @@ import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.BigLinkDefinition;
 import org.devgateway.toolkit.forms.wicket.components.BigLinksPanel;
-import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListCSVDatasetPage;
-import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListTetsimDatasetPage;
 import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
 import org.devgateway.toolkit.web.util.SettingsUtils;
 import org.wicketstuff.annotation.mount.MountPath;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.devgateway.toolkit.forms.WebConstants.SERVICE_DATA_TYPE;
+import static org.devgateway.toolkit.forms.WebConstants.SERVICE_TETSIM_TYPE;
 
 /**
  * @author Viorel Chihai
@@ -60,7 +60,7 @@ public class DataPage extends BasePage {
             PageParameters pageParameters = new PageParameters();
             pageParameters.add("service", service.getName());
 
-            FontAwesome5IconType serviceIcon = getServiceIcon(service.getType());
+            FontAwesome5IconType serviceIcon = getServiceIcon(service);
 
             links.add(new BigLinkDefinition(service.getId(), DataServicePage.class, pageParameters, serviceIcon) {
 
@@ -82,14 +82,14 @@ public class DataPage extends BasePage {
         add(noServiceError);
     }
 
-    private FontAwesome5IconType getServiceIcon(final String type) {
-        if (type.equals(WebConstants.SERVICE_TETSIM_TYPE)) {
+    private FontAwesome5IconType getServiceIcon(final ServiceMetadata serviceMetadata) {
+        if (serviceMetadata.getType().equals(SERVICE_TETSIM_TYPE) || serviceMetadata.getName().equalsIgnoreCase(SERVICE_TETSIM_TYPE)) {
             return FontAwesome5IconType.list_alt_r;
-        } else if (type.equals(WebConstants.SERVICE_DATA_TYPE)) {
+        } else if (serviceMetadata.getType().equals(SERVICE_DATA_TYPE)) {
             return FontAwesome5IconType.file_csv_s;
         }
 
-        throw new IllegalArgumentException("Unknown service type: " + type);
+        throw new IllegalArgumentException("Unknown service type: " + serviceMetadata.getType());
     }
 
     protected Label getPageTitle() {
