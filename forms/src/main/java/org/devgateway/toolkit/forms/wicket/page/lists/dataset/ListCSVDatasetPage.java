@@ -58,6 +58,8 @@ public class ListCSVDatasetPage extends AbstractListPage<CSVDataset> {
         columns.clear();
 
         columns.add(new PropertyColumn<>(new StringResourceModel("year"), "year", "year"));
+        columns.add(new PropertyColumn<>(new StringResourceModel("status"), "status", "status"));
+        columns.add(new PropertyColumn<>(new StringResourceModel("description"), "description", "description"));
         columns.add(new PropertyColumn<>(new StringResourceModel("lastModifiedBy"), "lastModifiedBy",
                 "lastModifiedBy.get"));
         columns.add(new PropertyColumn<CSVDataset, String>(new StringResourceModel("lastModifiedDate"),
@@ -71,7 +73,7 @@ public class ListCSVDatasetPage extends AbstractListPage<CSVDataset> {
                 return Model.of(modifiedDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
             }
         });
-        columns.add(new PropertyColumn<>(new StringResourceModel("status"), "status", "status"));
+
 
         filterState = new CSVDatasetFilterState();
         filterState.setService(service);

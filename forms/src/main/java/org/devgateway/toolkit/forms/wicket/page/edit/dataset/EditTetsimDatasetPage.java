@@ -1,6 +1,5 @@
 package org.devgateway.toolkit.forms.wicket.page.edit.dataset;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
@@ -23,8 +22,6 @@ import org.devgateway.toolkit.forms.wicket.providers.GenericChoiceProvider;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
 import org.devgateway.toolkit.persistence.dao.data.TetsimPriceVariable;
 import org.devgateway.toolkit.persistence.dao.data.TetsimTobaccoProductValue;
-import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
-import org.devgateway.toolkit.persistence.service.category.TobaccoProductService;
 import org.devgateway.toolkit.persistence.service.data.TetsimDatasetService;
 import org.devgateway.toolkit.persistence.service.tetsim.TetsimOutputService;
 import org.devgateway.toolkit.web.util.SettingsUtils;
@@ -34,13 +31,11 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.wicketstuff.annotation.mount.MountPath;
 
 import java.math.BigDecimal;
-import java.util.stream.Collectors;
 
 import static org.devgateway.toolkit.forms.WebConstants.MAXIMUM_PERCENTAGE;
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_YEAR;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DELETED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
-import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.SAVED;
 
 /**
  * @author vchihai
@@ -70,9 +65,6 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
 
     @SpringBean
     protected SettingsUtils settingsUtils;
-
-    @SpringBean
-    protected TobaccoProductService tobaccoProductService;
 
     public EditTetsimDatasetPage(final PageParameters parameters) {
         super(parameters);
@@ -190,18 +182,10 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
     }
 
     private Component getPriceAnalysisNumbers() {
-        if (tobaccoProductsNotDefined()) {
-            return new NoTobaccoProductsPanel("priceAnalysisNumbers");
-        }
-
         return new TetsimPriceAnalysisPanel("priceAnalysisNumbers", editForm.getModel());
     }
 
     private Component getIndustryResponsesNumbers() {
-        if (tobaccoProductsNotDefined()) {
-            return new NoTobaccoProductsPanel("industryResponsesNumbers");
-        }
-
         return new TetsimIndustryResponsesPanel("industryResponsesNumbers", editForm.getModel());
     }
 
@@ -226,23 +210,9 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
         }
     }
 
-    private boolean tobaccoProductsNotDefined() {
-        return tobaccoProductService.count() == 0;
-    }
-
     @Override
     protected void enableDisableAutosaveFields(final AjaxRequestTarget target) {
         super.enableDisableAutosaveFields(target);
-
-        if (tobaccoProductsNotDefined()) {
-            saveDraftContinueButton.setEnabled(false);
-            saveButton.setEnabled(false);
-            submitAndNext.setEnabled(false);
-            saveSubmitButton.setEnabled(false);
-            saveApproveButton.setEnabled(false);
-            approveButton.setEnabled(false);
-            revertToDraftPageButton.setEnabled(false);
-        }
     }
 
 

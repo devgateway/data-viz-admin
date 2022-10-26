@@ -2,17 +2,22 @@ package org.devgateway.toolkit.persistence.util.tetsim;
 
 import com.google.common.collect.ImmutableMap;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
+import org.devgateway.toolkit.persistence.dao.data.TobaccoProduct;
 import org.devgateway.toolkit.persistence.dto.TetsimOutput;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.TEN;
 import static java.math.BigDecimal.ZERO;
+import static org.devgateway.toolkit.persistence.dao.data.TobaccoProduct.DISCOUNT;
+import static org.devgateway.toolkit.persistence.dao.data.TobaccoProduct.ILLICIT;
+import static org.devgateway.toolkit.persistence.dao.data.TobaccoProduct.IMPORTED;
+import static org.devgateway.toolkit.persistence.dao.data.TobaccoProduct.POPULAR;
+import static org.devgateway.toolkit.persistence.dao.data.TobaccoProduct.PREMIUM;
+import static org.devgateway.toolkit.persistence.util.tetsim.TetsimUtil.getLegalTobaccoProducts;
 import static org.devgateway.toolkit.persistence.util.tetsim.TetsimUtil.getTobaccoProductValueFromVariable;
 
 /**
@@ -34,17 +39,17 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
 
     protected final Double changeInTheDeclaredCustomValue = 0.0;
 
-    public static final Map<String, String> GAIN_SWITCH_TOBACCO_PRODUCT = new ImmutableMap.Builder()
-            .put("Popular", "Premium")
-            .put("Discount", "Popular")
-            .put("Illicit", "Discount")
+    public static final Map<TobaccoProduct, TobaccoProduct> GAIN_SWITCH_TOBACCO_PRODUCT = new ImmutableMap.Builder()
+            .put(POPULAR, PREMIUM)
+            .put(DISCOUNT, POPULAR)
+            .put(ILLICIT, DISCOUNT)
             .build();
 
-    public static final Map<String, String> CONSUMPTION_DEPENDENT_TOBACCO_PRODUCT = new ImmutableMap.Builder()
-            .put("Imported", "Premium")
-            .put("Premium", "Popular")
-            .put("Popular", "Discount")
-            .put("Discount", "Illicit")
+    public static final Map<TobaccoProduct, TobaccoProduct> CONSUMPTION_DEPENDENT_TOBACCO_PRODUCT = new ImmutableMap.Builder()
+            .put(IMPORTED, PREMIUM)
+            .put(PREMIUM, POPULAR)
+            .put(POPULAR, DISCOUNT)
+            .put(DISCOUNT, ILLICIT)
             .build();
 
     public TetsimOutputBaseCalculator(TetsimDataset dataset, Integer percentageChange) {
@@ -61,10 +66,10 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
 
     protected abstract String getShifting();
 
-    protected abstract BigDecimal calculateAbsChangeShift(String tobaccoProduct);
+    protected abstract BigDecimal calculateAbsChangeShift(TobaccoProduct tobaccoProduct);
 
     @Override
-    public TetsimOutput calculate(String tobaccoProduct) {
+    public TetsimOutput calculate(TobaccoProduct tobaccoProduct) {
         TetsimOutput tetsimOutput = new TetsimOutput();
 
         tetsimOutput.setYear(this.dataset.getYear());
@@ -98,7 +103,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
     }
 
     private Double calculateOutputConsumptionIllicit() {
-        return calculateConsumption("Illicit").doubleValue();
+        return calculateConsumption(ILLICIT).doubleValue();
     }
 
     private Double calculateOutputExciseRev() {
@@ -116,49 +121,49 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
     /**
      * Calculate the Output Excise Burden
      */
-    private Double calculateOutputExciseBurden(String tobaccoProduct) {
+    private Double calculateOutputExciseBurden(TobaccoProduct tobaccoProduct) {
         return calculateExciseBurden(tobaccoProduct).doubleValue();
     }
 
     /**
      * Calculate the Output Total Tax Burden
      */
-    private Double calculateOutputTotalTaxBurden(String tobaccoProduct) {
+    private Double calculateOutputTotalTaxBurden(TobaccoProduct tobaccoProduct) {
         return calculateTotalTaxBurden(tobaccoProduct).doubleValue();
     }
 
     /**
      * Calculate the Output Retail Price
      */
-    public Double calculateOutputRetailPrice(String tobaccoProduct) {
+    public Double calculateOutputRetailPrice(TobaccoProduct tobaccoProduct) {
         return calculateRetailPrice(tobaccoProduct).doubleValue();
     }
 
     /**
      * Calculate the Output NOT
      */
-    public Double calculateOutputNot(String tobaccoProduct) {
+    public Double calculateOutputNot(TobaccoProduct tobaccoProduct) {
         return calculateNetTaxPrice(tobaccoProduct).doubleValue();
     }
 
     /**
      * Calculate the Output Excise Tax
      */
-    public Double calculateOutputExciseTax(String tobaccoProduct) {
+    public Double calculateOutputExciseTax(TobaccoProduct tobaccoProduct) {
         return calculateExciseTaxDomesticProduction(tobaccoProduct).doubleValue();
     }
 
     /**
      * Calculate the Output VAT
      */
-    public Double calculateOutputVat(String tobaccoProduct) {
+    public Double calculateOutputVat(TobaccoProduct tobaccoProduct) {
         return calculateVat(tobaccoProduct).doubleValue();
     }
 
     /**
      * Calculate the Output Levy
      */
-    public Double calculateOutputLevy(String tobaccoProduct) {
+    public Double calculateOutputLevy(TobaccoProduct tobaccoProduct) {
         return calculateTobaccoLevy(tobaccoProduct).doubleValue();
     }
 
@@ -167,13 +172,13 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      *
      * @param tobaccoProduct
      */
-    public BigDecimal calculateNetTaxPrice(String tobaccoProduct) {
+    public BigDecimal calculateNetTaxPrice(TobaccoProduct tobaccoProduct) {
         BigDecimal netTaxPrice = calculateBaselineNetTaxPrice(tobaccoProduct);
-        if (tobaccoProduct.equals("Illicit")) {
+        if (tobaccoProduct.equals(ILLICIT)) {
             BigDecimal shift = getTobaccoProductValueFromVariable(dataset.getChangeInIllicitNot(),
                     tobaccoProduct);
-            BigDecimal discountRetailPriceDifference = calculateRetailPrice("Discount")
-                    .subtract(calculateBaselineRetailPrice("Discount"));
+            BigDecimal discountRetailPriceDifference = calculateRetailPrice(DISCOUNT)
+                    .subtract(calculateBaselineRetailPrice(DISCOUNT));
             return netTaxPrice.add(shift.multiply(discountRetailPriceDifference));
         }
 
@@ -191,7 +196,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * Calculate Tobacco levy
      * CIF per pack * (levy rate + percentage change in levy) / 100
      */
-    protected BigDecimal calculateTobaccoLevy(String tobaccoProduct) {
+    protected BigDecimal calculateTobaccoLevy(TobaccoProduct tobaccoProduct) {
         BigDecimal cif = getTobaccoProductValueFromVariable(dataset.getCif(), tobaccoProduct);
         BigDecimal levy = getTobaccoProductValueFromVariable(dataset.getTobaccoLevy(), tobaccoProduct);
 
@@ -205,7 +210,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateExciseTaxDomesticProduction(String tobaccoProduct) {
+    public BigDecimal calculateExciseTaxDomesticProduction(TobaccoProduct tobaccoProduct) {
         return calculateBaselineExciseTaxOnDomesticProduction(tobaccoProduct)
                 .multiply(ONE.add(BigDecimal.valueOf(percentageChange).divide(HUNDRED, DEFAULT_CONTEXT)));
     }
@@ -216,8 +221,8 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    protected BigDecimal calculateExciseTaxImportedCigarettes(String tobaccoProduct) {
-        if (tobaccoProduct.equals("Imported")) {
+    protected BigDecimal calculateExciseTaxImportedCigarettes(TobaccoProduct tobaccoProduct) {
+        if (tobaccoProduct.equals(IMPORTED)) {
             return calculateBaselineExciseTaxOnImported(tobaccoProduct)
                     .multiply(ONE.add(BigDecimal.valueOf(percentageChange).divide(HUNDRED, DEFAULT_CONTEXT)));
         }
@@ -231,8 +236,8 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    protected BigDecimal calculateCustomsDutyImportedCigarettes(String tobaccoProduct) {
-        if (tobaccoProduct.equals("Imported")) {
+    protected BigDecimal calculateCustomsDutyImportedCigarettes(TobaccoProduct tobaccoProduct) {
+        if (tobaccoProduct.equals(IMPORTED)) {
             return calculateBaselineCustomsDuty(tobaccoProduct)
                     .multiply(
                             ONE.add(BigDecimal.valueOf(changeInTheDeclaredCustomValue).divide(HUNDRED, DEFAULT_CONTEXT))
@@ -248,8 +253,8 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateVat(String tobaccoProduct) {
-        if (tobaccoProduct.equals("Illicit")) {
+    public BigDecimal calculateVat(TobaccoProduct tobaccoProduct) {
+        if (tobaccoProduct.equals(ILLICIT)) {
             return ZERO;
         }
 
@@ -271,7 +276,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateRetailPrice(String tobaccoProduct) {
+    public BigDecimal calculateRetailPrice(TobaccoProduct tobaccoProduct) {
         return calculateNetTaxPrice(tobaccoProduct)
                 .add(calculateAdditionalCharges())
                 .add(calculateTobaccoLevy(tobaccoProduct))
@@ -288,7 +293,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateExciseBurden(String tobaccoProduct) {
+    public BigDecimal calculateExciseBurden(TobaccoProduct tobaccoProduct) {
         return calculateTobaccoLevy(tobaccoProduct)
                 .add(calculateExciseTaxDomesticProduction(tobaccoProduct))
                 .add(calculateExciseTaxImportedCigarettes(tobaccoProduct))
@@ -303,7 +308,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateTotalTaxBurden(String tobaccoProduct) {
+    public BigDecimal calculateTotalTaxBurden(TobaccoProduct tobaccoProduct) {
         return calculateTobaccoLevy(tobaccoProduct)
                 .add(calculateExciseTaxDomesticProduction(tobaccoProduct))
                 .add(calculateExciseTaxImportedCigarettes(tobaccoProduct))
@@ -320,7 +325,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculatePreConsumption(String tobaccoProduct) {
+    public BigDecimal calculatePreConsumption(TobaccoProduct tobaccoProduct) {
         BigDecimal baselineConsumption = calculateBaselineConsumption(tobaccoProduct);
         BigDecimal priceElasticity = getTobaccoProductValueFromVariable(dataset.getElasticityOfDemandPrice(),
                 tobaccoProduct);
@@ -347,9 +352,9 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateGainFromPrice(String tobaccoProduct) {
+    public BigDecimal calculateGainFromPrice(TobaccoProduct tobaccoProduct) {
         if (GAIN_SWITCH_TOBACCO_PRODUCT.containsKey(tobaccoProduct)) {
-            String switchProduct = GAIN_SWITCH_TOBACCO_PRODUCT.get(tobaccoProduct);
+            TobaccoProduct switchProduct = GAIN_SWITCH_TOBACCO_PRODUCT.get(tobaccoProduct);
 
             BigDecimal consumption = calculatePreConsumption(tobaccoProduct);
             BigDecimal crossElasticity = getTobaccoProductValueFromVariable(dataset.getElasticityOfDemandCrossPrice(),
@@ -378,7 +383,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateConsumption(String tobaccoProduct) {
+    public BigDecimal calculateConsumption(TobaccoProduct tobaccoProduct) {
         BigDecimal consumption = calculatePreConsumption(tobaccoProduct);
         BigDecimal gainFromPrice = calculateGainFromPrice(tobaccoProduct);
 
@@ -396,7 +401,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @return
      */
     public BigDecimal calculateTotalLegalConsumption() {
-        return getTetsimLegalTobaccoProducts().stream()
+        return getLegalTobaccoProducts().stream()
                 .map(tobaccoProduct -> calculateConsumption(tobaccoProduct))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
@@ -414,7 +419,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateRevenueTobaccoLevy(String tobaccoProduct) {
+    public BigDecimal calculateRevenueTobaccoLevy(TobaccoProduct tobaccoProduct) {
         return calculateConsumption(tobaccoProduct).multiply(calculateTobaccoLevy(tobaccoProduct));
     }
 
@@ -425,16 +430,16 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateRevenueExciseTaxDomesticProduction(String tobaccoProduct) {
+    public BigDecimal calculateRevenueExciseTaxDomesticProduction(TobaccoProduct tobaccoProduct) {
         return calculateConsumption(tobaccoProduct).multiply(calculateExciseTaxDomesticProduction(tobaccoProduct));
     }
 
-    public BigDecimal calculateBaselineExciseRevenueDomesticProduction(String tobaccoProduct) {
+    public BigDecimal calculateBaselineExciseRevenueDomesticProduction(TobaccoProduct tobaccoProduct) {
         return calculateBaselineConsumption(tobaccoProduct)
                 .multiply(calculateBaselineExciseTaxOnDomesticProduction(tobaccoProduct));
     }
 
-    public BigDecimal calculateBaselineExciseRevenueImportedCigarettes(String tobaccoProduct) {
+    public BigDecimal calculateBaselineExciseRevenueImportedCigarettes(TobaccoProduct tobaccoProduct) {
         return calculateBaselineConsumption(tobaccoProduct)
                 .multiply(calculateBaselineExciseTaxOnImported(tobaccoProduct));
     }
@@ -445,7 +450,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateRevenueExciseTaxImportedCigarettes(String tobaccoProduct) {
+    public BigDecimal calculateRevenueExciseTaxImportedCigarettes(TobaccoProduct tobaccoProduct) {
         return calculateConsumption(tobaccoProduct).multiply(calculateExciseTaxImportedCigarettes(tobaccoProduct));
     }
 
@@ -455,7 +460,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateRevenueCustomsDutyImportedCigarettes(String tobaccoProduct) {
+    public BigDecimal calculateRevenueCustomsDutyImportedCigarettes(TobaccoProduct tobaccoProduct) {
         return calculateConsumption(tobaccoProduct).multiply(calculateCustomsDutyImportedCigarettes(tobaccoProduct));
     }
 
@@ -465,7 +470,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateRevenueVat(String tobaccoProduct) {
+    public BigDecimal calculateRevenueVat(TobaccoProduct tobaccoProduct) {
         return calculateConsumption(tobaccoProduct).multiply(calculateVat(tobaccoProduct));
     }
 
@@ -474,12 +479,12 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      *
      * @param tobaccoProduct
      */
-    public BigDecimal calculateTotalExciseTaxesRevenue(String tobaccoProduct) {
+    public BigDecimal calculateTotalExciseTaxesRevenue(TobaccoProduct tobaccoProduct) {
         return calculateRevenueExciseTaxDomesticProduction(tobaccoProduct)
                 .add(calculateRevenueExciseTaxImportedCigarettes(tobaccoProduct));
     }
 
-    public BigDecimal calculateBaselineTotalExciseTaxesRevenue(String tobaccoProduct) {
+    public BigDecimal calculateBaselineTotalExciseTaxesRevenue(TobaccoProduct tobaccoProduct) {
         return calculateBaselineExciseRevenueDomesticProduction(tobaccoProduct)
                 .add(calculateBaselineExciseRevenueImportedCigarettes(tobaccoProduct));
     }
@@ -488,7 +493,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * Calculate Total Excise Revenue: sum of excise tax
      */
     public BigDecimal calculateTotalExciseRevenue() {
-        return getTetsimLegalTobaccoProducts().stream()
+        return getLegalTobaccoProducts().stream()
                 .map(tobaccoProduct -> calculateTotalExciseTaxesRevenue(tobaccoProduct))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
@@ -506,7 +511,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      *
      * @param tobaccoProduct
      */
-    public BigDecimal calculateTotalRevenue(String tobaccoProduct) {
+    public BigDecimal calculateTotalRevenue(TobaccoProduct tobaccoProduct) {
         return calculateRevenueTobaccoLevy(tobaccoProduct)
                 .add(calculateRevenueExciseTaxDomesticProduction(tobaccoProduct))
                 .add(calculateRevenueExciseTaxImportedCigarettes(tobaccoProduct))
@@ -518,13 +523,13 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * Calculate Total Government Revenue: excise tax + VAT + levy + customs
      */
     public BigDecimal calculateTotalLegalGovernmentRevenue() {
-        return getTetsimLegalTobaccoProducts().stream()
+        return getLegalTobaccoProducts().stream()
                 .map(tobaccoProduct -> calculateTotalRevenue(tobaccoProduct))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
 
-    public BigDecimal calculateBaselineTobaccoLevy(String tobaccoProduct) {
+    public BigDecimal calculateBaselineTobaccoLevy(TobaccoProduct tobaccoProduct) {
         BigDecimal cif = getTobaccoProductValueFromVariable(dataset.getCif(), tobaccoProduct);
         BigDecimal levy = getTobaccoProductValueFromVariable(dataset.getTobaccoLevy(), tobaccoProduct);
 
@@ -538,8 +543,8 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateBaselineExciseTaxOnDomesticProduction(String tobaccoProduct) {
-        if (tobaccoProduct.equals("Imported")) {
+    public BigDecimal calculateBaselineExciseTaxOnDomesticProduction(TobaccoProduct tobaccoProduct) {
+        if (tobaccoProduct.equals(IMPORTED)) {
             return ZERO;
         }
 
@@ -552,8 +557,8 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateBaselineExciseTaxOnImported(String tobaccoProduct) {
-        if (tobaccoProduct.equals("Imported")) {
+    public BigDecimal calculateBaselineExciseTaxOnImported(TobaccoProduct tobaccoProduct) {
+        if (tobaccoProduct.equals(IMPORTED)) {
             return getTobaccoProductValueFromVariable(dataset.getExciseTax(), tobaccoProduct);
         }
 
@@ -566,8 +571,8 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateBaselineCustomsDuty(String tobaccoProduct) {
-        if (tobaccoProduct.equals("Imported")) {
+    public BigDecimal calculateBaselineCustomsDuty(TobaccoProduct tobaccoProduct) {
+        if (tobaccoProduct.equals(IMPORTED)) {
             BigDecimal cif = getTobaccoProductValueFromVariable(dataset.getCif(), tobaccoProduct);
             BigDecimal duty = getTobaccoProductValueFromVariable(dataset.getCustomsDuty(), tobaccoProduct);
 
@@ -588,7 +593,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateBaselineRetailPrice(String tobaccoProduct) {
+    public BigDecimal calculateBaselineRetailPrice(TobaccoProduct tobaccoProduct) {
         return getTobaccoProductValueFromVariable(dataset.getRetailPrice(), tobaccoProduct);
     }
 
@@ -597,7 +602,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateBaselineVAT(String tobaccoProduct) {
+    public BigDecimal calculateBaselineVAT(TobaccoProduct tobaccoProduct) {
         BigDecimal baselineRetailPrice = calculateBaselineRetailPrice(tobaccoProduct);
         BigDecimal vatRate = dataset.getVatRate();
 
@@ -615,10 +620,10 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateBaselineNetTaxPrice(String tobaccoProduct) {
+    public BigDecimal calculateBaselineNetTaxPrice(TobaccoProduct tobaccoProduct) {
         BigDecimal baselineRetailPrice = calculateBaselineRetailPrice(tobaccoProduct);
 
-        if (tobaccoProduct.equals("Illicit")) {
+        if (tobaccoProduct.equals(ILLICIT)) {
             return baselineRetailPrice;
         }
 
@@ -636,7 +641,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateBaselineExciseBurden(String tobaccoProduct) {
+    public BigDecimal calculateBaselineExciseBurden(TobaccoProduct tobaccoProduct) {
         BigDecimal baselineTobaccoLevy = calculateBaselineTobaccoLevy(tobaccoProduct);
 
         return baselineTobaccoLevy
@@ -652,7 +657,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateBaselineTotalTaxBurden(String tobaccoProduct) {
+    public BigDecimal calculateBaselineTotalTaxBurden(TobaccoProduct tobaccoProduct) {
         BigDecimal baselineTobaccoLevy = calculateBaselineTobaccoLevy(tobaccoProduct);
 
         return baselineTobaccoLevy
@@ -670,7 +675,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @param tobaccoProduct
      * @return
      */
-    public BigDecimal calculateBaselineConsumption(String tobaccoProduct) {
+    public BigDecimal calculateBaselineConsumption(TobaccoProduct tobaccoProduct) {
         BigDecimal consumption = dataset.getCigaretteConsumption();
         BigDecimal marketShare = getTobaccoProductValueFromVariable(dataset.getMarketShare(), tobaccoProduct);
 
@@ -684,22 +689,15 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
      * @return
      */
     public BigDecimal calculateBaselineTotalLegalConsumption() {
-        return getTetsimLegalTobaccoProducts().stream()
+        return getLegalTobaccoProducts().stream()
                 .map(tobaccoProduct -> calculateBaselineConsumption(tobaccoProduct))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public BigDecimal calculateBaselineTotalExciseRevenue() {
-        return getTetsimLegalTobaccoProducts().stream()
+        return getLegalTobaccoProducts().stream()
                 .map(tobaccoProduct -> calculateBaselineTotalExciseTaxesRevenue(tobaccoProduct))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    private List<String> getTetsimLegalTobaccoProducts() {
-        return dataset.getRetailPrice().getValues().stream()
-                .filter(pv -> !pv.getProduct().isIllicit())
-                .map(pv -> pv.getProduct().getLabel())
-                .collect(Collectors.toList());
     }
 
 }

@@ -8,12 +8,11 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.devgateway.toolkit.persistence.dao.categories.TobaccoProduct;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
-import org.devgateway.toolkit.persistence.service.category.TobaccoProductService;
+import org.devgateway.toolkit.persistence.dao.data.TobaccoProduct;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Viorel Chihai
@@ -21,9 +20,6 @@ import java.util.List;
 public class TetsimIndustryResponsesPanel extends Panel {
 
     protected final IModel<TetsimDataset> tetsimDatasetIModel;
-
-    @SpringBean
-    protected TobaccoProductService tobaccoProductService;
 
     public TetsimIndustryResponsesPanel(final String id, final IModel<TetsimDataset> tetsimDatasetIModel) {
         super(id);
@@ -43,7 +39,7 @@ public class TetsimIndustryResponsesPanel extends Panel {
                 Model.of("Industry responses to the change in taxation")));
         analysisHeaders.add(new Label(analysisHeaders.newChildId(), Model.of("Unit")));
 
-        List<TobaccoProduct> tobaccoProducts = tobaccoProductService.findAllSorted();
+        List<TobaccoProduct> tobaccoProducts = TobaccoProduct.ALL.stream().collect(Collectors.toList());
         for (TobaccoProduct tobaccoProduct : tobaccoProducts) {
             analysisHeaders.add(new Label(analysisHeaders.newChildId(),
                     new PropertyModel<>(tobaccoProduct, "label")));

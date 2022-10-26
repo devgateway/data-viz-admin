@@ -34,7 +34,6 @@ import org.devgateway.toolkit.forms.service.SendEmailService;
 import org.devgateway.toolkit.forms.wicket.components.form.BootstrapCancelButton;
 import org.devgateway.toolkit.forms.wicket.components.form.CheckBoxToggleBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.form.PasswordFieldBootstrapFormComponent;
-import org.devgateway.toolkit.forms.wicket.components.form.Select2ChoiceBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.form.Select2MultiChoiceBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.util.ComponentUtil;
@@ -43,10 +42,8 @@ import org.devgateway.toolkit.forms.wicket.page.edit.AbstractEditPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListUserPage;
 import org.devgateway.toolkit.persistence.dao.Person;
 import org.devgateway.toolkit.persistence.dao.Role;
-import org.devgateway.toolkit.persistence.dao.categories.Group;
 import org.devgateway.toolkit.persistence.service.PersonService;
 import org.devgateway.toolkit.persistence.service.RoleService;
-import org.devgateway.toolkit.persistence.service.category.GroupService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.wicketstuff.annotation.mount.MountPath;
 
@@ -59,9 +56,6 @@ public class EditUserPage extends AbstractEditPage<Person> {
 
     @SpringBean
     private PersonService personService;
-
-    @SpringBean
-    private GroupService groupService;
 
     @SpringBean
     private RoleService roleService;
@@ -81,8 +75,6 @@ public class EditUserPage extends AbstractEditPage<Person> {
     protected TextFieldBootstrapFormComponent<String> email;
 
     protected TextFieldBootstrapFormComponent<String> title;
-
-    protected Select2ChoiceBootstrapFormComponent<Group> group;
 
     protected Select2MultiChoiceBootstrapFormComponent<Role> roles;
 
@@ -149,10 +141,6 @@ public class EditUserPage extends AbstractEditPage<Person> {
 
         title = ComponentUtil.addTextField(editForm, "title");
         title.getField().add(MAXIMUM_LENGTH_VALIDATOR_STD_DEFAULT_TEXT);
-
-        group = ComponentUtil.addSelect2ChoiceField(editForm, "group", groupService);
-        group.required();
-        MetaDataRoleAuthorizationStrategy.authorize(group, Component.RENDER, SecurityConstants.Roles.ROLE_ADMIN);
 
         roles = ComponentUtil.addSelect2MultiChoiceField(editForm, "roles", roleService);
         roles.required();

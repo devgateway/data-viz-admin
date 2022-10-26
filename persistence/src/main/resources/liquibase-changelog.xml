@@ -150,4 +150,31 @@
         </insert>
     </changeSet>
 
+    <changeSet id="TOBACCO-1060-remove-currency" author="vchihai">
+        <preConditions onFail="CONTINUE">
+            <tableExists tableName="CATEGORY" />
+        </preConditions>
+        <delete tableName="CATEGORY">
+            <where>DTYPE = 'Currency'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="TOBACCO-1060-add-tetsim-currency" author="vchihai">
+        <preConditions onFail="CONTINUE">
+            <columnExists tableName="admin_settings" columnName="tetsim_currency" />
+        </preConditions>
+        <update tableName="admin_settings">
+            <column name="tetsim_currency" value="USD" />
+        </update>
+    </changeSet>
+
+    <changeSet id="TOBACCO-1060-remove-tobacco-products" author="vchihai">
+        <preConditions onFail="CONTINUE">
+            <tableExists tableName="CATEGORY" />
+        </preConditions>
+        <delete tableName="CATEGORY">
+            <where>DTYPE = 'TobaccoProduct'</where>
+        </delete>
+    </changeSet>
+
 </databaseChangeLog>

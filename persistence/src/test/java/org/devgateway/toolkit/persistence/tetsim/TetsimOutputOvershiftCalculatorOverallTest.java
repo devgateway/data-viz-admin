@@ -1,10 +1,12 @@
 package org.devgateway.toolkit.persistence.tetsim;
 
+import org.devgateway.toolkit.persistence.dao.data.TobaccoProduct;
 import org.devgateway.toolkit.persistence.dto.TetsimOutput;
 import org.devgateway.toolkit.persistence.util.tetsim.TetsimOutputOvershiftCalculator;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.devgateway.toolkit.persistence.dao.data.TobaccoProduct.POPULAR;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -18,7 +20,7 @@ public class TetsimOutputOvershiftCalculatorOverallTest extends TetsimOutputBase
     @Test
     public void testOverallOutputBaseline() {
         TetsimOutputOvershiftCalculator tetsimOutputCalculator = new TetsimOutputOvershiftCalculator(datasetWithAllTobaccoProducts, 0);
-        TetsimOutput output = tetsimOutputCalculator.calculate("Popular");
+        TetsimOutput output = tetsimOutputCalculator.calculate(POPULAR);
 
         assertAll("TETSIM Overshift Baseline",
                 () -> assertEquals(754.40, output.getLegalConsumption(), delta, "TETSIM Overshift - Consumption Legal"),
@@ -39,7 +41,7 @@ public class TetsimOutputOvershiftCalculatorOverallTest extends TetsimOutputBase
     @Test
     public void testOverallOutputWithTaxChange() {
         TetsimOutputOvershiftCalculator tetsimOutputCalculator = new TetsimOutputOvershiftCalculator(datasetWithAllTobaccoProducts, 30);
-        TetsimOutput output = tetsimOutputCalculator.calculate("Popular");
+        TetsimOutput output = tetsimOutputCalculator.calculate(POPULAR);
 
         assertAll("TETSIM Overshift With 30% Tax Change",
                 () -> assertEquals(648.79, output.getLegalConsumption(), delta, "TETSIM Overshift - Consumption Legal"),

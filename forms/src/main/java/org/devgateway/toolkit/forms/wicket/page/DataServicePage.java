@@ -21,7 +21,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.BigLinkDefinition;
@@ -42,6 +41,8 @@ import static de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAw
 import static de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType.layer_group_s;
 import static de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType.ruler_s;
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_SERVICE;
+import static org.devgateway.toolkit.forms.WebConstants.SERVICE_DATA_TYPE;
+import static org.devgateway.toolkit.forms.WebConstants.SERVICE_TETSIM_TYPE;
 
 /**
  * @author Viorel Chihai
@@ -59,7 +60,7 @@ public class DataServicePage extends BasePage {
         ServiceMetadata serviceMetadata = eurekaClientService.findByName(parameters.get(PARAM_SERVICE).toString());
 
         List<BigLinkDefinition> links = new ArrayList<>();
-        links.add(getEntityLink("datasets", getServicePageClass(serviceMetadata.getType()), database_s));
+        links.add(getEntityLink("datasets", getServicePageClass(serviceMetadata), database_s));
         links.add(getEntityLink("measures", ListServiceMeasuresPage.class, ruler_s));
         links.add(getEntityLink("dimensions", ListServiceDimensionsPage.class, chart_bar_s));
         links.add(getEntityLink("categories", ListServiceCategoriesPage.class, layer_group_s));
@@ -74,14 +75,14 @@ public class DataServicePage extends BasePage {
         return new BigLinkDefinition(entity, pageClass, pageParams, iconType);
     }
 
-    private Class<? extends BasePage> getServicePageClass(final String type) {
-        if (type.equals(WebConstants.SERVICE_TETSIM_TYPE)) {
+    private Class<? extends BasePage> getServicePageClass(final ServiceMetadata serviceMetadata) {
+        if (serviceMetadata.getType().equals(SERVICE_TETSIM_TYPE) || serviceMetadata.getName().equalsIgnoreCase(SERVICE_TETSIM_TYPE)) {
             return ListTetsimDatasetPage.class;
-        } else if (type.equals(WebConstants.SERVICE_DATA_TYPE)) {
+        } else if (serviceMetadata.getType().equals(SERVICE_DATA_TYPE)) {
             return ListCSVDatasetPage.class;
         }
 
-        throw new IllegalArgumentException("Unknown service type: " + type);
+        throw new IllegalArgumentException("Unknown service type: " + serviceMetadata.getType());
     }
 
     protected Label getPageTitle() {

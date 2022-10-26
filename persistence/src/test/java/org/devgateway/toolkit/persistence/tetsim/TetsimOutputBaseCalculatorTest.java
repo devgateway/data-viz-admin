@@ -1,29 +1,23 @@
 package org.devgateway.toolkit.persistence.tetsim;
 
+import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
+import org.devgateway.toolkit.persistence.dao.data.TetsimPriceVariable;
+import org.devgateway.toolkit.persistence.dao.data.TobaccoProduct;
 import org.devgateway.toolkit.persistence.tetsim.builder.TetsimDatasetBuilder;
 import org.devgateway.toolkit.persistence.tetsim.builder.TetsimPriceVariableBuilder;
 import org.devgateway.toolkit.persistence.tetsim.builder.TetsimTobaccoProductValueBuilder;
-import org.devgateway.toolkit.persistence.tetsim.builder.TobaccoProductBuilder;
-import org.devgateway.toolkit.persistence.dao.categories.TobaccoProduct;
-import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
-import org.devgateway.toolkit.persistence.dao.data.TetsimPriceVariable;
 import org.junit.Before;
 
 import java.math.BigDecimal;
 
 import static java.math.BigDecimal.ZERO;
+import static org.devgateway.toolkit.persistence.dao.data.TobaccoProduct.DISCOUNT;
+import static org.devgateway.toolkit.persistence.dao.data.TobaccoProduct.ILLICIT;
+import static org.devgateway.toolkit.persistence.dao.data.TobaccoProduct.IMPORTED;
+import static org.devgateway.toolkit.persistence.dao.data.TobaccoProduct.POPULAR;
+import static org.devgateway.toolkit.persistence.dao.data.TobaccoProduct.PREMIUM;
 
 public class TetsimOutputBaseCalculatorTest {
-
-    protected TobaccoProduct tobaccoProductImported;
-
-    protected TobaccoProduct tobaccoProductPremium;
-
-    protected TobaccoProduct tobaccoProductPopular;
-
-    protected TobaccoProduct tobaccoProductDiscount;
-
-    protected TobaccoProduct tobaccoProductIllicit;
 
     protected TetsimDataset datasetWithAllTobaccoProducts;
 
@@ -31,20 +25,7 @@ public class TetsimOutputBaseCalculatorTest {
 
     @Before
     public void setUp() {
-        this.tobaccoProductImported = createTobaccoProduct("Imported", false);
-        this.tobaccoProductPremium = createTobaccoProduct("Premium", false);
-        this.tobaccoProductPopular = createTobaccoProduct("Popular", false);
-        this.tobaccoProductDiscount = createTobaccoProduct("Discount", false);
-        this.tobaccoProductIllicit = createTobaccoProduct("Illicit", true);
-
         this.datasetWithAllTobaccoProducts = createTetsimDatasetWithAllTobaccoProducts();
-    }
-
-    protected TobaccoProduct createTobaccoProduct(String label, Boolean illicit) {
-        return new TobaccoProductBuilder()
-                .withLabel(label)
-                .withIllicit(illicit)
-                .build();
     }
 
     protected TetsimDataset createTetsimDatasetWithAllTobaccoProducts() {
@@ -72,23 +53,23 @@ public class TetsimOutputBaseCalculatorTest {
                                                     BigDecimal discount, BigDecimal illicit) {
         return new TetsimPriceVariableBuilder()
                 .add(new TetsimTobaccoProductValueBuilder()
-                        .withTobaccoProduct(tobaccoProductImported)
+                        .withTobaccoProduct(IMPORTED)
                         .withValue(imported)
                         .build())
                 .add(new TetsimTobaccoProductValueBuilder()
-                        .withTobaccoProduct(tobaccoProductPremium)
+                        .withTobaccoProduct(PREMIUM)
                         .withValue(premium)
                         .build())
                 .add(new TetsimTobaccoProductValueBuilder()
-                        .withTobaccoProduct(tobaccoProductPopular)
+                        .withTobaccoProduct(POPULAR)
                         .withValue(popular)
                         .build())
                 .add(new TetsimTobaccoProductValueBuilder()
-                        .withTobaccoProduct(tobaccoProductDiscount)
+                        .withTobaccoProduct(DISCOUNT)
                         .withValue(discount)
                         .build())
                 .add(new TetsimTobaccoProductValueBuilder()
-                        .withTobaccoProduct(tobaccoProductIllicit)
+                        .withTobaccoProduct(ILLICIT)
                         .withValue(illicit)
                         .build())
                 .build();

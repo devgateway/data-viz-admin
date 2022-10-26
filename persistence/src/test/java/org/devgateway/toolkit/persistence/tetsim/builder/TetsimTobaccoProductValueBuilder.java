@@ -1,7 +1,7 @@
 package org.devgateway.toolkit.persistence.tetsim.builder;
 
-import org.devgateway.toolkit.persistence.dao.categories.TobaccoProduct;
 import org.devgateway.toolkit.persistence.dao.data.TetsimTobaccoProductValue;
+import org.devgateway.toolkit.persistence.dao.data.TobaccoProduct;
 
 import java.math.BigDecimal;
 
