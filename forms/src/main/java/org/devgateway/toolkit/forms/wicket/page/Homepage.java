@@ -27,7 +27,7 @@ public class Homepage extends BasePage {
     protected SettingsUtils settingsUtils;
     private static final List<BigLinkDefinition> LINKS = new ImmutableList.Builder<BigLinkDefinition>()
             .add(new BigLinkDefinition("data", DataPage.class, FontAwesome5IconType.table_s))
-            .add(new BigLinkDefinition("configurations", ConfigurationsHomepage.class, FontAwesome5IconType.cogs_s))
+            .add(new BigLinkDefinition("configurations", ConfigurationsHomepage.class, FontAwesome5IconType.tools_s))
             .build();
 
     /**

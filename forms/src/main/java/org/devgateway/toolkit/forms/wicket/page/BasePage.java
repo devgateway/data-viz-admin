@@ -244,7 +244,7 @@ public abstract class BasePage extends GenericWebPage<Void> {
         return homeMenu;
     }
 
-    protected NavbarDropDownButton newConifugrationsMenu() {
+    protected NavbarDropDownButton newConfigurationsMenu() {
 
         // admin menu
         NavbarDropDownButton configurationsMenu = new NavbarDropDownButton(new StringResourceModel("navbar.configurations", this, null)) {
@@ -267,7 +267,7 @@ public abstract class BasePage extends GenericWebPage<Void> {
             }
         };
 
-        configurationsMenu.setIconType(FontAwesome5IconType.cog_s);
+        configurationsMenu.setIconType(FontAwesome5IconType.tools_s);
         MetaDataRoleAuthorizationStrategy.authorize(configurationsMenu, RENDER, ROLE_USER);
 
         return configurationsMenu;
@@ -303,7 +303,7 @@ public abstract class BasePage extends GenericWebPage<Void> {
         navbar.setBrandImage(new PackageResourceReference(BaseStyles.class, "assets/img/tcdi-horizontal-logo.svg"),
                 new StringResourceModel("brandImageAltText", this, null));
 
-        navbar.addComponents(NavbarComponents.transform(Navbar.ComponentPosition.RIGHT, newHomeMenu(), newConifugrationsMenu(),
+        navbar.addComponents(NavbarComponents.transform(Navbar.ComponentPosition.RIGHT, newHomeMenu(), newConfigurationsMenu(),
                 newDataMenu(), newAccountMenu(), newLogoutMenu()));
 
 //        navbar.addComponents(NavbarComponents.transform(Navbar.ComponentPosition.RIGHT, newLanguageMenu()));
