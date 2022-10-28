@@ -26,9 +26,9 @@ public final class DBConstants {
         public static final String SAVED = "SAVED";
         public static final String PUBLISHING = "PUBLISHING";
         public static final String PUBLISHED = "PUBLISHED";
-        public static final String NOT_PUBLISHED = "NOT_PUBLISHED";
+        public static final String ERROR_IN_PUBLISHING = "ERROR_IN_PUBLISHING";
         public static final String DELETED = "DELETED";
-        public static final String[] ALL = {DRAFT, SAVED, PUBLISHING, PUBLISHED, NOT_PUBLISHED};
+        public static final String[] ALL = {DRAFT, SAVED, PUBLISHING, PUBLISHED, ERROR_IN_PUBLISHING};
         public static final List<String> ALL_LIST = Collections.unmodifiableList(Arrays.asList(ALL));
     }
 

@@ -3,6 +3,12 @@
 <body>
 <wicket:extend>
 
+    <div class="row">
+        <div class="alert alert-danger">
+            <span wicket:id="errorInPublishing">ErrorInPublishing</span>
+        </div>
+    </div>
+
     <wicket:child/>
 
     <br/>
@@ -73,7 +79,6 @@
             <div wicket:id="removeLock"/>
         </div>
     </div>
-
 
     <wicket:fragment wicket:id="entityButtons">
         <span wicket:id="extraStatusEntityButtons"></span>
