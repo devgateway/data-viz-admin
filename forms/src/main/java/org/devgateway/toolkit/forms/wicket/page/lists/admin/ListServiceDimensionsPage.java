@@ -45,8 +45,8 @@ public class ListServiceDimensionsPage extends AbstractListServiceEntityPage<Ser
         dataProvider = new ServiceDimensionProvider(serviceDimensionService, service);
 
         columns = new ArrayList<>();
-        columns.add(new PropertyColumn<>(new Model<>("Code"), "code", "code"));
-        columns.add(new PropertyColumn<>(new Model<>("Value"), "value", "value"));
+        columns.add(new PropertyColumn<>(new Model<>("Value"), "code", "code"));
+        columns.add(new PropertyColumn<>(new Model<>("Label"), "value", "value"));
         columns.add(new PropertyColumn<>(new Model<>("Position"), "position", "position"));
     }
 
