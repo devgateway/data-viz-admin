@@ -128,8 +128,9 @@ public class ListViewTextTranslationSectionPanel extends CompoundSectionPanel<Li
     }
 
     public void populateCompoundListItem(ListItem<ServiceTextTranslation> item) {
-        final TextFieldBootstrapFormComponent<String> header = ComponentUtil.addTextField(item, "language");
-        header.required();
+        final TextFieldBootstrapFormComponent<String> language = ComponentUtil.addTextField(item, "language");
+        language.setShowTooltip(true);
+        language.required();
 
         final TextFieldBootstrapFormComponent<String> value = ComponentUtil.addTextField(item, "text");
         value.required();

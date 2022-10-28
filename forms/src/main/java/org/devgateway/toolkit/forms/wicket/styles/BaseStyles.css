@@ -311,3 +311,13 @@ button .btn-home-label {
     position: absolute;
     bottom: 0;
 }
+
+.label-translation-margin {
+    margin-right: 5px;
+}
+
+.label-translation-description {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-style: italic;
+}

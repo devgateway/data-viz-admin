@@ -20,7 +20,7 @@ public class UniqueLanguageTranslationValidator extends AbstractFormValidator {
         ServiceCategory serviceCategory = (ServiceCategory) form.getModelObject();
         serviceCategory.getLabels().stream()
                 .filter(label -> label.getLanguage() != null)
-                .collect(Collectors.groupingBy(ServiceTextTranslation::getLanguage))
+                .collect(Collectors.groupingBy(s -> s.getLanguage().toUpperCase()))
                 .entrySet().stream()
                 .filter(entry -> entry.getValue().size() > 1)
                 .forEach(entry -> {
