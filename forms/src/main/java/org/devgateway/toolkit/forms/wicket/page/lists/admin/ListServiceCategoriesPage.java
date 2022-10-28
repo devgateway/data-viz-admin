@@ -51,9 +51,9 @@ public class ListServiceCategoriesPage extends AbstractListServiceEntityPage<Ser
         dataProvider = new ServiceCategoryProvider(serviceCategoryService, service);
 
         columns = new ArrayList<>();
+        columns.add(new PropertyColumn<>(new Model<>("Value"), "code", "code"));
+        columns.add(new PropertyColumn<>(new Model<>("Label"), "value", "value"));
         columns.add(new PropertyColumn<>(new Model<>("Type"), "type", "type"));
-        columns.add(new PropertyColumn<>(new Model<>("Code"), "code", "code"));
-        columns.add(new PropertyColumn<>(new Model<>("Value"), "value", "value"));
         columns.add(new PropertyColumn<>(new Model<>("Position"), "position", "position"));
         columns.add(new PropertyColumn<ServiceCategory, String>(new Model<>("Color"), "categoryStyle.color",
                 "categoryStyle.color") {
