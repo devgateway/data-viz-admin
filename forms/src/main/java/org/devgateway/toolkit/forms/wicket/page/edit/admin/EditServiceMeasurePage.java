@@ -10,7 +10,6 @@ import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFor
 import org.devgateway.toolkit.forms.wicket.page.edit.admin.panel.ListViewTextTranslationSectionPanel;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceMeasuresPage;
 import org.devgateway.toolkit.persistence.dto.ServiceMeasure;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.wicketstuff.annotation.mount.MountPath;
 
 @MountPath(value = "/editServiceMeasure")
@@ -30,37 +29,21 @@ public class EditServiceMeasurePage extends AbstractEditServiceEntityPage<Servic
     protected void onInitialize() {
         super.onInitialize();
 
-        final TextFieldBootstrapFormComponent<String> code = new TextFieldBootstrapFormComponent<>("code");
-        code.setEnabled(false);
-        editForm.add(code);
-
-        final TextFieldBootstrapFormComponent<String> value = new TextFieldBootstrapFormComponent<>("value");
-        value.getField().setRequired(true);
+        final TextFieldBootstrapFormComponent<String> value = new TextFieldBootstrapFormComponent<>("code");
+        value.setEnabled(false);
         editForm.add(value);
+
+        final TextFieldBootstrapFormComponent<String> label = new TextFieldBootstrapFormComponent<>("value");
+        label.getField().setRequired(true);
+        editForm.add(label);
 
         final TextFieldBootstrapFormComponent<Integer> position = new TextFieldBootstrapFormComponent<>("position");
         position.getField().setRequired(true);
         editForm.add(position);
 
-        final TextFieldBootstrapFormComponent<String> expression = new TextFieldBootstrapFormComponent<>("expression");
-        expression.setEnabled(false);
-        editForm.add(expression);
-
         ColorPickerBootstrapFormComponent colorPicker = new ColorPickerBootstrapFormComponent("color",
                 new PropertyModel<>(editForm.getModelObject(), "categoryStyle.color"));
         editForm.add(colorPicker);
-
-        final TextFieldBootstrapFormComponent<String> className = new TextFieldBootstrapFormComponent<>("className",
-                new PropertyModel<>(editForm.getModelObject(), "categoryStyle.className"));
-        editForm.add(className);
-
-        ColorPickerBootstrapFormComponent textColorPicker = new ColorPickerBootstrapFormComponent("textColor",
-                new PropertyModel<>(editForm.getModelObject(), "categoryStyle.textColor"));
-        editForm.add(textColorPicker);
-
-        ColorPickerBootstrapFormComponent bckColorPicker = new ColorPickerBootstrapFormComponent("backgroundColor",
-                new PropertyModel<>(editForm.getModelObject(), "categoryStyle.backgroundColor"));
-        editForm.add(bckColorPicker);
 
         editForm.add(new ListViewTextTranslationSectionPanel("labels"));
         editForm.add(new UniqueLanguageTranslationValidator());

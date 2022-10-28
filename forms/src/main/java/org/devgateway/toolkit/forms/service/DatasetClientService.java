@@ -20,13 +20,12 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static org.devgateway.toolkit.forms.client.ClientConstants.CODE_PREFIX;
 import static org.devgateway.toolkit.forms.client.ClientConstants.JobStatus.COMPLETED;
 import static org.devgateway.toolkit.forms.client.ClientConstants.JobStatus.ERROR;
-import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.NOT_PUBLISHED;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.ERROR_IN_PUBLISHING;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
 
@@ -64,9 +63,9 @@ public class DatasetClientService {
                 logger.info(String.format("The dataset with id %s changed the status from %s to %s",
                         d.getId(), PUBLISHING, PUBLISHED));
             } else if (ERROR.equals(status)) {
-                d.setStatus(NOT_PUBLISHED);
+                d.setStatus(ERROR_IN_PUBLISHING);
                 logger.info(String.format("The dataset with id %s changed the status from %s to %s",
-                        d.getId(), PUBLISHING, NOT_PUBLISHED));
+                        d.getId(), PUBLISHING, ERROR_IN_PUBLISHING));
             }
 
             if (!PUBLISHING.equals(d.getStatus())) {
