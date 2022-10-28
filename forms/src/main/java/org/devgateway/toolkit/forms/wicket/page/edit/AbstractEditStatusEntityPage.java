@@ -63,7 +63,7 @@ import org.wicketstuff.select2.Select2Choice;
 
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_AUTO_SAVE;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DRAFT;
-import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.NOT_PUBLISHED;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.ERROR_IN_PUBLISHING;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.SAVED;
@@ -286,6 +286,8 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         statusCommentsWrapper.add(statusComments);
         editForm.add(newStatusComment);
 
+        editForm.add(getErrorInPublishingLabel());
+
         entityButtonsFragment = new Fragment("extraButtons", "entityButtons", this);
         editForm.replace(entityButtonsFragment);
 
@@ -326,6 +328,15 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         enableDisableAutosaveFields(null);
     }
 
+    private Label getErrorInPublishingLabel() {
+        Label errorInPublishingLabel = new Label("errorInPublishing",
+                new StringResourceModel("errorInPublishing", this, null));
+        errorInPublishingLabel.setOutputMarkupId(true);
+        errorInPublishingLabel.setOutputMarkupPlaceholderTag(true);
+        errorInPublishingLabel.setVisibilityAllowed(ERROR_IN_PUBLISHING.equals(editForm.getModelObject().getStatus()));
+        return errorInPublishingLabel;
+    }
+
     @Override
     protected void afterSaveEntity(final T saveable) {
         super.afterSaveEntity(saveable);
@@ -362,8 +373,6 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
     protected boolean isViewMode() {
         return false;
-//        return SecurityConstants.Action.VIEW
-//                .equals(permissionEntityRenderableService.getAllowedAccess(this, editForm.getModelObject()));
     }
 
     private void addCheckedOutTo() {
@@ -477,7 +486,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
             case PUBLISHED:
                 return "label-success";
             case DRAFT:
-            case NOT_PUBLISHED:
+            case ERROR_IN_PUBLISHING:
                 return "label-danger";
             case SAVED:
                 return "label-primary";
@@ -771,7 +780,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         addSaveButtonsPermissions(saveButton);
         addSaveButtonsPermissions(saveDraftContinueButton);
         addSaveButtonsPermissions(submitAndNext);
-        addSaveButtonsPermissions(saveSubmitButton);
+        addSaveSubmitButtonPermissions(saveSubmitButton);
         addSaveApproveButtonPermissions(saveApproveButton);
         addApproveButtonPermissions(approveButton);
         addSaveRevertButtonPermissions(revertToDraftPageButton);
@@ -791,8 +800,9 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     protected void addDeleteButtonPermissions(final Component button) {
         MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, SecurityConstants.Roles.ROLE_ADMIN);
         button.setVisibilityAllowed(entityId != null && !isViewMode()
-                && (!PUBLISHING.equals(editForm.getModelObject().getStatus())
-                || !PUBLISHED.equals(editForm.getModelObject().getStatus())));
+                && !(PUBLISHING.equals(editForm.getModelObject().getStatus())
+                || ERROR_IN_PUBLISHING.equals(editForm.getModelObject().getStatus())
+                || PUBLISHED.equals(editForm.getModelObject().getStatus())));
         MetaDataRoleAuthorizationStrategy.authorize(
                 button, Component.RENDER, getCommaCombinedRoles());
     }
@@ -802,7 +812,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, getValidatorRole());
         MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, getCommaCombinedRoles());
         button.setVisibilityAllowed(button.isVisibilityAllowed()
-                && (NOT_PUBLISHED.equals(editForm.getModelObject().getStatus())
+                && (ERROR_IN_PUBLISHING.equals(editForm.getModelObject().getStatus())
                 || PUBLISHED.equals(editForm.getModelObject().getStatus())));
     }
 
@@ -820,14 +830,22 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
                 button, Component.RENDER, getValidatorRole());
         button.setVisibilityAllowed(button.isVisibilityAllowed()
                 && (SAVED.equals(editForm.getModelObject().getStatus())
-                || NOT_PUBLISHED.equals(editForm.getModelObject().getStatus())));
+                || ERROR_IN_PUBLISHING.equals(editForm.getModelObject().getStatus())));
+    }
+
+    protected void addSaveSubmitButtonPermissions(final Component button) {
+        addDefaultAllButtonsPermissions(button);
+        MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, getCommaCombinedRoles());
+        button.setVisibilityAllowed(button.isVisibilityAllowed()
+                && DRAFT.equals(editForm.getModelObject().getStatus()));
     }
 
     protected void addSaveButtonsPermissions(final Component button) {
         addDefaultAllButtonsPermissions(button);
         MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, getCommaCombinedRoles());
         button.setVisibilityAllowed(button.isVisibilityAllowed()
-                && DRAFT.equals(editForm.getModelObject().getStatus()));
+                && (DRAFT.equals(editForm.getModelObject().getStatus())
+                || SAVED.equals(editForm.getModelObject().getStatus())));
     }
 
 
