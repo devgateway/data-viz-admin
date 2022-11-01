@@ -31,8 +31,10 @@ import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceMeasuresP
 import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListCSVDatasetPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListTetsimDatasetPage;
 import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
+import org.devgateway.toolkit.web.util.SettingsUtils;
 import org.wicketstuff.annotation.mount.MountPath;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +52,9 @@ import static org.devgateway.toolkit.forms.WebConstants.SERVICE_TETSIM_TYPE;
 @AuthorizeInstantiation(SecurityConstants.Roles.ROLE_USER)
 @MountPath
 public class DataServicePage extends BasePage {
+
+    @SpringBean
+    protected SettingsUtils settingsUtils;
 
     @SpringBean
     private EurekaClientService eurekaClientService;
@@ -87,7 +92,11 @@ public class DataServicePage extends BasePage {
 
     protected Label getPageTitle() {
         String service = getPageParameters().get("service").toString();
-        return new Label("pageTitle", Model.of(service));
+        String countryName = settingsUtils.getSetting().getCountryName();
+
+        return new Label("pageTitle",
+                Model.of(MessageFormat.format(getString("page.title"), countryName, service)));
+
     }
 
 }
