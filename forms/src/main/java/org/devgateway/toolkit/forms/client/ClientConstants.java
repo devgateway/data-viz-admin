@@ -17,6 +17,8 @@ public class ClientConstants {
 
     public static final String PATH_CATEGORIES = "/admin/categories";
 
+    public final static String PATH_FILTERS = "/admin/filters";
+
 
     public final static String PATH_CODE = "/code";
 

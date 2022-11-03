@@ -27,6 +27,7 @@ import org.devgateway.toolkit.forms.wicket.components.BigLinkDefinition;
 import org.devgateway.toolkit.forms.wicket.components.BigLinksPanel;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceCategoriesPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceDimensionsPage;
+import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceFiltersPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceMeasuresPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListCSVDatasetPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListTetsimDatasetPage;
@@ -40,6 +41,7 @@ import java.util.List;
 
 import static de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType.chart_bar_s;
 import static de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType.database_s;
+import static de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType.filter_s;
 import static de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType.layer_group_s;
 import static de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType.ruler_s;
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_SERVICE;
@@ -69,6 +71,7 @@ public class DataServicePage extends BasePage {
         links.add(getEntityLink("measures", ListServiceMeasuresPage.class, ruler_s));
         links.add(getEntityLink("dimensions", ListServiceDimensionsPage.class, chart_bar_s));
         links.add(getEntityLink("categories", ListServiceCategoriesPage.class, layer_group_s));
+        links.add(getEntityLink("filters", ListServiceFiltersPage.class, filter_s));
 
         add(new BigLinksPanel("links", Model.ofList(links)));
     }
