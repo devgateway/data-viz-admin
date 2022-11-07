@@ -44,7 +44,6 @@ import java.util.List;
 
 import static org.devgateway.toolkit.forms.WebConstants.PAGE_SIZE;
 
-@AuthorizeInstantiation(SecurityConstants.Roles.ROLE_ADMIN)
 @MountPath(value = "/listservices")
 public class ListServicePage extends BasePage {
 

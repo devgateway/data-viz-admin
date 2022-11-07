@@ -14,7 +14,6 @@ import org.wicketstuff.annotation.mount.MountPath;
 
 import java.util.ArrayList;
 
-@AuthorizeInstantiation(SecurityConstants.Roles.ROLE_ADMIN)
 @MountPath(value = "/filters")
 public class ListServiceFiltersPage extends AbstractListServiceEntityPage<ServiceFilter> {
 

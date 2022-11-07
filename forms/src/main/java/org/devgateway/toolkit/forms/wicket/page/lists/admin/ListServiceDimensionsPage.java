@@ -26,7 +26,6 @@ import org.wicketstuff.annotation.mount.MountPath;
 
 import java.util.ArrayList;
 
-@AuthorizeInstantiation(SecurityConstants.Roles.ROLE_ADMIN)
 @MountPath(value = "/dimensions")
 public class ListServiceDimensionsPage extends AbstractListServiceEntityPage<ServiceDimension> {
 
