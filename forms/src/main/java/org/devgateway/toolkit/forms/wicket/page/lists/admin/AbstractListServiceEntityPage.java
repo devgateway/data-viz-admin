@@ -30,7 +30,6 @@ import java.util.List;
 
 import static org.devgateway.toolkit.forms.WebConstants.PAGE_SIZE;
 
-@AuthorizeInstantiation(SecurityConstants.Roles.ROLE_ADMIN)
 public class AbstractListServiceEntityPage<T extends ServiceEntity> extends BasePage {
 
     private static final long serialVersionUID = 652587400391540726L;

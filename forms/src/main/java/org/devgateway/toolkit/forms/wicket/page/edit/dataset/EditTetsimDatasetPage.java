@@ -131,7 +131,7 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
             deleteFailedModal.show(target);
             target.add(deleteFailedModal);
         }
-        setResponsePage(listPageClass);
+        setResponsePage(listPageClass, getParamsWithServiceInformation());
     }
 
     @Override
@@ -229,6 +229,7 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
     protected PageParameters getCancelPageParameters() {
         return getParamsWithServiceInformation();
     }
+
 
     protected PageParameters getParamsWithServiceInformation() {
         PageParameters pageParams = new PageParameters();

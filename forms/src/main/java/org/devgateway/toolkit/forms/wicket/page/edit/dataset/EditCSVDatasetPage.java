@@ -28,7 +28,6 @@ import org.wicketstuff.annotation.mount.MountPath;
 
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DELETED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
-import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.SAVED;
 
 /**
  * @author vchihai
@@ -125,7 +124,7 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
             deleteFailedModal.show(target);
             target.add(deleteFailedModal);
         }
-        setResponsePage(listPageClass);
+        setResponsePage(listPageClass, getSaveEditParameters());
     }
 
     @Override
@@ -169,15 +168,6 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
         protected void onSubmit(final AjaxRequestTarget target) {
             cancelModal.show(true);
             target.add(cancelModal);
-        }
-    }
-
-    @Override
-    protected void onBeforeRender() {
-        super.onBeforeRender();
-
-        if (SAVED.equals(editForm.getModelObject().getStatus())) {
-            destinationService.setEnabled(true);
         }
     }
 

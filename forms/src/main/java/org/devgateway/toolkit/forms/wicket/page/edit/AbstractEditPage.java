@@ -204,7 +204,7 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
         final LaddaAjaxButton deleteButton = new LaddaAjaxButton("button", Buttons.Type.Info) {
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
-                setResponsePage(listPageClass);
+                setResponsePage(listPageClass, getCancelPageParameters());
             }
         };
         deleteButton.setDefaultFormProcessing(false);
@@ -214,7 +214,7 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
         modal.add(new AjaxEventBehavior("hidden.bs.modal") {
             @Override
             protected void onEvent(final AjaxRequestTarget target) {
-                setResponsePage(listPageClass);
+                setResponsePage(listPageClass, getCancelPageParameters());
             }
         });
 
