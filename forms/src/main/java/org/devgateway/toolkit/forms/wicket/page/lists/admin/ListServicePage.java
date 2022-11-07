@@ -15,7 +15,6 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapBookmark
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType;
 import org.apache.wicket.Component;
-import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
@@ -31,23 +30,24 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.WebConstants;
-import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.LinkTargetBlankPanel;
 import org.devgateway.toolkit.forms.wicket.components.table.AjaxFallbackBootstrapDataTable;
 import org.devgateway.toolkit.forms.wicket.page.BasePage;
 import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
+import org.devgateway.toolkit.persistence.service.AdminSettingsService;
 import org.wicketstuff.annotation.mount.MountPath;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.devgateway.toolkit.forms.WebConstants.PAGE_SIZE;
-
 @MountPath(value = "/listservices")
 public class ListServicePage extends BasePage {
 
     private static final long serialVersionUID = -6132847935476573446L;
+
+    @SpringBean
+    AdminSettingsService adminSettingsService;
 
     protected AjaxFallbackBootstrapDataTable<ServiceMetadata, String> dataTable;
 
@@ -117,7 +117,7 @@ public class ListServicePage extends BasePage {
     }
 
     protected int getPageSize() {
-        return PAGE_SIZE;
+        return adminSettingsService.get().getPageSize();
     }
 
     public ActionPanel getActionPanel(final String id, final IModel<ServiceMetadata> model) {

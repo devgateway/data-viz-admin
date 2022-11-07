@@ -8,9 +8,11 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.wicket.components.table.AjaxFallbackBootstrapDataTable;
 import org.devgateway.toolkit.forms.wicket.providers.ListDataProvider;
+import org.devgateway.toolkit.persistence.service.AdminSettingsService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,11 +31,12 @@ public class PageableTablePanel<T extends Serializable, PARENT extends Serializa
 
     protected final IModel<PARENT> parentModel;
 
+    @SpringBean
+    AdminSettingsService adminSettingsService;
+
     protected AjaxFallbackBootstrapDataTable dataTable;
 
     protected ISortableDataProvider<T, String> dataProvider;
-
-    protected int rowsPerPage = WebConstants.PAGE_SIZE;
 
     protected List<IColumn<T, String>> columns = new ArrayList<>();
 
@@ -57,8 +60,12 @@ public class PageableTablePanel<T extends Serializable, PARENT extends Serializa
     }
 
     protected AjaxFallbackBootstrapDataTable buildDataTable() {
-        dataTable = new AjaxFallbackBootstrapDataTable("table", columns, dataProvider, rowsPerPage);
+        dataTable = new AjaxFallbackBootstrapDataTable("table", columns, dataProvider, getPageSize());
         return dataTable;
+    }
+
+    private Integer getPageSize() {
+        return adminSettingsService.get().getPageSize();
     }
 
     public AjaxFallbackBootstrapDataTable getDataTable() {
@@ -67,10 +74,6 @@ public class PageableTablePanel<T extends Serializable, PARENT extends Serializa
 
     public void setSort(final Object property, final SortOrder sortOrder) {
         ((ListDataProvider) dataProvider).setSort(property, SortOrder.ASCENDING);
-    }
-
-    public void setPageSize(final int pageSize) {
-        rowsPerPage = pageSize;
     }
 
     protected List<T> getItems() {

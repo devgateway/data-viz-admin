@@ -3,7 +3,6 @@ package org.devgateway.toolkit.forms.wicket.page.lists.admin;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapBookmarkablePageLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType;
-import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
@@ -15,26 +14,28 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.exceptions.NullServiceEntityServiceException;
-import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.service.admin.BaseServiceEntityService;
 import org.devgateway.toolkit.forms.wicket.components.table.AjaxFallbackBootstrapDataTable;
 import org.devgateway.toolkit.forms.wicket.page.BasePage;
 import org.devgateway.toolkit.forms.wicket.page.edit.admin.AbstractEditServiceEntityPage;
 import org.devgateway.toolkit.persistence.dto.ServiceEntity;
+import org.devgateway.toolkit.persistence.service.AdminSettingsService;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.devgateway.toolkit.forms.WebConstants.PAGE_SIZE;
 
 public class AbstractListServiceEntityPage<T extends ServiceEntity> extends BasePage {
 
     private static final long serialVersionUID = 652587400391540726L;
 
     protected Class<? extends AbstractEditServiceEntityPage<T>> editPageClass;
+
+    @SpringBean
+    protected AdminSettingsService adminSettingsService;
 
     protected AjaxFallbackBootstrapDataTable<T, String> dataTable;
 
@@ -90,7 +91,7 @@ public class AbstractListServiceEntityPage<T extends ServiceEntity> extends Base
     }
 
     protected int getPageSize() {
-        return PAGE_SIZE;
+        return adminSettingsService.get().getPageSize();
     }
 
     public ActionPanel getActionPanel(final String id, final IModel<T> model) {

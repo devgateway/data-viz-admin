@@ -20,6 +20,7 @@ import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.models.PersistableJpaRepositoryModel;
 import org.devgateway.toolkit.forms.wicket.components.table.filter.JpaFilterState;
 import org.devgateway.toolkit.persistence.dao.GenericPersistable;
+import org.devgateway.toolkit.persistence.service.AdminSettingsService;
 import org.devgateway.toolkit.persistence.service.BaseJpaService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,17 +39,24 @@ public class SortableJpaServiceDataProvider<T extends GenericPersistable & Seria
         extends SortableDataProvider<T, String> implements IFilterStateLocator<JpaFilterState<T>> {
     private static final long serialVersionUID = 6507887810859971417L;
 
+    private final Integer pageSize;
+
     private final BaseJpaService<T> jpaService;
 
     private JpaFilterState<T> filterState;
+
+    public SortableJpaServiceDataProvider(final BaseJpaService<T> jpaService) {
+        this(jpaService, WebConstants.DEFAULT_PAGE_SIZE);
+    }
 
     /**
      * Always provide a proxy jpaService here! For example one coming from a {@link SpringBean}
      *
      * @param jpaService
      */
-    public SortableJpaServiceDataProvider(final BaseJpaService<T> jpaService) {
+    public SortableJpaServiceDataProvider(final BaseJpaService<T> jpaService, final Integer pageSize) {
         this.jpaService = jpaService;
+        this.pageSize = pageSize;
     }
 
     /**
@@ -68,12 +76,16 @@ public class SortableJpaServiceDataProvider<T extends GenericPersistable & Seria
      */
     @Override
     public Iterator<? extends T> iterator(final long first, final long count) {
-        int page = (int) ((double) first / WebConstants.PAGE_SIZE);
+        int page = (int) ((double) first / getPageSize());
         final Page<T> findAll = jpaService.findAll(filterState.getSpecification(),
                 translateSort() == null
-                        ? PageRequest.of(page, WebConstants.PAGE_SIZE)
-                        : PageRequest.of(page, WebConstants.PAGE_SIZE, translateSort()));
+                        ? PageRequest.of(page, getPageSize())
+                        : PageRequest.of(page, getPageSize(), translateSort()));
         return findAll.iterator();
+    }
+
+    private Integer getPageSize() {
+        return pageSize;
     }
 
     @Override
