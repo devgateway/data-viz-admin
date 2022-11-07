@@ -47,6 +47,7 @@ public class ListServiceMeasuresPage extends AbstractListServiceEntityPage<Servi
         columns = new ArrayList<>();
         columns.add(new PropertyColumn<>(new Model<>("Value"), "code", "code"));
         columns.add(new PropertyColumn<>(new Model<>("System Label"), "value", "value"));
+        columns.add(new PropertyColumn<>(new Model<>("Group"), "parent", "parent"));
         columns.add(new PropertyColumn<>(new Model<>("Position"), "position", "position"));
         columns.add(new PropertyColumn<ServiceMeasure, String>(new Model<>("Color"), "categoryStyle.color",
                 "categoryStyle.color") {

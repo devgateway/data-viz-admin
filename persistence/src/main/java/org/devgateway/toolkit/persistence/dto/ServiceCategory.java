@@ -21,6 +21,8 @@ public class ServiceCategory extends ServiceEntity {
 
     private String type;
 
+    private String parent;
+
     @JsonDeserialize(using = ServiceTextTranslationDeserializer.class)
     @JsonSerialize(using = ServiceTextTranslationSerializer.class)
     private List<ServiceTextTranslation> labels;
@@ -71,5 +73,13 @@ public class ServiceCategory extends ServiceEntity {
 
     public void setLabels(final List<ServiceTextTranslation> labels) {
         this.labels = labels;
+    }
+
+    public String getParent() {
+        return parent;
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
     }
 }

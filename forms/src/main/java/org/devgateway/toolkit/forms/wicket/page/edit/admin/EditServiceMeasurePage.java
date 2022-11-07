@@ -37,6 +37,14 @@ public class EditServiceMeasurePage extends AbstractEditServiceEntityPage<Servic
         label.getField().setRequired(true);
         editForm.add(label);
 
+        final TextFieldBootstrapFormComponent<Integer> parent = new TextFieldBootstrapFormComponent<>("parent");
+        parent.setEnabled(false);
+        editForm.add(parent);
+
+        final TextFieldBootstrapFormComponent<Integer> expression = new TextFieldBootstrapFormComponent<>("expression");
+        expression.setEnabled(false);
+        editForm.add(expression);
+
         final TextFieldBootstrapFormComponent<Integer> position = new TextFieldBootstrapFormComponent<>("position");
         position.getField().setRequired(true);
         editForm.add(position);
