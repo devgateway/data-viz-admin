@@ -177,4 +177,13 @@
         </delete>
     </changeSet>
 
+    <changeSet id="TOBACCO-1087-default-page-size" author="vchihai">
+        <preConditions onFail="CONTINUE">
+            <columnExists tableName="admin_settings" columnName="page_size" />
+        </preConditions>
+        <update tableName="admin_settings">
+            <column name="page_size" value="20" />
+        </update>
+    </changeSet>
+
 </databaseChangeLog>
