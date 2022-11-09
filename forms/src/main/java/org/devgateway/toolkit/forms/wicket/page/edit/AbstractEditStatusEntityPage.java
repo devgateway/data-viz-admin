@@ -64,9 +64,11 @@ import org.wicketstuff.select2.Select2Choice;
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_AUTO_SAVE;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DRAFT;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.ERROR_IN_PUBLISHING;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.ERROR_IN_UNPUBLISHING;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.SAVED;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.UNPUBLISHING;
 
 /**
  * @author mpostelnicu
@@ -199,12 +201,8 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
-                setStatusAppendComment(DRAFT);
-                editForm.getModelObject().setRemoveLock(true);
-                super.onSubmit(target);
-                target.add(editForm);
-                setButtonsPermissions();
                 onAfterRevertToDraft(target);
+                super.onSubmit(target);
             }
         };
         unpublishButton.setType(Buttons.Type.Warning);
@@ -490,10 +488,12 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
                 return "label-success";
             case DRAFT:
             case ERROR_IN_PUBLISHING:
+            case ERROR_IN_UNPUBLISHING:
                 return "label-danger";
             case SAVED:
                 return "label-primary";
             case PUBLISHING:
+            case UNPUBLISHING:
                 return "label-warning";
             default:
                 return "";
@@ -809,7 +809,8 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     protected void addSaveRevertButtonPermissions(final Component button) {
         addDefaultAllButtonsPermissions(button);
         button.setVisibilityAllowed(button.isVisibilityAllowed()
-                && PUBLISHED.equals(editForm.getModelObject().getStatus()));
+                && (PUBLISHED.equals(editForm.getModelObject().getStatus())
+                    || ERROR_IN_UNPUBLISHING.equals(editForm.getModelObject().getStatus())));
     }
 
     protected void addSaveApproveButtonPermissions(final Component button) {
@@ -842,7 +843,8 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         button.setVisibilityAllowed(button.isVisibilityAllowed()
                 && (DRAFT.equals(editForm.getModelObject().getStatus())
                 || SAVED.equals(editForm.getModelObject().getStatus())
-                || ERROR_IN_PUBLISHING.equals(editForm.getModelObject().getStatus())));
+                || ERROR_IN_PUBLISHING.equals(editForm.getModelObject().getStatus())
+                || ERROR_IN_UNPUBLISHING.equals(editForm.getModelObject().getStatus())));
     }
 
 

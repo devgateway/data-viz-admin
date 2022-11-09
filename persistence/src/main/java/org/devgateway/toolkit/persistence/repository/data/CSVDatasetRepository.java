@@ -1,7 +1,6 @@
 package org.devgateway.toolkit.persistence.repository.data;
 
 import org.devgateway.toolkit.persistence.dao.data.CSVDataset;
-import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
 import org.devgateway.toolkit.persistence.repository.norepository.UniquePropertyRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,8 +15,8 @@ public interface CSVDatasetRepository extends DatasetRepository<CSVDataset>,
     @Query("select td from CSVDataset td where td.status like 'DELETED'")
     List<CSVDataset> findAllDeleted();
 
-    @Query("select td from CSVDataset td where td.status like 'PUBLISHING'")
-    List<CSVDataset> findAllPublishing();
+    @Query("select td from CSVDataset td where td.status like 'PUBLISHING' or td.status like 'UNPUBLISHING'")
+    List<CSVDataset> findAllInProgress();
 
     @Query ("select count(e) from #{#entityName} e where (:year is null or e.year=:year) "
             + "and e.status not in ('DELETED')")
