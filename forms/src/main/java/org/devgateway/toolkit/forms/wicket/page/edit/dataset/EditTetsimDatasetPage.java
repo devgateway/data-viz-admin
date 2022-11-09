@@ -36,6 +36,7 @@ import static org.devgateway.toolkit.forms.WebConstants.MAXIMUM_PERCENTAGE;
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_YEAR;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DELETED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.UNPUBLISHING;
 
 /**
  * @author vchihai
@@ -138,9 +139,11 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
     protected void onAfterRevertToDraft(final AjaxRequestTarget target) {
         try {
             datasetClientService.unpublishDataset(editForm.getModelObject());
+            editForm.getModelObject().setStatus(UNPUBLISHING);
         } catch (DataSetClientException | Exception e) {
             logger.error(e.getMessage(), e);
         }
+        setResponsePage(listPageClass);
     }
 
     protected void onApprove(final AjaxRequestTarget target) {
@@ -154,7 +157,7 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
             dataset.setStatus(PUBLISHING);
         } catch (DataSetClientException | Exception e) {
             logger.error(e.getMessage(), e);
-            approveFailedModal.show(target);
+            failedModal.show(target);
         }
         setResponsePage(listPageClass);
     }

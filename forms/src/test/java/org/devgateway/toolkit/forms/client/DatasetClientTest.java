@@ -33,7 +33,7 @@ public class DatasetClientTest {
         TetsimDataset dataset = new TetsimDataset();
         dataset.setYear(2020);
         try {
-            System.out.println(client.publishDataset(dataset, Files.readAllBytes(Paths.get("./src/test/resources/2020_tetsim.csv"))));
+            client.publishDataset(dataset, Files.readAllBytes(Paths.get("./src/test/resources/2020_tetsim.csv")));
         } catch (DataSetClientException e) {
             throw new RuntimeException(e);
         } catch (FileNotFoundException e) {

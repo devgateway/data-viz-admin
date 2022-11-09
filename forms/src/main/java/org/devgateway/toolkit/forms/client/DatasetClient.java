@@ -61,7 +61,7 @@ public class DatasetClient {
         throw new RuntimeException(("Service is not up"));
     }
 
-    public void unpublishDataset(String code) throws DataSetClientException {
+    public DatasetJobStatus unpublishDataset(String code) throws DataSetClientException {
         if (isUp()) {
             Response jobStatusResponse = client.target(baseUrl)
                     .path(PATH_DATASETS)
@@ -69,9 +69,11 @@ public class DatasetClient {
                     .request()
                     .delete();
 
-            if (jobStatusResponse.getStatusInfo().getFamily() != SUCCESSFUL) {
-                throw new DataSetClientException("Error in unpublishing a dataset with code " + code);
+            if (jobStatusResponse.getStatusInfo().getFamily() == SUCCESSFUL) {
+                return jobStatusResponse.readEntity(DatasetJobStatus.class);
             }
+
+            throw new DataSetClientException(jobStatusResponse.toString());
         } else {
             throw new RuntimeException(("Service is not up"));
         }
