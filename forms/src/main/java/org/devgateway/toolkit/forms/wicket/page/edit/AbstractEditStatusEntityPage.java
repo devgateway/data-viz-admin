@@ -61,6 +61,8 @@ import org.springframework.util.ObjectUtils;
 import org.wicketstuff.datetime.markup.html.basic.DateLabel;
 import org.wicketstuff.select2.Select2Choice;
 
+import java.text.MessageFormat;
+
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_AUTO_SAVE;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DRAFT;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.ERROR_IN_PUBLISHING;
@@ -328,14 +330,23 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
     private TransparentWebMarkupContainer getErrorInPublishing() {
         TransparentWebMarkupContainer errorInPublishing = new TransparentWebMarkupContainer("errorInPublishingPanel");
-        Label errorInPublishingLabel = new Label("errorInPublishingTitle",
-                new StringResourceModel("errorInPublishingTitle", this, null));
+        Label errorInPublishingLabel = new Label("errorInPublishingTitle", getErrorInPublishingMessage());
         errorInPublishing.setOutputMarkupId(true);
         errorInPublishing.setOutputMarkupPlaceholderTag(true);
-        errorInPublishing.setVisibilityAllowed(ERROR_IN_PUBLISHING.equals(editForm.getModelObject().getStatus()));
+        errorInPublishing.setVisibilityAllowed(isErrorInPublishingVisible());
         errorInPublishing.add(errorInPublishingLabel);
 
         return errorInPublishing;
+    }
+
+    private IModel<String> getErrorInPublishingMessage() {
+        String status = ERROR_IN_PUBLISHING.equals(editForm.getModelObject().getStatus()) ? "publishing" : "unpublishing";
+        return Model.of(MessageFormat.format(getString("errorInPublishingTitle"), status));
+    }
+
+    private boolean isErrorInPublishingVisible() {
+        String status = editForm.getModelObject().getStatus();
+        return ERROR_IN_PUBLISHING.equals(status) || ERROR_IN_UNPUBLISHING.equals(status);
     }
 
     @Override
