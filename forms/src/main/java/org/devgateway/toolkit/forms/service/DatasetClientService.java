@@ -128,4 +128,8 @@ public class DatasetClientService {
         return new DatasetClient(service.getUrl()).getMeasures();
     }
 
+    public byte[] getTemplateDownload(final String serviceName) {
+        ServiceMetadata service = eurekaClientService.findByName(serviceName);
+        return new DatasetClient(service.getUrl()).getTemplateDownload();
+    }
 }

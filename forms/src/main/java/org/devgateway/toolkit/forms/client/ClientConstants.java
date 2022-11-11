@@ -19,6 +19,8 @@ public class ClientConstants {
 
     public final static String PATH_FILTERS = "/admin/filters";
 
+    public final static String PATH_TEMPLATE_DOWNLOAD = "/admin/template/download";
+
 
     public final static String PATH_CODE = "/code";
 

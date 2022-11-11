@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM;
 import static javax.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM_TYPE;
 import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA_TYPE;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
@@ -30,6 +31,7 @@ import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_DIMENSION
 import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_HEALTH;
 import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_JOBS;
 import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_MEASURES;
+import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_TEMPLATE_DOWNLOAD;
 
 
 public class DatasetClient {
@@ -287,6 +289,23 @@ public class DatasetClient {
 
             if (measuresResponse.getStatusInfo().getFamily() == SUCCESSFUL) {
                 return measuresResponse.readEntity(new GenericType<List<ServiceMeasure>>() {});
+            }
+
+            return null;
+        }
+
+        throw new RuntimeException(("Service is not up"));
+    }
+
+    public byte[] getTemplateDownload() {
+        if (isUp()) {
+            Response response = client.target(baseUrl)
+                    .path(PATH_TEMPLATE_DOWNLOAD)
+                    .request(APPLICATION_OCTET_STREAM)
+                    .get();
+
+            if (response.getStatusInfo().getFamily() == SUCCESSFUL) {
+                return response.readEntity(byte[].class);
             }
 
             return null;
