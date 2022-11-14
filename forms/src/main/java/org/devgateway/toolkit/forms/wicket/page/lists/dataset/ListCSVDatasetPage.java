@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.devgateway.toolkit.forms.wicket.page.lists.dataset;
 
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.table.filter.BootstrapChoiceFilteredPropertyColumn;
+import nl.dries.wicket.hibernate.dozer.DozerListModel;
 import org.apache.wicket.Component;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
@@ -34,6 +36,8 @@ import org.wicketstuff.annotation.mount.MountPath;
 import java.text.MessageFormat;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_SERVICE;
 
@@ -57,9 +61,20 @@ public class ListCSVDatasetPage extends AbstractListPage<CSVDataset> {
 
         columns.clear();
 
-        columns.add(new PropertyColumn<>(new StringResourceModel("year"), "year", "year"));
-        columns.add(new PropertyColumn<>(new StringResourceModel("status"), "status", "status"));
-        columns.add(new PropertyColumn<>(new StringResourceModel("description"), "description", "description"));
+        List<CSVDataset> datasets = datasetService.findAllNotDeletedForService(service);
+        List<Integer> years = datasets.stream()
+                .map(CSVDataset::getYear).distinct().sorted()
+                .collect(Collectors.toList());
+        columns.add(new BootstrapChoiceFilteredPropertyColumn<>(new StringResourceModel("year"), "year", "year",
+                new DozerListModel<>(years), "year"));
+
+        List<String> statuses = datasets.stream()
+                .map(CSVDataset::getStatus).distinct().sorted()
+                .collect(Collectors.toList());
+        columns.add(new BootstrapChoiceFilteredPropertyColumn<>(new StringResourceModel("status"), "status", "status",
+                new DozerListModel<>(statuses), "status"));
+
+        columns.add(new PropertyColumn<>(new StringResourceModel("description"), "description"));
         columns.add(new PropertyColumn<>(new StringResourceModel("lastModifiedBy"), "lastModifiedBy",
                 "lastModifiedBy.get"));
         columns.add(new PropertyColumn<CSVDataset, String>(new StringResourceModel("lastModifiedDate"),

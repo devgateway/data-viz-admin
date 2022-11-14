@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.devgateway.toolkit.forms.wicket.page.lists.dataset;
 
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.table.filter.BootstrapChoiceFilteredPropertyColumn;
+import nl.dries.wicket.hibernate.dozer.DozerListModel;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
@@ -32,6 +34,7 @@ import org.devgateway.toolkit.forms.wicket.components.table.filter.TetsimDataset
 import org.devgateway.toolkit.forms.wicket.page.edit.dataset.EditTetsimDatasetPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.AbstractListPage;
 import org.devgateway.toolkit.forms.wicket.providers.GenericChoiceProvider;
+import org.devgateway.toolkit.persistence.dao.data.CSVDataset;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
 import org.devgateway.toolkit.persistence.service.data.TetsimDatasetService;
 import org.devgateway.toolkit.web.util.SettingsUtils;
@@ -43,6 +46,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_SERVICE;
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_YEAR;
@@ -68,9 +72,23 @@ public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
         this.jpaService = tetsimDatasetService;
         this.editPageClass = EditTetsimDatasetPage.class;
 
+        String service = pageParameters.get("service").toString();
+
         columns.clear();
 
-        columns.add(new PropertyColumn<>(new StringResourceModel("year"), "year", "year"));
+        List<TetsimDataset> datasets = tetsimDatasetService.findAllNotDeletedForService(service);
+        List<Integer> years = datasets.stream()
+                .map(TetsimDataset::getYear).distinct().sorted()
+                .collect(Collectors.toList());
+        columns.add(new BootstrapChoiceFilteredPropertyColumn<>(new StringResourceModel("year"), "year", "year",
+                new DozerListModel<>(years), "year"));
+
+        List<String> statuses = datasets.stream()
+                .map(TetsimDataset::getStatus).distinct().sorted()
+                .collect(Collectors.toList());
+        columns.add(new BootstrapChoiceFilteredPropertyColumn<>(new StringResourceModel("status"), "status", "status",
+                new DozerListModel<>(statuses), "status"));
+
         columns.add(new PropertyColumn<>(new StringResourceModel("lastModifiedBy"), "lastModifiedBy",
                 "lastModifiedBy.get"));
         columns.add(new PropertyColumn<TetsimDataset, String>(new StringResourceModel("lastModifiedDate"),
@@ -84,10 +102,8 @@ public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
                 return Model.of(modifiedDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
             }
         });
-        columns.add(new PropertyColumn<>(new StringResourceModel("status"), "status", "status"));
 
 
-        String service = pageParameters.get(PARAM_SERVICE).toString();
         filterState = new TetsimDatasetFilterState();
         filterState.setService(service);
 
