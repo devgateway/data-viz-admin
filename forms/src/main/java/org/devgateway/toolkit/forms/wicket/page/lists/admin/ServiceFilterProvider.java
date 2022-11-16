@@ -18,17 +18,4 @@ public class ServiceFilterProvider extends SortableServiceEntityProvider<Service
                                  final String serviceName) {
         super(serviceEntityService, serviceName);
     }
-
-    @Override
-    protected Comparator<ServiceFilter> getServiceEntityComparator() {
-        return new ServiceFilterComparator();
-    }
-
-    protected class ServiceFilterComparator implements Comparator<ServiceFilter> {
-        @Override
-        public int compare(final ServiceFilter s1, final ServiceFilter s2) {
-            return String.CASE_INSENSITIVE_ORDER.compare(s1.getCode(), s2.getCode());
-        }
-    }
-
 }

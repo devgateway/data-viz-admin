@@ -6,12 +6,21 @@ import org.devgateway.toolkit.persistence.dto.ServiceEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public abstract class BaseServiceEntityServiceImpl<T extends ServiceEntity> implements BaseServiceEntityService<T> {
 
     @Override
     public List<T> findAll(final String serviceName) {
         return serviceEntityClient(serviceName).findAll();
+    }
+
+    @Override
+    public List<T> findAll(final String serviceName, final Predicate<T> spec) {
+        return findAll(serviceName).stream()
+                .filter(spec)
+                .collect(Collectors.toList());
     }
 
     @Override
