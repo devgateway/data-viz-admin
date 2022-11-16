@@ -21,4 +21,7 @@ public interface CSVDatasetRepository extends DatasetRepository<CSVDataset>,
     @Query ("select count(e) from #{#entityName} e where (:year is null or e.year=:year) "
             + "and e.status not in ('DELETED')")
     long countByNonPublished(@Param("year") Integer year);
+
+    @Query("select td from CSVDataset td where td.status not like 'DELETED' and td.destinationService like :service")
+    List<CSVDataset> findAllNotDeletedForService(@Param("service") String service);
 }

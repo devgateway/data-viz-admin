@@ -7,6 +7,8 @@ import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulato
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.FilterToolbar;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.IFilteredColumn;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.repeater.Item;
@@ -19,6 +21,9 @@ import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.exceptions.NullServiceEntityServiceException;
 import org.devgateway.toolkit.forms.service.admin.BaseServiceEntityService;
 import org.devgateway.toolkit.forms.wicket.components.table.AjaxFallbackBootstrapDataTable;
+import org.devgateway.toolkit.forms.wicket.components.table.DataTableAware;
+import org.devgateway.toolkit.forms.wicket.components.table.ResettingFilterForm;
+import org.devgateway.toolkit.forms.wicket.components.table.filter.ServiceEntityFilterState;
 import org.devgateway.toolkit.forms.wicket.page.BasePage;
 import org.devgateway.toolkit.forms.wicket.page.edit.admin.AbstractEditServiceEntityPage;
 import org.devgateway.toolkit.persistence.dto.ServiceEntity;
@@ -28,7 +33,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AbstractListServiceEntityPage<T extends ServiceEntity> extends BasePage {
+public abstract class AbstractListServiceEntityPage<T extends ServiceEntity> extends BasePage {
 
     private static final long serialVersionUID = 652587400391540726L;
 
@@ -49,11 +54,6 @@ public class AbstractListServiceEntityPage<T extends ServiceEntity> extends Base
 
     public AbstractListServiceEntityPage(final PageParameters pageParameters) {
         super(pageParameters);
-
-        columns = new ArrayList<>();
-        columns.add(new PropertyColumn<>(new Model<>("Code"), "code", "code"));
-        columns.add(new PropertyColumn<>(new Model<>("Value"), "value", "value"));
-        columns.add(new PropertyColumn<>(new Model<>("Position"), "position", "position"));
     }
 
     @Override
@@ -66,6 +66,7 @@ public class AbstractListServiceEntityPage<T extends ServiceEntity> extends Base
 
         String serviceName = getPageParameters().get(WebConstants.PARAM_SERVICE).toString();
         dataProvider = new SortableServiceEntityProvider<>(serviceEntityService, serviceName);
+        dataProvider.setFilterState(newFilterState());
 
         dataTable = new AjaxFallbackBootstrapDataTable<T, String>(
                 "table", columns, dataProvider, getPageSize()) {
@@ -77,6 +78,17 @@ public class AbstractListServiceEntityPage<T extends ServiceEntity> extends Base
             }
         };
 
+        ResettingFilterForm<ServiceEntityFilterState<T>> filterForm =
+                new ResettingFilterForm<>("filterForm", dataProvider, dataTable);
+        filterForm.add(dataTable);
+        add(filterForm);
+
+        if (hasFilteredColumns()) {
+            FilterToolbar filterToolbar = new FilterToolbar(dataTable, filterForm);
+            dataTable.addTopToolbar(filterToolbar);
+            setDataTableForFilteredColumns();
+        }
+
         columns.add(new AbstractColumn<T, String>(new StringResourceModel("actionsColumn", this, null)) {
             private static final long serialVersionUID = -7447601118569862123L;
 
@@ -86,8 +98,10 @@ public class AbstractListServiceEntityPage<T extends ServiceEntity> extends Base
                 cellItem.add(getActionPanel(componentId, model));
             }
         });
+    }
 
-        add(dataTable);
+    protected ServiceEntityFilterState<T> newFilterState() {
+        return new ServiceEntityFilterState<>();
     }
 
     protected int getPageSize() {
@@ -130,5 +144,24 @@ public class AbstractListServiceEntityPage<T extends ServiceEntity> extends Base
     protected Label getPageTitle() {
         String service = getPageParameters().get("service").toString();
         return new Label("pageTitle", Model.of(MessageFormat.format(getString("page.title"), service)));
+    }
+
+    private boolean hasFilteredColumns() {
+        for (IColumn<?, ?> column : columns) {
+            if (column instanceof IFilteredColumn) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void setDataTableForFilteredColumns() {
+        for (IColumn<?, ?> column : columns) {
+            if (column instanceof IFilteredColumn && column instanceof DataTableAware) {
+                if (((DataTableAware) column).getDataTable() == null) {
+                    ((DataTableAware) column).setDataTable(dataTable);
+                }
+            }
+        }
     }
 }

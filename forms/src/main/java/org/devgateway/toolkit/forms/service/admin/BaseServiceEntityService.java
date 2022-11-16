@@ -4,11 +4,14 @@ import org.devgateway.toolkit.persistence.dto.ServiceEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 @Service
 public interface BaseServiceEntityService<T extends ServiceEntity> {
 
     List<T> findAll(String serviceName);
+
+    List<T> findAll(String serviceName, Predicate<T> spec);
 
     T findOne(String serviceName, Long id);
 

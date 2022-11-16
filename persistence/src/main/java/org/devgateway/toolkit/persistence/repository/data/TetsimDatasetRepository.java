@@ -21,4 +21,7 @@ public interface TetsimDatasetRepository extends DatasetRepository<TetsimDataset
     @Query ("select count(e) from #{#entityName} e where (:year is null or e.year=:year) "
             + "and e.status not in ('DELETED')")
     long countByNonPublished(@Param("year") Integer year);
+
+    @Query("select td from CSVDataset td where td.status not in ('DELETED') and td.destinationService like :service")
+    List<TetsimDataset> findAllNotDeletedForService(@Param("service") String service);
 }

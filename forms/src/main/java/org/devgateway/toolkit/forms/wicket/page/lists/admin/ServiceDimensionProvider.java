@@ -25,17 +25,4 @@ public class ServiceDimensionProvider extends SortableServiceEntityProvider<Serv
                                     final String serviceName) {
         super(serviceEntityService, serviceName);
     }
-
-    @Override
-    protected Comparator<ServiceDimension> getServiceEntityComparator() {
-        return new ServiceDimensionComparator();
-    }
-
-    protected class ServiceDimensionComparator implements Comparator<ServiceDimension> {
-        @Override
-        public int compare(final ServiceDimension s1, final ServiceDimension s2) {
-            return String.CASE_INSENSITIVE_ORDER.compare(s1.getCode(), s2.getCode());
-        }
-    }
-
 }
