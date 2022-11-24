@@ -22,7 +22,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.BigLinkDefinition;
@@ -83,13 +82,11 @@ public class DataPage extends BasePage {
     }
 
     private FontAwesome5IconType getServiceIcon(final ServiceMetadata serviceMetadata) {
-        if (serviceMetadata.getType().equals(SERVICE_TETSIM_TYPE) || serviceMetadata.getName().equalsIgnoreCase(SERVICE_TETSIM_TYPE)) {
+        if (serviceMetadata.isTetsim()) {
             return FontAwesome5IconType.list_alt_r;
-        } else if (serviceMetadata.getType().equals(SERVICE_DATA_TYPE)) {
-            return FontAwesome5IconType.file_csv_s;
         }
 
-        throw new IllegalArgumentException("Unknown service type: " + serviceMetadata.getType());
+        return FontAwesome5IconType.file_csv_s;
     }
 
     protected Label getPageTitle() {

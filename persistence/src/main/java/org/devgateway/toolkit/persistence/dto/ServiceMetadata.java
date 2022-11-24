@@ -18,6 +18,8 @@ public class ServiceMetadata implements Serializable {
 
     private String status;
 
+    private Boolean tetsim;
+
     private List<ServiceDimension> dimensions = new ArrayList<>();
 
     public String getId() {
@@ -79,5 +81,13 @@ public class ServiceMetadata implements Serializable {
 
     public void setDimensions(final List<ServiceDimension> dimensions) {
         this.dimensions = dimensions;
+    }
+
+    public Boolean isTetsim() {
+        return tetsim;
+    }
+
+    public void setTetsim(final Boolean tetsim) {
+        this.tetsim = tetsim;
     }
 }

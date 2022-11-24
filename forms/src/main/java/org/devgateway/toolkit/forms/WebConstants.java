@@ -71,7 +71,4 @@ public final class WebConstants {
     // to change the src code anyway.
     public static final List<Locale> AVAILABLE_LOCALES = Collections.unmodifiableList(Arrays.asList(new Locale("en")));
 
-    public static final List<String> ALLOWED_SERVICES_TYPES = Collections.unmodifiableList(
-            Arrays.asList(SERVICE_DATA_TYPE, SERVICE_TETSIM_TYPE));
-
 }
