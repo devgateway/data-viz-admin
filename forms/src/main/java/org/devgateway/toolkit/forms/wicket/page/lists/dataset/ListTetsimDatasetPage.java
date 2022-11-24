@@ -27,10 +27,13 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.security.SecurityConstants;
+import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
 import org.devgateway.toolkit.forms.wicket.components.form.Select2ChoiceBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.table.filter.JpaFilterState;
 import org.devgateway.toolkit.forms.wicket.components.table.filter.TetsimDatasetFilterState;
+import org.devgateway.toolkit.forms.wicket.page.DataServicePage;
 import org.devgateway.toolkit.forms.wicket.page.edit.dataset.EditTetsimDatasetPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.AbstractListPage;
 import org.devgateway.toolkit.forms.wicket.providers.GenericChoiceProvider;
@@ -53,6 +56,7 @@ import static org.devgateway.toolkit.forms.WebConstants.PARAM_YEAR;
 
 @AuthorizeInstantiation(SecurityConstants.Roles.ROLE_USER)
 @MountPath(value = "/listTetsimDataset")
+@BreadCrumbPage(parent = DataServicePage.class, params = {"service"})
 public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
     private static final long serialVersionUID = -324298525712620234L;
     @SpringBean
@@ -229,7 +233,21 @@ public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
 
     protected Label getPageTitle() {
         String service = getPageParameters().get("service").toString();
-        return new Label("pageTitle", Model.of(MessageFormat.format(getString("page.title"), service)));
+        return new Label("pageTitle", getPageTitleModel());
     }
 
+    @Override
+    protected IModel<String> getBreadcrumbTitleModel() {
+        return getPageTitleModel();
+    }
+
+    private Model<String> getPageTitleModel() {
+        String service = getPageParameters().get("service").toString();
+        return Model.of(MessageFormat.format(getString("page.title"), service));
+    }
+
+    @Override
+    protected void addEditLinkPageParameters(final PageParameters pageParameters) {
+        pageParameters.set(WebConstants.PARAM_SERVICE, getPageParameters().get(WebConstants.PARAM_SERVICE));
+    }
 }

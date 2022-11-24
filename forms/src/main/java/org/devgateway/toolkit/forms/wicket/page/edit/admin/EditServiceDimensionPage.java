@@ -4,14 +4,15 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.service.admin.ServiceDimensionService;
 import org.devgateway.toolkit.forms.validators.UniqueLanguageTranslationValidator;
+import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
 import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.page.edit.admin.panel.ListViewTextTranslationSectionPanel;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceDimensionsPage;
 import org.devgateway.toolkit.persistence.dto.ServiceDimension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.wicketstuff.annotation.mount.MountPath;
 
 @MountPath(value = "/editServiceDimension")
+@BreadCrumbPage(parent = ListServiceDimensionsPage.class, params = {"service"})
 public class EditServiceDimensionPage extends AbstractEditServiceEntityPage<ServiceDimension> {
     private static final long serialVersionUID = -1594571319284288551L;
 

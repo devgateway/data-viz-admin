@@ -31,6 +31,7 @@ import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.security.SecurityUtil;
 import org.devgateway.toolkit.forms.service.SendEmailService;
+import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
 import org.devgateway.toolkit.forms.wicket.components.form.BootstrapCancelButton;
 import org.devgateway.toolkit.forms.wicket.components.form.CheckBoxToggleBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.form.PasswordFieldBootstrapFormComponent;
@@ -51,6 +52,7 @@ import static org.devgateway.toolkit.forms.WebConstants.StringValidators.MAXIMUM
 
 @AuthorizeInstantiation(SecurityConstants.Roles.ROLE_USER)
 @MountPath(value = "/account")
+@BreadCrumbPage
 public class EditUserPage extends AbstractEditPage<Person> {
     private static final long serialVersionUID = 5208480049061989277L;
 

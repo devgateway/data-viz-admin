@@ -11,6 +11,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.wicket.components.BigLinkDefinition;
 import org.devgateway.toolkit.forms.wicket.components.BigLinksPanel;
+import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListUserPage;
 import org.devgateway.toolkit.web.util.SettingsUtils;
 
@@ -21,6 +22,7 @@ import java.util.List;
  *
  */
 @AuthorizeInstantiation(SecurityConstants.Roles.ROLE_USER)
+@BreadCrumbPage
 public class ConfigurationsHomepage extends BasePage {
 
     @SpringBean

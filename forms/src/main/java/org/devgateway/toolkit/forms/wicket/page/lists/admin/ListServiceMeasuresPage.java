@@ -23,8 +23,10 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.service.admin.ServiceMeasureService;
+import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
 import org.devgateway.toolkit.forms.wicket.components.table.filter.ServiceEntityFilterState;
 import org.devgateway.toolkit.forms.wicket.components.table.filter.ServiceMeasureFilterState;
+import org.devgateway.toolkit.forms.wicket.page.DataServicePage;
 import org.devgateway.toolkit.forms.wicket.page.edit.admin.EditServiceMeasurePage;
 import org.devgateway.toolkit.persistence.dto.ServiceMeasure;
 import org.wicketstuff.annotation.mount.MountPath;
@@ -32,6 +34,7 @@ import org.wicketstuff.annotation.mount.MountPath;
 import java.util.ArrayList;
 
 @MountPath(value = "/measures")
+@BreadCrumbPage(parent = DataServicePage.class, params = {"service"})
 public class ListServiceMeasuresPage extends AbstractListServiceEntityPage<ServiceMeasure> {
 
     private static final long serialVersionUID = -6132847935476573446L;

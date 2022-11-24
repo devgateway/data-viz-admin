@@ -18,6 +18,7 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.image.IconType;
 import org.apache.wicket.Page;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -25,6 +26,7 @@ import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.BigLinkDefinition;
 import org.devgateway.toolkit.forms.wicket.components.BigLinksPanel;
+import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceCategoriesPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceDimensionsPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceFiltersPage;
@@ -53,6 +55,7 @@ import static org.devgateway.toolkit.forms.WebConstants.SERVICE_TETSIM_TYPE;
  */
 @AuthorizeInstantiation(SecurityConstants.Roles.ROLE_USER)
 @MountPath
+@BreadCrumbPage(parent = DataPage.class, params = {"service"})
 public class DataServicePage extends BasePage {
 
     @SpringBean
@@ -102,4 +105,8 @@ public class DataServicePage extends BasePage {
 
     }
 
+    protected Model<String> getBreadcrumbTitleModel() {
+        String service = getPageParameters().get("service").toString();
+        return Model.of(MessageFormat.format(getString("breadcrumb.title"), service));
+    }
 }

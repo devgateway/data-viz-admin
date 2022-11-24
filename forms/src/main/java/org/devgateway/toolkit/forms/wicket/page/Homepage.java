@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -11,6 +12,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.wicket.components.BigLinkDefinition;
 import org.devgateway.toolkit.forms.wicket.components.BigLinksPanel;
+import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServicePage;
 import org.devgateway.toolkit.web.util.SettingsUtils;
 
@@ -21,6 +23,7 @@ import java.util.List;
  *
  */
 @AuthorizeInstantiation(SecurityConstants.Roles.ROLE_USER)
+@BreadCrumbPage(isRoot = true)
 public class Homepage extends BasePage {
 
     @SpringBean
@@ -42,5 +45,10 @@ public class Homepage extends BasePage {
     protected Label getPageTitle() {
         return new Label("pageTitle", new StringResourceModel("page.title", this,
                 Model.of(settingsUtils.getSetting())));
+    }
+
+    @Override
+    protected IModel<String> getBreadcrumbTitleModel() {
+        return new StringResourceModel("breadcrumb.title", this, null);
     }
 }
