@@ -34,9 +34,11 @@ import org.apache.wicket.markup.head.MetaDataHeaderItem;
 import org.apache.wicket.markup.head.filter.HeaderResponseContainer;
 import org.apache.wicket.markup.html.GenericWebPage;
 import org.apache.wicket.markup.html.TransparentWebMarkupContainer;
+import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.AbstractLink;
 import org.apache.wicket.markup.html.pages.RedirectPage;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -49,6 +51,8 @@ import org.apache.wicket.resource.JQueryResourceReference;
 import org.apache.wicket.util.string.StringValue;
 import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.security.SecurityUtil;
+import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
+import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPanel;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListTestFormPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListUserPage;
 import org.devgateway.toolkit.forms.wicket.page.user.EditUserPage;
@@ -58,6 +62,7 @@ import org.devgateway.toolkit.persistence.dao.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -83,6 +88,8 @@ public abstract class BasePage extends GenericWebPage<Void> {
     protected Label pageTitle;
 
     private Navbar navbar;
+
+    protected BreadCrumbPanel breadcrumbPanel;
 
     protected NotificationPanel feedbackPanel;
 
@@ -148,6 +155,9 @@ public abstract class BasePage extends GenericWebPage<Void> {
 
         navbar = newNavbar("navbar");
         mainHeader.add(navbar);
+
+        breadcrumbPanel = createBreadcrumbPanel("breadcrumb");
+        mainContainer.add(breadcrumbPanel);
 
         // Add information about navbar position on mainHeader element.
         if (navbar.getPosition().equals(Navbar.Position.DEFAULT)) {
@@ -245,7 +255,6 @@ public abstract class BasePage extends GenericWebPage<Void> {
     }
 
     protected NavbarDropDownButton newConfigurationsMenu() {
-
         // admin menu
         NavbarDropDownButton configurationsMenu = new NavbarDropDownButton(new StringResourceModel("navbar.configurations", this, null)) {
             private static final long serialVersionUID = 1L;
@@ -329,5 +338,44 @@ public abstract class BasePage extends GenericWebPage<Void> {
 
         response.render(JavaScriptHeaderItem.forReference(new JavaScriptResourceReference(BaseStyles.class,
                 "assets/js/fileupload.js")));
+    }
+
+    protected BreadCrumbPanel createBreadcrumbPanel(final String markupId) {
+        return new BreadCrumbPanel(markupId) {
+            @Override
+            protected IModel<String> getLabelModel() {
+                return getBreadcrumbTitleModel();
+            }
+
+            @Override
+            protected IModel<String> getLabelModel(final Class<? extends BasePage> clazz) {
+                return getBreadcrumbTitleModel(clazz);
+            }
+
+            @Override
+            protected Class<? extends WebPage> getPageClass() {
+                return BasePage.this.getClass();
+            }
+        };
+    }
+
+    protected IModel<String> getBreadcrumbTitleModel() {
+        return new StringResourceModel("page.title", this, null);
+    }
+
+    protected IModel<String> getBreadcrumbTitleModel(final Class<? extends BasePage> clazz) {
+        String[] params = clazz.getDeclaredAnnotation(BreadCrumbPage.class).params();
+
+        if (params.length > 0) {
+            String paramValue = getPageParameters().get(params[0]).toString();
+            return Model.of(MessageFormat.format(getString("breadcrumb." + clazz.getSimpleName()), paramValue));
+        }
+
+        return new StringResourceModel("breadcrumb." + clazz.getSimpleName(), this, null)
+                .setDefaultValue(getBreadcrumbTitleModel());
+    }
+
+    private boolean hasBreadcrumbPanel() {
+        return this.getClass().getDeclaredAnnotation(BreadCrumbPage.class) != null;
     }
 }

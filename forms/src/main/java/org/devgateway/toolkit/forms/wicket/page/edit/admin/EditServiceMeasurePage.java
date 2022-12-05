@@ -5,6 +5,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.service.admin.ServiceMeasureService;
 import org.devgateway.toolkit.forms.validators.UniqueLanguageTranslationValidator;
+import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
 import org.devgateway.toolkit.forms.wicket.components.form.ColorPickerBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.page.edit.admin.panel.ListViewTextTranslationSectionPanel;
@@ -13,6 +14,7 @@ import org.devgateway.toolkit.persistence.dto.ServiceMeasure;
 import org.wicketstuff.annotation.mount.MountPath;
 
 @MountPath(value = "/editServiceMeasure")
+@BreadCrumbPage(parent = ListServiceMeasuresPage.class, params = {"service"})
 public class EditServiceMeasurePage extends AbstractEditServiceEntityPage<ServiceMeasure> {
     private static final long serialVersionUID = -9013029067860834250L;
 

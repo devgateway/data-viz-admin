@@ -142,8 +142,7 @@ public abstract class AbstractListServiceEntityPage<T extends ServiceEntity> ext
     }
 
     protected Label getPageTitle() {
-        String service = getPageParameters().get("service").toString();
-        return new Label("pageTitle", Model.of(MessageFormat.format(getString("page.title"), service)));
+        return new Label("pageTitle", getPageTitleModel());
     }
 
     private boolean hasFilteredColumns() {
@@ -163,5 +162,15 @@ public abstract class AbstractListServiceEntityPage<T extends ServiceEntity> ext
                 }
             }
         }
+    }
+
+    @Override
+    protected IModel<String> getBreadcrumbTitleModel() {
+        return getPageTitleModel();
+    }
+
+    private Model<String> getPageTitleModel() {
+        String service = getPageParameters().get("service").toString();
+        return Model.of(MessageFormat.format(getString("page.title"), service));
     }
 }

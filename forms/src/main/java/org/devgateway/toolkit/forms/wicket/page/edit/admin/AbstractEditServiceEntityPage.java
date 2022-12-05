@@ -369,4 +369,8 @@ public abstract class AbstractEditServiceEntityPage<T extends ServiceEntity> ext
         return pageParams;
     }
 
+    protected IModel<String> getBreadcrumbTitleModel() {
+        return getTitleModel();
+    }
+
 }

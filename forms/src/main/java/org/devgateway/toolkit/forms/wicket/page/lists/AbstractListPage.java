@@ -199,6 +199,7 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
             if (entity != null) {
                 pageParameters.set(WebConstants.PARAM_ID, entity.getId());
             }
+            addEditLinkPageParameters(pageParameters);
 
             editItemPageLink =
                     new BootstrapBookmarkablePageLink<>("edit", editPageClass, pageParameters, Buttons.Type.Info);
@@ -210,6 +211,10 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
             add(getPrintButton(pageParameters));
             add(getRevisionsLink(entity));
         }
+    }
+
+    protected void addEditLinkPageParameters(final PageParameters pageParameters) {
+
     }
 
     protected Component getRevisionsLink(final T entity) {

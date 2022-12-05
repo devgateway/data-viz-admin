@@ -13,6 +13,7 @@ import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.client.DataSetClientException;
 import org.devgateway.toolkit.forms.service.DatasetClientService;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
+import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
 import org.devgateway.toolkit.forms.wicket.components.form.BootstrapCancelButton;
 import org.devgateway.toolkit.forms.wicket.components.form.Select2ChoiceBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
@@ -42,6 +43,7 @@ import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.UNPUBLIS
  * @author vchihai
  */
 @MountPath(value = "/editTetsimDataset")
+@BreadCrumbPage(parent = ListTetsimDatasetPage.class, params = {"service"})
 public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDataset> {
 
     private static final long serialVersionUID = -8460878260874111506L;
@@ -240,6 +242,10 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
         pageParams.add(WebConstants.PARAM_SERVICE, editForm.getModelObject().getDestinationService());
 
         return pageParams;
+    }
+
+    protected IModel<String> getBreadcrumbTitleModel() {
+        return getTitleModel();
     }
 
 }

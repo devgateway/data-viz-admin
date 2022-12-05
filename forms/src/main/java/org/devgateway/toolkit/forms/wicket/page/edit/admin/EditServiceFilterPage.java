@@ -4,6 +4,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.service.admin.ServiceFilterService;
 import org.devgateway.toolkit.forms.validators.UniqueLanguageTranslationValidator;
+import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
 import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.page.edit.admin.panel.ListViewTextTranslationSectionPanel;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceFiltersPage;
@@ -11,6 +12,7 @@ import org.devgateway.toolkit.persistence.dto.ServiceFilter;
 import org.wicketstuff.annotation.mount.MountPath;
 
 @MountPath(value = "/editServiceFilter")
+@BreadCrumbPage(parent = ListServiceFiltersPage.class, params = {"service"})
 public class EditServiceFilterPage extends AbstractEditServiceEntityPage<ServiceFilter> {
     private static final long serialVersionUID = -8409084805556720923L;
 

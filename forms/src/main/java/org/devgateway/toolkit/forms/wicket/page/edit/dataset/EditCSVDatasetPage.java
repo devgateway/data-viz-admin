@@ -18,6 +18,7 @@ import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.client.DataSetClientException;
 import org.devgateway.toolkit.forms.service.DatasetClientService;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
+import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
 import org.devgateway.toolkit.forms.wicket.components.form.AJAXDownload;
 import org.devgateway.toolkit.forms.wicket.components.form.BootstrapCancelButton;
 import org.devgateway.toolkit.forms.wicket.components.form.FileInputBootstrapFormComponent;
@@ -46,6 +47,7 @@ import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.UNPUBLIS
  * @author vchihai
  */
 @MountPath(value = "/editCSVDataset")
+@BreadCrumbPage(parent = ListCSVDatasetPage.class, params = {"service"})
 public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset> {
 
     private static final long serialVersionUID = -5231470856974604314L;
@@ -268,5 +270,9 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
         pageParams.add(WebConstants.PARAM_SERVICE, editForm.getModelObject().getDestinationService());
 
         return pageParams;
+    }
+
+    protected IModel<String> getBreadcrumbTitleModel() {
+        return getTitleModel();
     }
 }

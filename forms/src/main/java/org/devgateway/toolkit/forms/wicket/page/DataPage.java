@@ -27,6 +27,8 @@ import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.BigLinkDefinition;
 import org.devgateway.toolkit.forms.wicket.components.BigLinksPanel;
+import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
+import org.devgateway.toolkit.persistence.dao.AdminSettings;
 import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
 import org.devgateway.toolkit.web.util.SettingsUtils;
 import org.wicketstuff.annotation.mount.MountPath;
@@ -41,7 +43,8 @@ import static org.devgateway.toolkit.forms.WebConstants.SERVICE_TETSIM_TYPE;
  * @author Viorel Chihai
  */
 @AuthorizeInstantiation(SecurityConstants.Roles.ROLE_USER)
-@MountPath
+@MountPath(value = "/dataPage")
+@BreadCrumbPage
 public class DataPage extends BasePage {
 
     @SpringBean
@@ -93,8 +96,16 @@ public class DataPage extends BasePage {
     }
 
     protected Label getPageTitle() {
-        return new Label("pageTitle", new StringResourceModel("page.title", this,
-                Model.of(settingsUtils.getSetting())));
+        return new Label("pageTitle", getPageTitleResourceModel());
+    }
+
+    private StringResourceModel getPageTitleResourceModel() {
+        return new StringResourceModel("page.title", this, (Model.of(settingsUtils.getSetting())));
+    }
+
+    @Override
+    protected IModel<String> getBreadcrumbTitleModel() {
+        return new StringResourceModel("breadcrumb.title", this);
     }
 
 }
