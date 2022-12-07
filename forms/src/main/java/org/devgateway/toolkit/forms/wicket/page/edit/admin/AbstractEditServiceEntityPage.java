@@ -19,6 +19,7 @@ import org.apache.wicket.validation.ValidationError;
 import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.exceptions.NullListPageClassException;
 import org.devgateway.toolkit.forms.service.DatasetClientService;
+import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.service.admin.BaseServiceEntityService;
 import org.devgateway.toolkit.forms.wicket.components.form.BootstrapCancelButton;
 import org.devgateway.toolkit.forms.wicket.components.form.BootstrapSubmitButton;
@@ -79,6 +80,9 @@ public abstract class AbstractEditServiceEntityPage<T extends ServiceEntity> ext
     protected TextContentModal cancelModal;
 
     protected TextContentModal saveFailedModal;
+
+    @SpringBean
+    protected EurekaClientService eurekaClientService;
 
     public EditForm getEditForm() {
         return editForm;
@@ -352,11 +356,11 @@ public abstract class AbstractEditServiceEntityPage<T extends ServiceEntity> ext
     }
 
     protected Model<String> getTitleModel() {
-        String service = getPageParameters().get(PARAM_SERVICE).toString();
+        String serviceLabel = getServiceLabel();
         if (entityId == null) {
-            return Model.of(MessageFormat.format(getString("page.title.add"), service));
+            return Model.of(MessageFormat.format(getString("page.title.add"), serviceLabel));
         } else {
-            return Model.of(MessageFormat.format(getString("page.title.edit"), service));
+            return Model.of(MessageFormat.format(getString("page.title.edit"), serviceLabel));
         }
     }
 
@@ -370,7 +374,12 @@ public abstract class AbstractEditServiceEntityPage<T extends ServiceEntity> ext
     }
 
     protected IModel<String> getBreadcrumbTitleModel() {
-        return getTitleModel();
+        String serviceLabel = getServiceLabel();
+        if (entityId == null) {
+            return Model.of(MessageFormat.format(getString("breadcrumb.title.add"), serviceLabel));
+        } else {
+            return Model.of(MessageFormat.format(getString("breadcrumb.title.edit"), serviceLabel));
+        }
     }
 
 }

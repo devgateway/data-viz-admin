@@ -24,5 +24,5 @@ public @interface BreadCrumbPage {
 
     boolean isRoot() default false;
 
-    String[] params() default {};
+    boolean hasServiceParam() default false;
 }

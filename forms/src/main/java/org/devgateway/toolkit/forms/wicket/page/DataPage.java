@@ -36,6 +36,7 @@ import org.wicketstuff.annotation.mount.MountPath;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.devgateway.toolkit.forms.WebConstants.PARAM_SERVICE;
 import static org.devgateway.toolkit.forms.WebConstants.SERVICE_DATA_TYPE;
 import static org.devgateway.toolkit.forms.WebConstants.SERVICE_TETSIM_TYPE;
 
@@ -61,7 +62,7 @@ public class DataPage extends BasePage {
         List<BigLinkDefinition> links = new ArrayList<>();
         for (ServiceMetadata service : services) {
             PageParameters pageParameters = new PageParameters();
-            pageParameters.add("service", service.getName());
+            pageParameters.add(PARAM_SERVICE, service.getName());
 
             FontAwesome5IconType serviceIcon = getServiceIcon(service);
 
@@ -69,7 +70,7 @@ public class DataPage extends BasePage {
 
                 @Override
                 public IModel<String> getLabelModel() {
-                    return Model.of(service.getName());
+                    return Model.of(service.getLabel());
                 }
 
                 @Override

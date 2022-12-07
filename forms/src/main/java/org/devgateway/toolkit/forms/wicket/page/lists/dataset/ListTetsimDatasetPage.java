@@ -37,7 +37,6 @@ import org.devgateway.toolkit.forms.wicket.page.DataServicePage;
 import org.devgateway.toolkit.forms.wicket.page.edit.dataset.EditTetsimDatasetPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.AbstractListPage;
 import org.devgateway.toolkit.forms.wicket.providers.GenericChoiceProvider;
-import org.devgateway.toolkit.persistence.dao.data.CSVDataset;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
 import org.devgateway.toolkit.persistence.service.data.TetsimDatasetService;
 import org.devgateway.toolkit.web.util.SettingsUtils;
@@ -56,9 +55,10 @@ import static org.devgateway.toolkit.forms.WebConstants.PARAM_YEAR;
 
 @AuthorizeInstantiation(SecurityConstants.Roles.ROLE_USER)
 @MountPath(value = "/listTetsimDataset")
-@BreadCrumbPage(parent = DataServicePage.class, params = {"service"})
+@BreadCrumbPage(parent = DataServicePage.class, hasServiceParam = true)
 public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
     private static final long serialVersionUID = -324298525712620234L;
+
     @SpringBean
     protected SettingsUtils settingsUtils;
 
@@ -76,7 +76,7 @@ public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
         this.jpaService = tetsimDatasetService;
         this.editPageClass = EditTetsimDatasetPage.class;
 
-        String service = pageParameters.get("service").toString();
+        String service = pageParameters.get(PARAM_SERVICE).toString();
 
         columns.clear();
 
@@ -232,18 +232,16 @@ public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
     }
 
     protected Label getPageTitle() {
-        String service = getPageParameters().get("service").toString();
         return new Label("pageTitle", getPageTitleModel());
     }
 
     @Override
     protected IModel<String> getBreadcrumbTitleModel() {
-        return getPageTitleModel();
+        return Model.of(MessageFormat.format(getString("breadcrumb.title"), getServiceLabel()));
     }
 
     private Model<String> getPageTitleModel() {
-        String service = getPageParameters().get("service").toString();
-        return Model.of(MessageFormat.format(getString("page.title"), service));
+        return Model.of(MessageFormat.format(getString("page.title"), getServiceLabel()));
     }
 
     @Override

@@ -12,7 +12,7 @@ import org.devgateway.toolkit.persistence.dto.ServiceFilter;
 import org.wicketstuff.annotation.mount.MountPath;
 
 @MountPath(value = "/editServiceFilter")
-@BreadCrumbPage(parent = ListServiceFiltersPage.class, params = {"service"})
+@BreadCrumbPage(parent = ListServiceFiltersPage.class, hasServiceParam = true)
 public class EditServiceFilterPage extends AbstractEditServiceEntityPage<ServiceFilter> {
     private static final long serialVersionUID = -8409084805556720923L;
 

@@ -35,7 +35,7 @@ import org.wicketstuff.annotation.mount.MountPath;
 import java.util.ArrayList;
 
 @MountPath(value = "/categories")
-@BreadCrumbPage(parent = DataServicePage.class, params = {"service"})
+@BreadCrumbPage(parent = DataServicePage.class, hasServiceParam = true)
 public class ListServiceCategoriesPage extends AbstractListServiceEntityPage<ServiceCategory> {
 
     private static final long serialVersionUID = -6132847935476573446L;

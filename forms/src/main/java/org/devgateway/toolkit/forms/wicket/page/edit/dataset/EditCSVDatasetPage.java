@@ -47,7 +47,7 @@ import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.UNPUBLIS
  * @author vchihai
  */
 @MountPath(value = "/editCSVDataset")
-@BreadCrumbPage(parent = ListCSVDatasetPage.class, params = {"service"})
+@BreadCrumbPage(parent = ListCSVDatasetPage.class, hasServiceParam = true)
 public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset> {
 
     private static final long serialVersionUID = -5231470856974604314L;

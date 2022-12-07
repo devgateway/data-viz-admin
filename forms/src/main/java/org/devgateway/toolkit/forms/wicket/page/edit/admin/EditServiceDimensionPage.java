@@ -12,7 +12,7 @@ import org.devgateway.toolkit.persistence.dto.ServiceDimension;
 import org.wicketstuff.annotation.mount.MountPath;
 
 @MountPath(value = "/editServiceDimension")
-@BreadCrumbPage(parent = ListServiceDimensionsPage.class, params = {"service"})
+@BreadCrumbPage(parent = ListServiceDimensionsPage.class, hasServiceParam = true)
 public class EditServiceDimensionPage extends AbstractEditServiceEntityPage<ServiceDimension> {
     private static final long serialVersionUID = -1594571319284288551L;
 

@@ -14,7 +14,7 @@ import org.devgateway.toolkit.persistence.dto.ServiceMeasure;
 import org.wicketstuff.annotation.mount.MountPath;
 
 @MountPath(value = "/editServiceMeasure")
-@BreadCrumbPage(parent = ListServiceMeasuresPage.class, params = {"service"})
+@BreadCrumbPage(parent = ListServiceMeasuresPage.class, hasServiceParam = true)
 public class EditServiceMeasurePage extends AbstractEditServiceEntityPage<ServiceMeasure> {
     private static final long serialVersionUID = -9013029067860834250L;
 

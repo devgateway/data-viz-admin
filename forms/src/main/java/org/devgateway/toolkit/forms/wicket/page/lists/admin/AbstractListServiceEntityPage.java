@@ -6,7 +6,6 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5I
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.FilterToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.IFilteredColumn;
 import org.apache.wicket.markup.html.basic.Label;
@@ -19,6 +18,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.exceptions.NullServiceEntityServiceException;
+import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.service.admin.BaseServiceEntityService;
 import org.devgateway.toolkit.forms.wicket.components.table.AjaxFallbackBootstrapDataTable;
 import org.devgateway.toolkit.forms.wicket.components.table.DataTableAware;
@@ -30,8 +30,9 @@ import org.devgateway.toolkit.persistence.dto.ServiceEntity;
 import org.devgateway.toolkit.persistence.service.AdminSettingsService;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.List;
+
+import static org.devgateway.toolkit.forms.WebConstants.PARAM_SERVICE;
 
 public abstract class AbstractListServiceEntityPage<T extends ServiceEntity> extends BasePage {
 
@@ -41,6 +42,9 @@ public abstract class AbstractListServiceEntityPage<T extends ServiceEntity> ext
 
     @SpringBean
     protected AdminSettingsService adminSettingsService;
+
+    @SpringBean
+    EurekaClientService eurekaClientService;
 
     protected AjaxFallbackBootstrapDataTable<T, String> dataTable;
 
@@ -64,7 +68,7 @@ public abstract class AbstractListServiceEntityPage<T extends ServiceEntity> ext
             throw new NullServiceEntityServiceException();
         }
 
-        String serviceName = getPageParameters().get(WebConstants.PARAM_SERVICE).toString();
+        String serviceName = getPageParameters().get(PARAM_SERVICE).toString();
         dataProvider = new SortableServiceEntityProvider<>(serviceEntityService, serviceName);
         dataProvider.setFilterState(newFilterState());
 
@@ -131,7 +135,7 @@ public abstract class AbstractListServiceEntityPage<T extends ServiceEntity> ext
             if (entity != null) {
                 pageParameters.set(WebConstants.PARAM_ID, entity.getId());
             }
-            pageParameters.set(WebConstants.PARAM_SERVICE, getPageParameters().get(WebConstants.PARAM_SERVICE));
+            pageParameters.set(PARAM_SERVICE, getPageParameters().get(PARAM_SERVICE));
 
             editItemPageLink =
                     new BootstrapBookmarkablePageLink<>("edit", editPageClass, pageParameters, Buttons.Type.Info);
@@ -142,7 +146,7 @@ public abstract class AbstractListServiceEntityPage<T extends ServiceEntity> ext
     }
 
     protected Label getPageTitle() {
-        return new Label("pageTitle", getPageTitleModel());
+        return new Label("pageTitle", Model.of(MessageFormat.format(getString("page.title"), getServiceLabel())));
     }
 
     private boolean hasFilteredColumns() {
@@ -166,11 +170,6 @@ public abstract class AbstractListServiceEntityPage<T extends ServiceEntity> ext
 
     @Override
     protected IModel<String> getBreadcrumbTitleModel() {
-        return getPageTitleModel();
-    }
-
-    private Model<String> getPageTitleModel() {
-        String service = getPageParameters().get("service").toString();
-        return Model.of(MessageFormat.format(getString("page.title"), service));
+        return new StringResourceModel("breadcrumb.title", this);
     }
 }

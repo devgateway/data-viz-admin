@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons.Type.Link;
+import static org.devgateway.toolkit.forms.WebConstants.PARAM_SERVICE;
 
 /**
  * A component that renders bread crumbs.
@@ -112,12 +113,12 @@ public abstract class BreadCrumbPanel extends Panel {
     }
 
     private PageParameters getBreadcrumbPageParameters(final Class<? extends BasePage> clazz) {
-        String[] params = clazz.getDeclaredAnnotation(BreadCrumbPage.class).params();
+        boolean hasServiceLabel = clazz.getDeclaredAnnotation(BreadCrumbPage.class).hasServiceParam();
 
-        if (params.length > 0) {
+        if (hasServiceLabel) {
             PageParameters pageParameters = new PageParameters();
-            String paramValue = this.getPage().getPageParameters().get(params[0]).toString();
-            pageParameters.set(params[0], paramValue);
+            String service = this.getPage().getPageParameters().get(PARAM_SERVICE).toString();
+            pageParameters.set(PARAM_SERVICE, service);
             return pageParameters;
         }
 

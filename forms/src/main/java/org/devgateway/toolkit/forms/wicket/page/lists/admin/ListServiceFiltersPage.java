@@ -1,7 +1,6 @@
 package org.devgateway.toolkit.forms.wicket.page.lists.admin;
 
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.table.filter.BootstrapTextFilteredPropertyColumn;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -18,7 +17,7 @@ import org.wicketstuff.annotation.mount.MountPath;
 import java.util.ArrayList;
 
 @MountPath(value = "/filters")
-@BreadCrumbPage(parent = DataServicePage.class, params = {"service"})
+@BreadCrumbPage(parent = DataServicePage.class, hasServiceParam = true)
 public class ListServiceFiltersPage extends AbstractListServiceEntityPage<ServiceFilter> {
 
     private static final long serialVersionUID = -6619848875255960857L;
