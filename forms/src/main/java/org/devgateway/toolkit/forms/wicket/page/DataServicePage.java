@@ -18,7 +18,6 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.image.IconType;
 import org.apache.wicket.Page;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -55,7 +54,7 @@ import static org.devgateway.toolkit.forms.WebConstants.SERVICE_TETSIM_TYPE;
  */
 @AuthorizeInstantiation(SecurityConstants.Roles.ROLE_USER)
 @MountPath
-@BreadCrumbPage(parent = DataPage.class, params = {"service"})
+@BreadCrumbPage(parent = DataPage.class, hasServiceParam = true)
 public class DataServicePage extends BasePage {
 
     @SpringBean
@@ -97,16 +96,14 @@ public class DataServicePage extends BasePage {
     }
 
     protected Label getPageTitle() {
-        String service = getPageParameters().get("service").toString();
         String countryName = settingsUtils.getSetting().getCountryName();
 
         return new Label("pageTitle",
-                Model.of(MessageFormat.format(getString("page.title"), countryName, service)));
+                Model.of(MessageFormat.format(getString("page.title"), countryName, getServiceLabel())));
 
     }
 
     protected Model<String> getBreadcrumbTitleModel() {
-        String service = getPageParameters().get("service").toString();
-        return Model.of(MessageFormat.format(getString("breadcrumb.title"), service));
+        return Model.of(MessageFormat.format(getString("breadcrumb.title"), getServiceLabel()));
     }
 }

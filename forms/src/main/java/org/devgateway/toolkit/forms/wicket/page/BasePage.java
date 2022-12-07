@@ -48,9 +48,11 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.JavaScriptResourceReference;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.resource.JQueryResourceReference;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.string.StringValue;
 import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.security.SecurityUtil;
+import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
 import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPanel;
 import org.devgateway.toolkit.forms.wicket.page.lists.ListTestFormPage;
@@ -67,6 +69,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static org.devgateway.toolkit.forms.WebConstants.PARAM_SERVICE;
 import static org.devgateway.toolkit.forms.security.SecurityConstants.Roles.ROLE_USER;
 
 /**
@@ -78,6 +81,9 @@ public abstract class BasePage extends GenericWebPage<Void> {
     private static final long serialVersionUID = -4179591658828697452L;
 
     protected static final Logger logger = LoggerFactory.getLogger(BasePage.class);
+
+    @SpringBean
+    private EurekaClientService eurekaClientService;
 
     private TransparentWebMarkupContainer mainContainer;
 
@@ -364,11 +370,10 @@ public abstract class BasePage extends GenericWebPage<Void> {
     }
 
     protected IModel<String> getBreadcrumbTitleModel(final Class<? extends BasePage> clazz) {
-        String[] params = clazz.getDeclaredAnnotation(BreadCrumbPage.class).params();
+        boolean hasServiceLabel = clazz.getDeclaredAnnotation(BreadCrumbPage.class).hasServiceParam();
 
-        if (params.length > 0) {
-            String paramValue = getPageParameters().get(params[0]).toString();
-            return Model.of(MessageFormat.format(getString("breadcrumb." + clazz.getSimpleName()), paramValue));
+        if (hasServiceLabel) {
+            return Model.of(MessageFormat.format(getString("breadcrumb." + clazz.getSimpleName()), getServiceLabel()));
         }
 
         return new StringResourceModel("breadcrumb." + clazz.getSimpleName(), this, null)
@@ -377,5 +382,10 @@ public abstract class BasePage extends GenericWebPage<Void> {
 
     private boolean hasBreadcrumbPanel() {
         return this.getClass().getDeclaredAnnotation(BreadCrumbPage.class) != null;
+    }
+
+    protected String getServiceLabel() {
+        String service = getPageParameters().get(PARAM_SERVICE).toString();
+        return eurekaClientService.findByName(service).getLabel();
     }
 }

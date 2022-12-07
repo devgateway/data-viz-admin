@@ -24,7 +24,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
 import org.devgateway.toolkit.forms.wicket.components.table.filter.CSVDatasetFilterState;
@@ -46,7 +45,7 @@ import static org.devgateway.toolkit.forms.WebConstants.PARAM_SERVICE;
 
 @AuthorizeInstantiation(SecurityConstants.Roles.ROLE_USER)
 @MountPath(value = "/listCSVDataset")
-@BreadCrumbPage(parent = DataServicePage.class, params = {"service"})
+@BreadCrumbPage(parent = DataServicePage.class, hasServiceParam = true)
 public class ListCSVDatasetPage extends AbstractListPage<CSVDataset> {
     private static final long serialVersionUID = -7425220174797515101L;
 
@@ -58,7 +57,7 @@ public class ListCSVDatasetPage extends AbstractListPage<CSVDataset> {
     public ListCSVDatasetPage(final PageParameters pageParameters) {
         super(pageParameters);
 
-        String service = pageParameters.get("service").toString();
+        String service = pageParameters.get(PARAM_SERVICE).toString();
 
         this.jpaService = datasetService;
         this.editPageClass = EditCSVDatasetPage.class;
@@ -126,23 +125,21 @@ public class ListCSVDatasetPage extends AbstractListPage<CSVDataset> {
     }
 
     protected Label getPageTitle() {
-        String service = getPageParameters().get("service").toString();
         return new Label("pageTitle", getPageTitleModel());
     }
 
     @Override
     protected IModel<String> getBreadcrumbTitleModel() {
-        return getPageTitleModel();
+        return Model.of(MessageFormat.format(getString("breadcrumb.title"), getServiceLabel()));
     }
 
     private Model<String> getPageTitleModel() {
-        String service = getPageParameters().get("service").toString();
-        return Model.of(MessageFormat.format(getString("page.title"), service));
+        return Model.of(MessageFormat.format(getString("page.title"), getServiceLabel()));
     }
 
     @Override
     protected void addEditLinkPageParameters(final PageParameters pageParameters) {
-        pageParameters.set(WebConstants.PARAM_SERVICE, getPageParameters().get(WebConstants.PARAM_SERVICE));
+        pageParameters.set(PARAM_SERVICE, getPageParameters().get(PARAM_SERVICE));
     }
 
 }

@@ -9,7 +9,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.client.DataSetClientException;
 import org.devgateway.toolkit.forms.service.DatasetClientService;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
@@ -34,6 +33,7 @@ import org.wicketstuff.annotation.mount.MountPath;
 import java.math.BigDecimal;
 
 import static org.devgateway.toolkit.forms.WebConstants.MAXIMUM_PERCENTAGE;
+import static org.devgateway.toolkit.forms.WebConstants.PARAM_SERVICE;
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_YEAR;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DELETED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
@@ -43,7 +43,7 @@ import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.UNPUBLIS
  * @author vchihai
  */
 @MountPath(value = "/editTetsimDataset")
-@BreadCrumbPage(parent = ListTetsimDatasetPage.class, params = {"service"})
+@BreadCrumbPage(parent = ListTetsimDatasetPage.class, hasServiceParam = true)
 public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDataset> {
 
     private static final long serialVersionUID = -8460878260874111506L;
@@ -88,7 +88,7 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
         editForm.add(new TetsimMarketSharePercentageValidator());
 
         if (editForm.getModelObject().getDestinationService() == null) {
-            String service = getPageParameters().get(WebConstants.PARAM_SERVICE).toString();
+            String service = getPageParameters().get(PARAM_SERVICE).toString();
             editForm.getModelObject().setDestinationService(service);
         }
 
@@ -239,7 +239,7 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
     protected PageParameters getParamsWithServiceInformation() {
         PageParameters pageParams = new PageParameters();
         // add service to the page parameters
-        pageParams.add(WebConstants.PARAM_SERVICE, editForm.getModelObject().getDestinationService());
+        pageParams.add(PARAM_SERVICE, editForm.getModelObject().getDestinationService());
 
         return pageParams;
     }

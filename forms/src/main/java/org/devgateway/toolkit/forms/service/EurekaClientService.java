@@ -29,6 +29,7 @@ public class EurekaClientService {
                 service.setUrl(instanceInfo.getHomePageUrl());
                 service.setId(instanceInfo.getId());
                 service.setType(instance.getMetadata().getOrDefault("type", null));
+                service.setLabel(instance.getMetadata().getOrDefault("label", instanceInfo.getAppName()));
                 service.setStatus(instanceInfo.getStatus().toString());
                 services.add(service);
             });
