@@ -56,7 +56,7 @@ import static org.devgateway.toolkit.forms.WebConstants.PARAM_YEAR;
 @AuthorizeInstantiation(SecurityConstants.Roles.ROLE_USER)
 @MountPath(value = "/listTetsimDataset")
 @BreadCrumbPage(parent = DataServicePage.class, hasServiceParam = true)
-public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
+public class ListTetsimDatasetPage extends AbstractListDatasetPage<TetsimDataset> {
     private static final long serialVersionUID = -324298525712620234L;
 
     @SpringBean
@@ -219,11 +219,6 @@ public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
         if (year != null) {
             pageParameters.set(PARAM_YEAR, year);
         }
-    }
-
-    @Override
-    protected Component getRevisionsLink(final TetsimDataset entity) {
-        return new WebMarkupContainer("revisions").setVisibilityAllowed(false);
     }
 
     @Override

@@ -13,11 +13,9 @@ package org.devgateway.toolkit.forms.wicket.page.lists.dataset;
 
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.table.filter.BootstrapChoiceFilteredPropertyColumn;
 import nl.dries.wicket.hibernate.dozer.DozerListModel;
-import org.apache.wicket.Component;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -30,7 +28,6 @@ import org.devgateway.toolkit.forms.wicket.components.table.filter.CSVDatasetFil
 import org.devgateway.toolkit.forms.wicket.components.table.filter.JpaFilterState;
 import org.devgateway.toolkit.forms.wicket.page.DataServicePage;
 import org.devgateway.toolkit.forms.wicket.page.edit.dataset.EditCSVDatasetPage;
-import org.devgateway.toolkit.forms.wicket.page.lists.AbstractListPage;
 import org.devgateway.toolkit.persistence.dao.data.CSVDataset;
 import org.devgateway.toolkit.persistence.service.data.CSVDatasetService;
 import org.wicketstuff.annotation.mount.MountPath;
@@ -46,7 +43,7 @@ import static org.devgateway.toolkit.forms.WebConstants.PARAM_SERVICE;
 @AuthorizeInstantiation(SecurityConstants.Roles.ROLE_USER)
 @MountPath(value = "/listCSVDataset")
 @BreadCrumbPage(parent = DataServicePage.class, hasServiceParam = true)
-public class ListCSVDatasetPage extends AbstractListPage<CSVDataset> {
+public class ListCSVDatasetPage extends AbstractListDatasetPage<CSVDataset> {
     private static final long serialVersionUID = -7425220174797515101L;
 
     @SpringBean
@@ -112,11 +109,6 @@ public class ListCSVDatasetPage extends AbstractListPage<CSVDataset> {
         dataProvider.setSort("year", SortOrder.DESCENDING);
 
         excelForm.setVisibilityAllowed(false);
-    }
-
-    @Override
-    protected Component getRevisionsLink(final CSVDataset entity) {
-        return new WebMarkupContainer("revisions").setVisibilityAllowed(false);
     }
 
     @Override

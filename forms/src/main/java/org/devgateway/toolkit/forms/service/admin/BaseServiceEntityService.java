@@ -19,6 +19,8 @@ public interface BaseServiceEntityService<T extends ServiceEntity> {
 
     void update(String serviceName, T entity);
 
+    void delete(String serviceName, T entity);
+
     long count(String serviceName);
 
     T newInstance();

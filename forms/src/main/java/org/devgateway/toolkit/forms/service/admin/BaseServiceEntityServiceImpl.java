@@ -37,6 +37,10 @@ public abstract class BaseServiceEntityServiceImpl<T extends ServiceEntity> impl
         serviceEntityClient(serviceName).update(entity);
     }
 
+    public void delete(final String serviceName, final T entity) {
+        serviceEntityClient(serviceName).delete(entity);
+    }
+
     @Override
     public long count(String serviceName) {
         return 0;

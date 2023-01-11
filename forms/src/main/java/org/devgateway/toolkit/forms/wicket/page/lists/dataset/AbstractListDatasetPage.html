@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<body>
+<wicket:extend>
+    <wicket:child />
+
+    <wicket:fragment wicket:id="localDatasetsTitleFragment">
+        <div class="row">
+            <div class="col-md-12 col-md-offset-1">
+                <h2>Local Datasets</h2>
+            </div>
+        </div>
+    </wicket:fragment>
+
+    <wicket:fragment wicket:id="remoteDatasetsTitleFragment">
+        <div class="row">
+            <div class="col-md-12 col-md-offset-1">
+                <h2>Remote Datasets</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <div wicket:id="remoteDatasetsPanel" />
+            </div>
+        </div>
+    </wicket:fragment>
+</wicket:extend>
+</body>
+</html>

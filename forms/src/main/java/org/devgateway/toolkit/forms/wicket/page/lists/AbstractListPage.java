@@ -112,8 +112,12 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
     protected void onInitialize() {
         super.onInitialize();
 
+        add(new Fragment("topPage", "topPageTitleFragment", this));
+
         Fragment fragment = new Fragment("bottomPageFragment", "noBottomPageFragment", this);
         add(fragment);
+
+        add(new Fragment("bottomPage", "bottomPageTitleFragment", this));
 
         if (jpaService == null) {
             throw new NullJpaServiceException();

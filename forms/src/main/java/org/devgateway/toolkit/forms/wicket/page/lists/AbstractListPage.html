@@ -2,6 +2,9 @@
 <html xmlns:wicket="http://wicket.apache.org">
 <body>
 <wicket:extend>
+
+    <wicket:fragment wicket:id="topPageTitleFragment"/>
+    <span wicket:id="topPage"></span>
     <div class="row">
         <div class="col-md-12">
             <wicket:child/>
@@ -40,6 +43,9 @@
     </div>
 
     <wicket:fragment wicket:id="noBottomPageFragment"> </wicket:fragment>
+
+    <span wicket:id="bottomPage"></span>
+    <wicket:fragment wicket:id="bottomPageTitleFragment"> </wicket:fragment>
 
 </wicket:extend>
 </body>

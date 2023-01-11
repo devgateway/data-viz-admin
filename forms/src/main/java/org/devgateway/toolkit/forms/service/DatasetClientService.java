@@ -123,11 +123,6 @@ public class DatasetClientService {
         return eurekaClientService.findByName(destinationService);
     }
 
-    public List<ServiceMeasure> getMeasures(final String serviceName) {
-        ServiceMetadata service = eurekaClientService.findByName(serviceName);
-        return new DatasetClient(service.getUrl()).getMeasures();
-    }
-
     public byte[] getTemplateDownload(final String serviceName) {
         ServiceMetadata service = eurekaClientService.findByName(serviceName);
         return new DatasetClient(service.getUrl()).getTemplateDownload();
