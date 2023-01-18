@@ -33,6 +33,8 @@ public class TetsimExportOutput implements Serializable {
 
     private Double totalTaxBurdenOvershift;
 
+    private Double baselineTotalTaxBurdenOvershift;
+
     private Double retailPriceOvershift;
 
     private Double notOvershift;
@@ -59,6 +61,8 @@ public class TetsimExportOutput implements Serializable {
 
     private Double totalTaxBurdenUndershift;
 
+    private Double baselineTotalTaxBurdenUndershift;
+
     private Double retailPriceUndershift;
 
     private Double notUndershift;
@@ -72,23 +76,24 @@ public class TetsimExportOutput implements Serializable {
     public TetsimExportOutput() {
     }
 
-    public TetsimExportOutput(TetsimOutput overShfit, TetsimOutput underShift) {
-        this.year = overShfit.getYear();
-        this.taxChange = overShfit.getTaxChange();
-        this.tobaccoProduct = overShfit.getTobaccoProduct();
-        this.legalConsumptionOvershift = overShfit.getLegalConsumption();
-        this.legalConsumptionChangeOvershift = overShfit.getLegalConsumptionChange();
-        this.consumptionIllicitOvershift = overShfit.getConsumptionIllicit();
-        this.exciseRevOvershift = overShfit.getExciseRev();
-        this.exciseRevChangeOvershift = overShfit.getExciseRevChange();
-        this.totalGovRevOvershift = overShfit.getTotalGovRev();
-        this.exciseBurdenOvershift = overShfit.getExciseBurden();
-        this.totalTaxBurdenOvershift = overShfit.getTotalTaxBurden();
-        this.retailPriceOvershift = overShfit.getRetailPrice();
-        this.notOvershift = overShfit.getNot();
-        this.exciseTaxOvershift = overShfit.getExciseTax();
-        this.vatOvershift = overShfit.getVat();
-        this.levyOvershift = overShfit.getLevy();
+    public TetsimExportOutput(TetsimOutput overShift, TetsimOutput underShift) {
+        this.year = overShift.getYear();
+        this.taxChange = overShift.getTaxChange();
+        this.tobaccoProduct = overShift.getTobaccoProduct();
+        this.legalConsumptionOvershift = overShift.getLegalConsumption();
+        this.legalConsumptionChangeOvershift = overShift.getLegalConsumptionChange();
+        this.consumptionIllicitOvershift = overShift.getConsumptionIllicit();
+        this.exciseRevOvershift = overShift.getExciseRev();
+        this.exciseRevChangeOvershift = overShift.getExciseRevChange();
+        this.totalGovRevOvershift = overShift.getTotalGovRev();
+        this.exciseBurdenOvershift = overShift.getExciseBurden();
+        this.totalTaxBurdenOvershift = overShift.getTotalTaxBurden();
+        this.baselineTotalTaxBurdenOvershift = overShift.getTotalTaxBurdenBaseline();
+        this.retailPriceOvershift = overShift.getRetailPrice();
+        this.notOvershift = overShift.getNot();
+        this.exciseTaxOvershift = overShift.getExciseTax();
+        this.vatOvershift = overShift.getVat();
+        this.levyOvershift = overShift.getLevy();
         this.legalConsumptionUndershift = underShift.getLegalConsumption();
         this.legalConsumptionChangeUndershift = underShift.getLegalConsumptionChange();
         this.consumptionIllicitUndershift = underShift.getConsumptionIllicit();
@@ -97,6 +102,7 @@ public class TetsimExportOutput implements Serializable {
         this.totalGovRevUndershift = underShift.getTotalGovRev();
         this.exciseBurdenUndershift = underShift.getExciseBurden();
         this.totalTaxBurdenUndershift = underShift.getTotalTaxBurden();
+        this.baselineTotalTaxBurdenUndershift = underShift.getTotalTaxBurdenBaseline();
         this.retailPriceUndershift = underShift.getRetailPrice();
         this.notUndershift = underShift.getNot();
         this.exciseTaxUndershift = underShift.getExciseTax();
@@ -336,4 +342,19 @@ public class TetsimExportOutput implements Serializable {
         this.levyUndershift = levyUndershift;
     }
 
+    public Double getBaselineTotalTaxBurdenOvershift() {
+        return baselineTotalTaxBurdenOvershift;
+    }
+
+    public void setBaselineTotalTaxBurdenOvershift(final Double baselineTotalTaxBurdenOvershift) {
+        this.baselineTotalTaxBurdenOvershift = baselineTotalTaxBurdenOvershift;
+    }
+
+    public Double getBaselineTotalTaxBurdenUndershift() {
+        return baselineTotalTaxBurdenUndershift;
+    }
+
+    public void setBaselineTotalTaxBurdenUndershift(final Double baselineTotalTaxBurdenUndershift) {
+        this.baselineTotalTaxBurdenUndershift = baselineTotalTaxBurdenUndershift;
+    }
 }

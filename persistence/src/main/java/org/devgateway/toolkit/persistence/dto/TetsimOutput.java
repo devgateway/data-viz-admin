@@ -35,6 +35,8 @@ public class TetsimOutput implements Serializable {
 
     private Double totalTaxBurden;
 
+    private Double totalTaxBurdenBaseline;
+
     private Double retailPrice;
 
     private Double not;
@@ -179,5 +181,13 @@ public class TetsimOutput implements Serializable {
 
     public void setExciseRevChange(final Double exciseRevChange) {
         this.exciseRevChange = exciseRevChange;
+    }
+
+    public Double getTotalTaxBurdenBaseline() {
+        return totalTaxBurdenBaseline;
+    }
+
+    public void setTotalTaxBurdenBaseline(final Double totalTaxBurdenBaseline) {
+        this.totalTaxBurdenBaseline = totalTaxBurdenBaseline;
     }
 }
