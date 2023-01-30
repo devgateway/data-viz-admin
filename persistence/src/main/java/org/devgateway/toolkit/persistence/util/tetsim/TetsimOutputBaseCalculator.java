@@ -85,6 +85,7 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
 
         tetsimOutput.setExciseBurden(calculateOutputExciseBurden(tobaccoProduct));
         tetsimOutput.setTotalTaxBurden(calculateOutputTotalTaxBurden(tobaccoProduct));
+        tetsimOutput.setTotalTaxBurdenBaseline(calculateOutputBaselineTotalTaxBurden(tobaccoProduct));
         tetsimOutput.setRetailPrice(calculateOutputRetailPrice(tobaccoProduct));
         tetsimOutput.setNot(calculateOutputNot(tobaccoProduct));
         tetsimOutput.setExciseTax(calculateOutputExciseTax(tobaccoProduct));
@@ -92,6 +93,10 @@ public abstract class TetsimOutputBaseCalculator implements TetsimOutputCalculat
         tetsimOutput.setLevy(calculateOutputLevy(tobaccoProduct));
 
         return tetsimOutput;
+    }
+
+    private double calculateOutputBaselineTotalTaxBurden(final TobaccoProduct tobaccoProduct) {
+        return calculateBaselineTotalTaxBurden(tobaccoProduct).doubleValue();
     }
 
     public Double calculateOutputLegalConsumption() {

@@ -86,13 +86,11 @@ public class DataServicePage extends BasePage {
     }
 
     private Class<? extends BasePage> getServicePageClass(final ServiceMetadata serviceMetadata) {
-        if (serviceMetadata.getType().equals(SERVICE_TETSIM_TYPE) || serviceMetadata.getName().equalsIgnoreCase(SERVICE_TETSIM_TYPE)) {
+        if (serviceMetadata.isTetsim()) {
             return ListTetsimDatasetPage.class;
-        } else if (serviceMetadata.getType().equals(SERVICE_DATA_TYPE)) {
-            return ListCSVDatasetPage.class;
         }
 
-        throw new IllegalArgumentException("Unknown service type: " + serviceMetadata.getType());
+        return ListCSVDatasetPage.class;
     }
 
     protected Label getPageTitle() {

@@ -33,11 +33,12 @@ public class TetsimOutputService {
     public static final List<String> TETSIM_CSV_FIELDS = new ImmutableList.Builder()
             .add("year", "taxChange", "tobaccoProduct", "legalConsumptionOvershift", "legalConsumptionChangeOvershift",
                     "consumptionIllicitOvershift", "exciseRevOvershift", "exciseRevChangeOvershift",
-                    "totalGovRevOvershift", "exciseBurdenOvershift", "totalTaxBurdenOvershift", "retailPriceOvershift",
-                    "notOvershift", "exciseTaxOvershift", "vatOvershift", "levyOvershift",
-                    "legalConsumptionUndershift", "legalConsumptionChangeUndershift","consumptionIllicitUndershift",
-                    "exciseRevUndershift", "exciseRevChangeUndershift", "totalGovRevUndershift", "exciseBurdenUndershift",
-                    "totalTaxBurdenUndershift", "retailPriceUndershift", "notUndershift", "exciseTaxUndershift",
+                    "totalGovRevOvershift", "exciseBurdenOvershift", "totalTaxBurdenOvershift",
+                    "baselineTotalTaxBurdenOvershift", "retailPriceOvershift", "notOvershift", "exciseTaxOvershift",
+                    "vatOvershift", "levyOvershift", "legalConsumptionUndershift", "legalConsumptionChangeUndershift",
+                    "consumptionIllicitUndershift", "exciseRevUndershift", "exciseRevChangeUndershift",
+                    "totalGovRevUndershift", "exciseBurdenUndershift", "totalTaxBurdenUndershift",
+                    "baselineTotalTaxBurdenUndershift", "retailPriceUndershift", "notUndershift", "exciseTaxUndershift",
                     "vatUndershift", "levyUndershift")
             .build();
     @Autowired

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.devgateway.toolkit.forms.WebConstants.ALLOWED_SERVICES_TYPES;
+import static org.devgateway.toolkit.forms.WebConstants.SERVICE_DATA_TYPE;
 
 @Service
 public class EurekaClientService {
@@ -31,6 +31,7 @@ public class EurekaClientService {
                 service.setType(instance.getMetadata().getOrDefault("type", null));
                 service.setLabel(instance.getMetadata().getOrDefault("label", instanceInfo.getAppName()));
                 service.setStatus(instanceInfo.getStatus().toString());
+                service.setTetsim(Boolean.valueOf(instanceInfo.getMetadata().getOrDefault("tetsim", "false")));
                 services.add(service);
             });
         });
@@ -40,7 +41,7 @@ public class EurekaClientService {
 
     public List<ServiceMetadata> findAllWithData() {
         return findAll().stream()
-                .filter(s -> ALLOWED_SERVICES_TYPES.contains(s.getType()))
+                .filter(s -> SERVICE_DATA_TYPE.equalsIgnoreCase(s.getType()))
                 .collect(Collectors.toList());
     }
 

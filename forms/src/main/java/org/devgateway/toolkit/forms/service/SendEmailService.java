@@ -11,8 +11,13 @@
  *******************************************************************************/
 package org.devgateway.toolkit.forms.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.devgateway.toolkit.persistence.dao.Person;
+import org.devgateway.toolkit.persistence.service.AdminSettingsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -28,9 +33,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class SendEmailService {
 
+    private static final Logger logger = LoggerFactory.getLogger(SendEmailService.class);
+
+    private final static String DEFAULT_EMAIL_FROM_ADDRESS = "tcdisupport@developmentgateway.org";
+
+    @Value("${spring.mail.sender}")
+    private String from;
+
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private JavaMailSender javaMailSender;
+
+    @Autowired
+    private AdminSettingsService adminSettingsService;
 
     private SimpleMailMessage templateMessage;
 
@@ -43,19 +58,22 @@ public class SendEmailService {
      * @param newPassword
      */
     public void sendEmailResetPassword(final Person person, final String newPassword) {
+        String country = adminSettingsService.get().getCountryName();
         final SimpleMailMessage msg = new SimpleMailMessage();
+        String fromEmail = StringUtils.isNotBlank(from) ? from : DEFAULT_EMAIL_FROM_ADDRESS;
         msg.setTo(person.getEmail());
-        msg.setFrom("support@developmentgateway.org");
-        msg.setSubject("Recover your password");
+        msg.setFrom(fromEmail);
+        msg.setSubject("TCDI " + country + " - Recover your password");
         msg.setText("Dear " + person.getFirstName() + " " + person.getLastName() + ",\n\n"
-                + "These are your new login credentials for DGToolkit.\n\n" + "Username: " + person.getUsername() + "\n"
+                + "These are your new login credentials for TCDI Admin " + country+ ".\n\n"
+                + "Username: " + person.getUsername() + "\n"
                 + "Password: " + newPassword + "\n\n"
                 + "At login, you will be prompted to change your password to one of your choice.\n\n" + "Thank you,\n"
-                + "DG Team");
+                + "TCDI Team.");
         try {
             javaMailSender.send(msg);
         } catch (MailException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
 
     }
