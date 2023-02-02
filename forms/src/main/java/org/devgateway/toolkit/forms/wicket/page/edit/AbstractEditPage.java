@@ -121,7 +121,7 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
 
     protected TextContentModal saveFailedModal;
 
-    protected TextContentModal approveFailedModal;
+    protected TextContentModal failedModal;
 
     @SpringBean
     protected EntityManager entityManager;
@@ -204,7 +204,7 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
         final LaddaAjaxButton deleteButton = new LaddaAjaxButton("button", Buttons.Type.Info) {
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
-                setResponsePage(listPageClass);
+                setResponsePage(listPageClass, getCancelPageParameters());
             }
         };
         deleteButton.setDefaultFormProcessing(false);
@@ -214,7 +214,7 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
         modal.add(new AjaxEventBehavior("hidden.bs.modal") {
             @Override
             protected void onEvent(final AjaxRequestTarget target) {
-                setResponsePage(listPageClass);
+                setResponsePage(listPageClass, getCancelPageParameters());
             }
         });
 
@@ -238,21 +238,21 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
         modal.add(new AjaxEventBehavior("hidden.bs.modal") {
             @Override
             protected void onEvent(final AjaxRequestTarget target) {
-                setResponsePage(listPageClass);
+                setResponsePage(listPageClass, getPageParameters());
             }
         });
 
         return modal;
     }
 
-    protected TextContentModal createApproveFailedModal() {
-        final TextContentModal modal = new TextContentModal("approveFailedModal",
-                new ResourceModel("optimistic_lock_error_message"));
+    protected TextContentModal createFailedModal() {
+        final TextContentModal modal = new TextContentModal("failedModal",
+                new ResourceModel("failedMessage"));
         modal.header(new ResourceModel("error"));
         final LaddaAjaxButton okButton = new LaddaAjaxButton("button", Buttons.Type.Info) {
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
-                setResponsePage(listPageClass);
+                setResponsePage(listPageClass, getPageParameters());
             }
         };
         okButton.setDefaultFormProcessing(false);
@@ -262,7 +262,7 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
         modal.add(new AjaxEventBehavior("hidden.bs.modal") {
             @Override
             protected void onEvent(final AjaxRequestTarget target) {
-                setResponsePage(listPageClass);
+                setResponsePage(listPageClass, getPageParameters());
             }
         });
 
@@ -314,8 +314,8 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
             saveFailedModal = createSaveFailedModal();
             add(saveFailedModal);
 
-            approveFailedModal = createApproveFailedModal();
-            add(approveFailedModal);
+            failedModal = createFailedModal();
+            add(failedModal);
 
             // don't display the delete button if we just create a new entity
             if (entityId == null) {
@@ -332,7 +332,7 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
 
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
-                setResponsePage(listPageClass);
+                setResponsePage(listPageClass, getPageParameters());
             }
         };
     }

@@ -16,9 +16,9 @@ import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_HEALTH;
 
 public abstract class ServiceEntityClient<T extends ServiceEntity> {
 
-    private final JerseyClient client;
+    protected final JerseyClient client;
 
-    private final String baseUrl;
+    protected final String baseUrl;
 
     public ServiceEntityClient(final String baseUrl) {
         this.baseUrl = baseUrl;
@@ -85,6 +85,22 @@ public abstract class ServiceEntityClient<T extends ServiceEntity> {
 
             if (measuresResponse.getStatusInfo().getFamily() != SUCCESSFUL) {
                 throw new RuntimeException("Error in updating the entity");
+            }
+        } else {
+            throw new RuntimeException(("Service is not up"));
+        }
+    }
+
+    public void delete(final T entity) {
+        if (isUp()) {
+            Response response = client.target(baseUrl)
+                    .path(getEntitiesPath())
+                    .path(entity.getId().toString())
+                    .request(APPLICATION_JSON)
+                    .delete();
+
+            if (response.getStatusInfo().getFamily() != SUCCESSFUL) {
+                throw new RuntimeException("Error in deleting the entity");
             }
         } else {
             throw new RuntimeException(("Service is not up"));

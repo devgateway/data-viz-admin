@@ -10,7 +10,9 @@ public interface DatasetService<T extends Dataset> extends BaseJpaService<T>, Un
 
     List<T> findAllDeleted();
 
-    List<T> findAllPublishing();
+    List<T> findAllNotDeletedForService(String service);
+
+    List<T> findAllInProgress();
 
     long countByNonPublished(Integer year);
 

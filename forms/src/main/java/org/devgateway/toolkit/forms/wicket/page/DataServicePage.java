@@ -25,19 +25,24 @@ import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.BigLinkDefinition;
 import org.devgateway.toolkit.forms.wicket.components.BigLinksPanel;
+import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceCategoriesPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceDimensionsPage;
+import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceFiltersPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.admin.ListServiceMeasuresPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListCSVDatasetPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.dataset.ListTetsimDatasetPage;
 import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
+import org.devgateway.toolkit.web.util.SettingsUtils;
 import org.wicketstuff.annotation.mount.MountPath;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import static de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType.chart_bar_s;
 import static de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType.database_s;
+import static de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType.filter_s;
 import static de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType.layer_group_s;
 import static de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType.ruler_s;
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_SERVICE;
@@ -49,7 +54,11 @@ import static org.devgateway.toolkit.forms.WebConstants.SERVICE_TETSIM_TYPE;
  */
 @AuthorizeInstantiation(SecurityConstants.Roles.ROLE_USER)
 @MountPath
+@BreadCrumbPage(parent = DataPage.class, hasServiceParam = true)
 public class DataServicePage extends BasePage {
+
+    @SpringBean
+    protected SettingsUtils settingsUtils;
 
     @SpringBean
     private EurekaClientService eurekaClientService;
@@ -64,6 +73,7 @@ public class DataServicePage extends BasePage {
         links.add(getEntityLink("measures", ListServiceMeasuresPage.class, ruler_s));
         links.add(getEntityLink("dimensions", ListServiceDimensionsPage.class, chart_bar_s));
         links.add(getEntityLink("categories", ListServiceCategoriesPage.class, layer_group_s));
+        links.add(getEntityLink("filters", ListServiceFiltersPage.class, filter_s));
 
         add(new BigLinksPanel("links", Model.ofList(links)));
     }
@@ -84,8 +94,14 @@ public class DataServicePage extends BasePage {
     }
 
     protected Label getPageTitle() {
-        String service = getPageParameters().get("service").toString();
-        return new Label("pageTitle", Model.of(service));
+        String countryName = settingsUtils.getSetting().getCountryName();
+
+        return new Label("pageTitle",
+                Model.of(MessageFormat.format(getString("page.title"), countryName, getServiceLabel())));
+
     }
 
+    protected Model<String> getBreadcrumbTitleModel() {
+        return Model.of(MessageFormat.format(getString("breadcrumb.title"), getServiceLabel()));
+    }
 }

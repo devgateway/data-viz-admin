@@ -9,10 +9,10 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.client.DataSetClientException;
 import org.devgateway.toolkit.forms.service.DatasetClientService;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
+import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
 import org.devgateway.toolkit.forms.wicket.components.form.BootstrapCancelButton;
 import org.devgateway.toolkit.forms.wicket.components.form.Select2ChoiceBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.form.TextFieldBootstrapFormComponent;
@@ -33,14 +33,17 @@ import org.wicketstuff.annotation.mount.MountPath;
 import java.math.BigDecimal;
 
 import static org.devgateway.toolkit.forms.WebConstants.MAXIMUM_PERCENTAGE;
+import static org.devgateway.toolkit.forms.WebConstants.PARAM_SERVICE;
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_YEAR;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DELETED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.UNPUBLISHING;
 
 /**
  * @author vchihai
  */
 @MountPath(value = "/editTetsimDataset")
+@BreadCrumbPage(parent = ListTetsimDatasetPage.class, hasServiceParam = true)
 public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDataset> {
 
     private static final long serialVersionUID = -8460878260874111506L;
@@ -85,7 +88,7 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
         editForm.add(new TetsimMarketSharePercentageValidator());
 
         if (editForm.getModelObject().getDestinationService() == null) {
-            String service = getPageParameters().get(WebConstants.PARAM_SERVICE).toString();
+            String service = getPageParameters().get(PARAM_SERVICE).toString();
             editForm.getModelObject().setDestinationService(service);
         }
 
@@ -131,16 +134,18 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
             deleteFailedModal.show(target);
             target.add(deleteFailedModal);
         }
-        setResponsePage(listPageClass);
+        setResponsePage(listPageClass, getParamsWithServiceInformation());
     }
 
     @Override
     protected void onAfterRevertToDraft(final AjaxRequestTarget target) {
         try {
             datasetClientService.unpublishDataset(editForm.getModelObject());
+            editForm.getModelObject().setStatus(UNPUBLISHING);
         } catch (DataSetClientException | Exception e) {
             logger.error(e.getMessage(), e);
         }
+        setResponsePage(listPageClass);
     }
 
     protected void onApprove(final AjaxRequestTarget target) {
@@ -154,7 +159,7 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
             dataset.setStatus(PUBLISHING);
         } catch (DataSetClientException | Exception e) {
             logger.error(e.getMessage(), e);
-            approveFailedModal.show(target);
+            failedModal.show(target);
         }
         setResponsePage(listPageClass);
     }
@@ -230,12 +235,17 @@ public class EditTetsimDatasetPage extends AbstractEditStatusEntityPage<TetsimDa
         return getParamsWithServiceInformation();
     }
 
+
     protected PageParameters getParamsWithServiceInformation() {
         PageParameters pageParams = new PageParameters();
         // add service to the page parameters
-        pageParams.add(WebConstants.PARAM_SERVICE, editForm.getModelObject().getDestinationService());
+        pageParams.add(PARAM_SERVICE, editForm.getModelObject().getDestinationService());
 
         return pageParams;
+    }
+
+    protected IModel<String> getBreadcrumbTitleModel() {
+        return getTitleModel();
     }
 
 }

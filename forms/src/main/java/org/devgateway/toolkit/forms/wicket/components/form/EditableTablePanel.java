@@ -65,7 +65,7 @@ public class EditableTablePanel<T extends Serializable, PARENT extends Serializa
 
     protected AjaxFallbackBootstrapDataTable buildDataTable() {
         AjaxFallbackBootstrapDataTable dataTable = super.buildDataTable();
-        if (this.rowsPerPage != WebConstants.PAGE_SIZE_NO_LIMIT && usePagingWithErrors) {
+        if (usePagingWithErrors) {
             AjaxBootstrapNavigationToolbar navToolbar = dataTable.getNavigationToolbar();
             navToolbar.withPagingNavFactory(new PagingNavigationFactory(EditableTablePagination.class, this));
         }

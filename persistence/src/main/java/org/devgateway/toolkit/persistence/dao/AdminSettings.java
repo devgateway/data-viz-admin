@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;
+
 /**
  * @author idobre
  * @since 6/22/16
@@ -26,6 +28,8 @@ public class AdminSettings extends AbstractAuditableEntity {
     private LocalDateTime rebootAlertSince;
 
     private Integer autosaveTime = AUTOSAVE_TIME_DEFAULT;
+
+    private Integer pageSize = DEFAULT_PAGE_SIZE;
 
     private String tetsimCurrency;
 
@@ -78,5 +82,13 @@ public class AdminSettings extends AbstractAuditableEntity {
 
     public void setCountryName(final String countryName) {
         this.countryName = countryName;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(final Integer pageSize) {
+        this.pageSize = pageSize;
     }
 }

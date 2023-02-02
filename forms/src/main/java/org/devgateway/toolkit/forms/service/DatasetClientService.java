@@ -8,7 +8,6 @@ import org.devgateway.toolkit.persistence.dao.data.Dataset;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
 import org.devgateway.toolkit.persistence.dto.ServiceMeasure;
 import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
-import org.devgateway.toolkit.persistence.dto.ServiceDimension;
 import org.devgateway.toolkit.persistence.service.data.CSVDatasetService;
 import org.devgateway.toolkit.persistence.service.data.TetsimDatasetService;
 import org.slf4j.Logger;
@@ -25,7 +24,9 @@ import java.util.List;
 import static org.devgateway.toolkit.forms.client.ClientConstants.CODE_PREFIX;
 import static org.devgateway.toolkit.forms.client.ClientConstants.JobStatus.COMPLETED;
 import static org.devgateway.toolkit.forms.client.ClientConstants.JobStatus.ERROR;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DRAFT;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.ERROR_IN_PUBLISHING;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.ERROR_IN_UNPUBLISHING;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
 
@@ -47,8 +48,8 @@ public class DatasetClientService {
     public void triggerCheckDatasetsJob() {
         logger.debug("Fired triggerCheckDatasetsJob");
         List<Dataset> datasets = new ArrayList<>();
-        datasets.addAll(tetsimDatasetService.findAllPublishing());
-        datasets.addAll(csvDatasetService.findAllPublishing());
+        datasets.addAll(tetsimDatasetService.findAllInProgress());
+        datasets.addAll(csvDatasetService.findAllInProgress());
 
         checkDatasetJobs(datasets);
     }
@@ -58,17 +59,20 @@ public class DatasetClientService {
             ServiceMetadata serviceMetadata = eurekaClientService.findByName(d.getDestinationService());
             DatasetClient client = new DatasetClient(serviceMetadata.getUrl());
             String status = client.getDatasetJobStatus(CODE_PREFIX + d.getId()).getStatus();
+            String initialStatus = d.getStatus();
             if (COMPLETED.equals(status)) {
-                d.setStatus(PUBLISHED);
+                String completedStatus = getCompletedStatus(initialStatus);
+                d.setStatus(completedStatus);
                 logger.info(String.format("The dataset with id %s changed the status from %s to %s",
-                        d.getId(), PUBLISHING, PUBLISHED));
+                        d.getId(), initialStatus, completedStatus));
             } else if (ERROR.equals(status)) {
-                d.setStatus(ERROR_IN_PUBLISHING);
+                String errorStatus = getErrorStatus(initialStatus);
+                d.setStatus(errorStatus);
                 logger.info(String.format("The dataset with id %s changed the status from %s to %s",
-                        d.getId(), PUBLISHING, ERROR_IN_PUBLISHING));
+                        d.getId(), initialStatus, errorStatus));
             }
 
-            if (!PUBLISHING.equals(d.getStatus())) {
+            if (!initialStatus.equals(d.getStatus())) {
                 if (d instanceof TetsimDataset) {
                     tetsimDatasetService.save((TetsimDataset) d);
                 } else if (d instanceof CSVDataset) {
@@ -78,6 +82,14 @@ public class DatasetClientService {
                 }
             }
         });
+    }
+
+    private String getCompletedStatus(final String status) {
+        return PUBLISHING.equals(status) ? PUBLISHED : DRAFT;
+    }
+
+    private String getErrorStatus(final String status) {
+        return PUBLISHING.equals(status) ? ERROR_IN_PUBLISHING : ERROR_IN_UNPUBLISHING;
     }
 
     public void publishDataset(Dataset dataset, String fileName, byte[] content) throws DataSetClientException {
@@ -111,44 +123,8 @@ public class DatasetClientService {
         return eurekaClientService.findByName(destinationService);
     }
 
-    public List<ServiceDimension> getDimensions(final String serviceName) {
+    public byte[] getTemplateDownload(final String serviceName) {
         ServiceMetadata service = eurekaClientService.findByName(serviceName);
-        return new DatasetClient(service.getUrl()).getDimensions();
+        return new DatasetClient(service.getUrl()).getTemplateDownload();
     }
-
-    public ServiceDimension getDimensionById(final String serviceName, final long id) {
-        ServiceMetadata service = eurekaClientService.findByName(serviceName);
-        return new DatasetClient(service.getUrl()).getDimensionById(id);
-    }
-
-    public void updateDimension(final String serviceName, final ServiceDimension dimension) {
-        ServiceMetadata service = eurekaClientService.findByName(serviceName);
-        new DatasetClient(service.getUrl()).updateDimension(dimension);
-    }
-
-    public void addDimensionToService(final String service, final ServiceDimension serviceDimension) {
-        ServiceMetadata serviceMetadata = eurekaClientService.findByName(service);
-        new DatasetClient(serviceMetadata.getUrl()).addDimension(serviceDimension);
-    }
-
-    public List<ServiceMeasure> getMeasures(final String serviceName) {
-        ServiceMetadata service = eurekaClientService.findByName(serviceName);
-        return new DatasetClient(service.getUrl()).getMeasures();
-    }
-
-    public ServiceMeasure getMeasureById(final String serviceName, final long id) {
-        ServiceMetadata service = eurekaClientService.findByName(serviceName);
-        return new DatasetClient(service.getUrl()).getMeasureById(id);
-    }
-
-    public void updateMeasure(final String serviceName, final ServiceMeasure measure) {
-        ServiceMetadata service = eurekaClientService.findByName(serviceName);
-        new DatasetClient(service.getUrl()).updateMeasure(measure);
-    }
-
-    public void addMeasureToService(final String service, final ServiceMeasure serviceMeasure) {
-        ServiceMetadata serviceMetadata = eurekaClientService.findByName(service);
-        new DatasetClient(serviceMetadata.getUrl()).addMeasure(serviceMeasure);
-    }
-
 }

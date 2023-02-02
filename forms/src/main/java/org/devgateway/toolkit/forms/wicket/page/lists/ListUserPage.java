@@ -17,6 +17,8 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.devgateway.toolkit.forms.security.SecurityConstants;
+import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
+import org.devgateway.toolkit.forms.wicket.page.ConfigurationsHomepage;
 import org.devgateway.toolkit.forms.wicket.page.user.EditUserPageElevated;
 import org.devgateway.toolkit.persistence.dao.Person;
 import org.devgateway.toolkit.persistence.service.PersonService;
@@ -24,6 +26,7 @@ import org.wicketstuff.annotation.mount.MountPath;
 
 @AuthorizeInstantiation(SecurityConstants.Roles.ROLE_ADMIN)
 @MountPath(value = "/listusers")
+@BreadCrumbPage(parent = ConfigurationsHomepage.class)
 public class ListUserPage extends AbstractListPage<Person> {
 
     private static final long serialVersionUID = 3529738250403399032L;

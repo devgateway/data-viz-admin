@@ -41,8 +41,13 @@ public class CSVDatasetServiceImpl extends BaseJpaServiceImpl<CSVDataset> implem
     }
 
     @Override
-    public List<CSVDataset> findAllPublishing() {
-        return csvDatasetRepository.findAllPublishing();
+    public List<CSVDataset> findAllNotDeletedForService(final String service) {
+        return csvDatasetRepository.findAllNotDeletedForService(service);
+    }
+
+    @Override
+    public List<CSVDataset> findAllInProgress() {
+        return csvDatasetRepository.findAllInProgress();
     }
 
     @Override

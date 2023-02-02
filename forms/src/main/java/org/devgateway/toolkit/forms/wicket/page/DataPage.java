@@ -26,6 +26,8 @@ import org.devgateway.toolkit.forms.security.SecurityConstants;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.BigLinkDefinition;
 import org.devgateway.toolkit.forms.wicket.components.BigLinksPanel;
+import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
+import org.devgateway.toolkit.persistence.dao.AdminSettings;
 import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
 import org.devgateway.toolkit.web.util.SettingsUtils;
 import org.wicketstuff.annotation.mount.MountPath;
@@ -33,6 +35,7 @@ import org.wicketstuff.annotation.mount.MountPath;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.devgateway.toolkit.forms.WebConstants.PARAM_SERVICE;
 import static org.devgateway.toolkit.forms.WebConstants.SERVICE_DATA_TYPE;
 import static org.devgateway.toolkit.forms.WebConstants.SERVICE_TETSIM_TYPE;
 
@@ -40,7 +43,8 @@ import static org.devgateway.toolkit.forms.WebConstants.SERVICE_TETSIM_TYPE;
  * @author Viorel Chihai
  */
 @AuthorizeInstantiation(SecurityConstants.Roles.ROLE_USER)
-@MountPath
+@MountPath(value = "/dataPage")
+@BreadCrumbPage
 public class DataPage extends BasePage {
 
     @SpringBean
@@ -57,7 +61,7 @@ public class DataPage extends BasePage {
         List<BigLinkDefinition> links = new ArrayList<>();
         for (ServiceMetadata service : services) {
             PageParameters pageParameters = new PageParameters();
-            pageParameters.add("service", service.getName());
+            pageParameters.add(PARAM_SERVICE, service.getName());
 
             FontAwesome5IconType serviceIcon = getServiceIcon(service);
 
@@ -65,7 +69,7 @@ public class DataPage extends BasePage {
 
                 @Override
                 public IModel<String> getLabelModel() {
-                    return Model.of(service.getName());
+                    return Model.of(service.getLabel());
                 }
 
                 @Override
@@ -90,8 +94,16 @@ public class DataPage extends BasePage {
     }
 
     protected Label getPageTitle() {
-        return new Label("pageTitle", new StringResourceModel("page.title", this,
-                Model.of(settingsUtils.getSetting())));
+        return new Label("pageTitle", getPageTitleResourceModel());
+    }
+
+    private StringResourceModel getPageTitleResourceModel() {
+        return new StringResourceModel("page.title", this, (Model.of(settingsUtils.getSetting())));
+    }
+
+    @Override
+    protected IModel<String> getBreadcrumbTitleModel() {
+        return new StringResourceModel("breadcrumb.title", this);
     }
 
 }

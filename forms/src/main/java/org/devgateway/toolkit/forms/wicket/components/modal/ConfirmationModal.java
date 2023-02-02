@@ -33,7 +33,7 @@ public class ConfirmationModal<T> extends Modal<T> {
         setFadeIn(false);
 
         form = new Form("confirmationForm");
-        description = new Label("description", new StringResourceModel("description"));
+        description = new Label("description", new StringResourceModel("description", this).getString());
         form.add(description);
         form.add(getSubmitButton());
         form.add(getCancelButton());

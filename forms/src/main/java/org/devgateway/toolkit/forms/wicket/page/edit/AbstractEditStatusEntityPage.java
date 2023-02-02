@@ -61,12 +61,16 @@ import org.springframework.util.ObjectUtils;
 import org.wicketstuff.datetime.markup.html.basic.DateLabel;
 import org.wicketstuff.select2.Select2Choice;
 
+import java.text.MessageFormat;
+
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_AUTO_SAVE;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DRAFT;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.ERROR_IN_PUBLISHING;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.ERROR_IN_UNPUBLISHING;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.SAVED;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.UNPUBLISHING;
 
 /**
  * @author mpostelnicu
@@ -199,12 +203,8 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
-                setStatusAppendComment(DRAFT);
-                editForm.getModelObject().setRemoveLock(true);
-                super.onSubmit(target);
-                target.add(editForm);
-                setButtonsPermissions();
                 onAfterRevertToDraft(target);
+                super.onSubmit(target);
             }
         };
         unpublishButton.setType(Buttons.Type.Warning);
@@ -286,7 +286,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         statusCommentsWrapper.add(statusComments);
         editForm.add(newStatusComment);
 
-        editForm.add(getErrorInPublishingLabel());
+        editForm.add(getErrorInPublishing());
 
         entityButtonsFragment = new Fragment("extraButtons", "entityButtons", this);
         editForm.replace(entityButtonsFragment);
@@ -328,13 +328,25 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         enableDisableAutosaveFields(null);
     }
 
-    private Label getErrorInPublishingLabel() {
-        Label errorInPublishingLabel = new Label("errorInPublishing",
-                new StringResourceModel("errorInPublishing", this, null));
-        errorInPublishingLabel.setOutputMarkupId(true);
-        errorInPublishingLabel.setOutputMarkupPlaceholderTag(true);
-        errorInPublishingLabel.setVisibilityAllowed(ERROR_IN_PUBLISHING.equals(editForm.getModelObject().getStatus()));
-        return errorInPublishingLabel;
+    private TransparentWebMarkupContainer getErrorInPublishing() {
+        TransparentWebMarkupContainer errorInPublishing = new TransparentWebMarkupContainer("errorInPublishingPanel");
+        Label errorInPublishingLabel = new Label("errorInPublishingTitle", getErrorInPublishingMessage());
+        errorInPublishing.setOutputMarkupId(true);
+        errorInPublishing.setOutputMarkupPlaceholderTag(true);
+        errorInPublishing.setVisibilityAllowed(isErrorInPublishingVisible());
+        errorInPublishing.add(errorInPublishingLabel);
+
+        return errorInPublishing;
+    }
+
+    private IModel<String> getErrorInPublishingMessage() {
+        String status = ERROR_IN_PUBLISHING.equals(editForm.getModelObject().getStatus()) ? "publishing" : "unpublishing";
+        return Model.of(MessageFormat.format(getString("errorInPublishingTitle"), status));
+    }
+
+    private boolean isErrorInPublishingVisible() {
+        String status = editForm.getModelObject().getStatus();
+        return ERROR_IN_PUBLISHING.equals(status) || ERROR_IN_UNPUBLISHING.equals(status);
     }
 
     @Override
@@ -487,10 +499,12 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
                 return "label-success";
             case DRAFT:
             case ERROR_IN_PUBLISHING:
+            case ERROR_IN_UNPUBLISHING:
                 return "label-danger";
             case SAVED:
                 return "label-primary";
             case PUBLISHING:
+            case UNPUBLISHING:
                 return "label-warning";
             default:
                 return "";
@@ -798,22 +812,16 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     }
 
     protected void addDeleteButtonPermissions(final Component button) {
-        MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, SecurityConstants.Roles.ROLE_ADMIN);
         button.setVisibilityAllowed(entityId != null && !isViewMode()
                 && !(PUBLISHING.equals(editForm.getModelObject().getStatus())
-                || ERROR_IN_PUBLISHING.equals(editForm.getModelObject().getStatus())
                 || PUBLISHED.equals(editForm.getModelObject().getStatus())));
-        MetaDataRoleAuthorizationStrategy.authorize(
-                button, Component.RENDER, getCommaCombinedRoles());
     }
 
     protected void addSaveRevertButtonPermissions(final Component button) {
         addDefaultAllButtonsPermissions(button);
-        MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, getValidatorRole());
-        MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, getCommaCombinedRoles());
         button.setVisibilityAllowed(button.isVisibilityAllowed()
-                && (ERROR_IN_PUBLISHING.equals(editForm.getModelObject().getStatus())
-                || PUBLISHED.equals(editForm.getModelObject().getStatus())));
+                && (PUBLISHED.equals(editForm.getModelObject().getStatus())
+                    || ERROR_IN_UNPUBLISHING.equals(editForm.getModelObject().getStatus())));
     }
 
     protected void addSaveApproveButtonPermissions(final Component button) {
@@ -845,12 +853,14 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, getCommaCombinedRoles());
         button.setVisibilityAllowed(button.isVisibilityAllowed()
                 && (DRAFT.equals(editForm.getModelObject().getStatus())
-                || SAVED.equals(editForm.getModelObject().getStatus())));
+                || SAVED.equals(editForm.getModelObject().getStatus())
+                || ERROR_IN_PUBLISHING.equals(editForm.getModelObject().getStatus())
+                || ERROR_IN_UNPUBLISHING.equals(editForm.getModelObject().getStatus())));
     }
 
 
     protected void addDefaultAllButtonsPermissions(final Component button) {
-        MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, SecurityConstants.Roles.ROLE_ADMIN);
+        MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, SecurityConstants.Roles.ROLE_USER);
     }
 
 
@@ -861,6 +871,10 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
                 getPageParameters().get(WebConstants.V_POSITION).toDouble(0),
                 getPageParameters().get(WebConstants.MAX_HEIGHT).toDouble(0)
         )));
+    }
+
+    protected PageParameters getParamsWithServiceInformation() {
+        return null;
     }
 
     @Override

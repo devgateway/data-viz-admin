@@ -302,3 +302,52 @@ button .btn-home-label {
     display: inline;
     margin-right: 5px;
 }
+
+.row-list-item-button {
+    min-height: 58px;
+}
+
+.pull-down {
+    position: absolute;
+    bottom: 0;
+}
+
+.label-translation-margin {
+    margin-right: 5px;
+}
+
+.label-translation-description {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-style: italic;
+}
+
+.breadcrumb {
+    background-color: #ffffff;
+    padding-top: 20px;
+    padding-bottom: 0px;
+    padding-left: 12px;
+    margin-bottom: 0px;
+}
+
+.breadcrumb .btn-link {
+    padding-left: 0px;
+    padding-right: 0px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-left: -7px;
+    color: #aaaaaa;
+}
+
+.breadcrumb a[disabled=disabled] {
+    color: #000000;
+    font-weight: 800;
+    margin-bottom: 1px;
+}
+
+.breadcrumb > li + li:before {
+    padding: 0 2px;
+    color: #aaaaaa;
+    content: "/\00a0";
+    font-weight: 700;
+}

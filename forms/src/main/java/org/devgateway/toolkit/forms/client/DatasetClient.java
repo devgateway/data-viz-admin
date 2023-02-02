@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static javax.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM;
 import static javax.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM_TYPE;
 import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA_TYPE;
 import static javax.ws.rs.core.MediaType.TEXT_PLAIN_TYPE;
@@ -30,6 +31,7 @@ import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_DIMENSION
 import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_HEALTH;
 import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_JOBS;
 import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_MEASURES;
+import static org.devgateway.toolkit.forms.client.ClientConstants.PATH_TEMPLATE_DOWNLOAD;
 
 
 public class DatasetClient {
@@ -61,7 +63,7 @@ public class DatasetClient {
         throw new RuntimeException(("Service is not up"));
     }
 
-    public void unpublishDataset(String code) throws DataSetClientException {
+    public DatasetJobStatus unpublishDataset(String code) throws DataSetClientException {
         if (isUp()) {
             Response jobStatusResponse = client.target(baseUrl)
                     .path(PATH_DATASETS)
@@ -69,9 +71,11 @@ public class DatasetClient {
                     .request()
                     .delete();
 
-            if (jobStatusResponse.getStatusInfo().getFamily() != SUCCESSFUL) {
-                throw new DataSetClientException("Error in unpublishing a dataset with code " + code);
+            if (jobStatusResponse.getStatusInfo().getFamily() == SUCCESSFUL) {
+                return jobStatusResponse.readEntity(DatasetJobStatus.class);
             }
+
+            throw new DataSetClientException(jobStatusResponse.toString());
         } else {
             throw new RuntimeException(("Service is not up"));
         }
@@ -180,103 +184,6 @@ public class DatasetClient {
         throw new RuntimeException(("Service is not up"));
     }
 
-    public ServiceDimension getDimensionById(final Long id) {
-        if (isUp()) {
-            Response dimensionsResponse = client.target(baseUrl)
-                    .path(PATH_DIMENSIONS)
-                    .path(id.toString())
-                    .request(APPLICATION_JSON).get();
-
-            if (dimensionsResponse.getStatusInfo().getFamily() == SUCCESSFUL) {
-                return dimensionsResponse.readEntity(new GenericType<ServiceDimension>() {});
-            }
-
-            return null;
-        }
-
-        throw new RuntimeException(("Service is not up"));
-    }
-
-    public void addDimension(final ServiceDimension dimension) {
-        if (isUp()) {
-            Response dimensionsResponse = client.target(baseUrl)
-                    .path(PATH_DIMENSIONS)
-                    .request(APPLICATION_JSON)
-                    .post(Entity.entity(dimension, APPLICATION_JSON));
-
-            if (dimensionsResponse.getStatusInfo().getFamily() != SUCCESSFUL) {
-                throw new RuntimeException("Error in adding dimension");
-            }
-        } else {
-            throw new RuntimeException(("Service is not up"));
-        }
-    }
-
-
-    public void updateDimension(final ServiceDimension dimension) {
-        if (isUp()) {
-            Response dimensionsResponse = client.target(baseUrl)
-                    .path(PATH_DIMENSIONS)
-                    .path(dimension.getId().toString())
-                    .request(APPLICATION_JSON)
-                    .put(Entity.entity(dimension, APPLICATION_JSON));
-
-            if (dimensionsResponse.getStatusInfo().getFamily() != SUCCESSFUL) {
-                throw new RuntimeException("Error in updating dimension");
-            }
-        } else {
-            throw new RuntimeException(("Service is not up"));
-        }
-    }
-
-    public ServiceMeasure getMeasureById(final Long id) {
-        if (isUp()) {
-            Response measuresResponse = client.target(baseUrl)
-                    .path(PATH_MEASURES)
-                    .path(id.toString())
-                    .request(APPLICATION_JSON).get();
-
-            if (measuresResponse.getStatusInfo().getFamily() == SUCCESSFUL) {
-                return measuresResponse.readEntity(new GenericType<ServiceMeasure>() {});
-            }
-
-            return null;
-        }
-
-        throw new RuntimeException(("Service is not up"));
-    }
-
-    public void addMeasure(final ServiceMeasure measure) {
-        if (isUp()) {
-            Response measuresResponse = client.target(baseUrl)
-                    .path(PATH_MEASURES)
-                    .request(APPLICATION_JSON)
-                    .post(Entity.entity(measure, APPLICATION_JSON));
-
-            if (measuresResponse.getStatusInfo().getFamily() != SUCCESSFUL) {
-                throw new RuntimeException("Error in adding measure");
-            }
-        } else {
-            throw new RuntimeException(("Service is not up"));
-        }
-    }
-
-    public void updateMeasure(final ServiceMeasure measure) {
-        if (isUp()) {
-            Response measuresResponse = client.target(baseUrl)
-                    .path(PATH_MEASURES)
-                    .path(measure.getId().toString())
-                    .request(APPLICATION_JSON)
-                    .put(Entity.entity(measure, APPLICATION_JSON));
-
-            if (measuresResponse.getStatusInfo().getFamily() != SUCCESSFUL) {
-                throw new RuntimeException("Error in updating measure");
-            }
-        } else {
-            throw new RuntimeException(("Service is not up"));
-        }
-    }
-
     public List<ServiceMeasure> getMeasures() {
         if (isUp()) {
             Response measuresResponse = client.target(baseUrl)
@@ -285,6 +192,23 @@ public class DatasetClient {
 
             if (measuresResponse.getStatusInfo().getFamily() == SUCCESSFUL) {
                 return measuresResponse.readEntity(new GenericType<List<ServiceMeasure>>() {});
+            }
+
+            return null;
+        }
+
+        throw new RuntimeException(("Service is not up"));
+    }
+
+    public byte[] getTemplateDownload() {
+        if (isUp()) {
+            Response response = client.target(baseUrl)
+                    .path(PATH_TEMPLATE_DOWNLOAD)
+                    .request(APPLICATION_OCTET_STREAM)
+                    .get();
+
+            if (response.getStatusInfo().getFamily() == SUCCESSFUL) {
+                return response.readEntity(byte[].class);
             }
 
             return null;

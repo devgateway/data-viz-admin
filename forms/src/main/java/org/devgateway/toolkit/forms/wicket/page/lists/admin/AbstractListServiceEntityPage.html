@@ -4,7 +4,10 @@
 <wicket:extend>
     <div class="row">
         <div class="col-md-12">
-            <table class="dataview table" wicket:id="table"></table>
+            <form wicket:id="filterForm">
+                <button type="submit" style="display: none;">Submit</button>
+                <table class="dataview table" wicket:id="table"></table>
+            </form>
         </div>
     </div>
 </wicket:extend>

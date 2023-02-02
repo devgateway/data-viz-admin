@@ -1,0 +1,34 @@
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+    <title>ListSectionPanel</title>
+</head>
+<body>
+<wicket:panel>
+    <div class="list-wrapper" wicket:id="listWrapper">
+        <div class="col-md-12">
+            <div class="pane title">
+                <h4 class="label-translation-margin" wicket:id="panelTitle">[[title]]</h4>
+                <div class="label-translation-description">(Please use the Wordpress Language Local Code - for example FR for French.)</div>
+            </div>
+        </div>
+
+        <div class="col-md-12" wicket:id="list">
+            <div wicket:id="language" class="col-md-2"></div>
+            <div wicket:id="text" class="col-md-8"></div>
+            <div class="col-md-2">
+                <div class="row-list-item-button">
+                <button wicket:id="remove" type="button" class="btn btn-red pull-right pull-down">Remove</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="col-md-2">
+            <button wicket:id="newButton" class="btn btn-blue pull-left" type="button">[[+ ADD another element]]</button>
+        </div>
+    </div>
+
+</wicket:panel>
+</body>
+</html>

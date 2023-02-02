@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.devgateway.toolkit.forms.wicket.page.lists.dataset;
 
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.table.filter.BootstrapChoiceFilteredPropertyColumn;
+import nl.dries.wicket.hibernate.dozer.DozerListModel;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
@@ -25,10 +27,13 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.security.SecurityConstants;
+import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
 import org.devgateway.toolkit.forms.wicket.components.form.Select2ChoiceBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.table.filter.JpaFilterState;
 import org.devgateway.toolkit.forms.wicket.components.table.filter.TetsimDatasetFilterState;
+import org.devgateway.toolkit.forms.wicket.page.DataServicePage;
 import org.devgateway.toolkit.forms.wicket.page.edit.dataset.EditTetsimDatasetPage;
 import org.devgateway.toolkit.forms.wicket.page.lists.AbstractListPage;
 import org.devgateway.toolkit.forms.wicket.providers.GenericChoiceProvider;
@@ -43,14 +48,17 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_SERVICE;
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_YEAR;
 
 @AuthorizeInstantiation(SecurityConstants.Roles.ROLE_USER)
 @MountPath(value = "/listTetsimDataset")
-public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
+@BreadCrumbPage(parent = DataServicePage.class, hasServiceParam = true)
+public class ListTetsimDatasetPage extends AbstractListDatasetPage<TetsimDataset> {
     private static final long serialVersionUID = -324298525712620234L;
+
     @SpringBean
     protected SettingsUtils settingsUtils;
 
@@ -68,9 +76,23 @@ public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
         this.jpaService = tetsimDatasetService;
         this.editPageClass = EditTetsimDatasetPage.class;
 
+        String service = pageParameters.get(PARAM_SERVICE).toString();
+
         columns.clear();
 
-        columns.add(new PropertyColumn<>(new StringResourceModel("year"), "year", "year"));
+        List<TetsimDataset> datasets = tetsimDatasetService.findAllNotDeletedForService(service);
+        List<Integer> years = datasets.stream()
+                .map(TetsimDataset::getYear).distinct().sorted()
+                .collect(Collectors.toList());
+        columns.add(new BootstrapChoiceFilteredPropertyColumn<>(new StringResourceModel("year"), "year", "year",
+                new DozerListModel<>(years), "year"));
+
+        List<String> statuses = datasets.stream()
+                .map(TetsimDataset::getStatus).distinct().sorted()
+                .collect(Collectors.toList());
+        columns.add(new BootstrapChoiceFilteredPropertyColumn<>(new StringResourceModel("status"), "status", "status",
+                new DozerListModel<>(statuses), "status"));
+
         columns.add(new PropertyColumn<>(new StringResourceModel("lastModifiedBy"), "lastModifiedBy",
                 "lastModifiedBy.get"));
         columns.add(new PropertyColumn<TetsimDataset, String>(new StringResourceModel("lastModifiedDate"),
@@ -84,10 +106,8 @@ public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
                 return Model.of(modifiedDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
             }
         });
-        columns.add(new PropertyColumn<>(new StringResourceModel("status"), "status", "status"));
 
 
-        String service = pageParameters.get(PARAM_SERVICE).toString();
         filterState = new TetsimDatasetFilterState();
         filterState.setService(service);
 
@@ -202,18 +222,25 @@ public class ListTetsimDatasetPage extends AbstractListPage<TetsimDataset> {
     }
 
     @Override
-    protected Component getRevisionsLink(final TetsimDataset entity) {
-        return new WebMarkupContainer("revisions").setVisibilityAllowed(false);
-    }
-
-    @Override
     public JpaFilterState<TetsimDataset> newFilterState() {
         return new TetsimDatasetFilterState();
     }
 
     protected Label getPageTitle() {
-        String service = getPageParameters().get("service").toString();
-        return new Label("pageTitle", Model.of(MessageFormat.format(getString("page.title"), service)));
+        return new Label("pageTitle", getPageTitleModel());
     }
 
+    @Override
+    protected IModel<String> getBreadcrumbTitleModel() {
+        return Model.of(MessageFormat.format(getString("breadcrumb.title"), getServiceLabel()));
+    }
+
+    private Model<String> getPageTitleModel() {
+        return Model.of(MessageFormat.format(getString("page.title"), getServiceLabel()));
+    }
+
+    @Override
+    protected void addEditLinkPageParameters(final PageParameters pageParameters) {
+        pageParameters.set(WebConstants.PARAM_SERVICE, getPageParameters().get(WebConstants.PARAM_SERVICE));
+    }
 }

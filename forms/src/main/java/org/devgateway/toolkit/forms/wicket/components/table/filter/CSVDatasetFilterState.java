@@ -20,6 +20,10 @@ public class CSVDatasetFilterState extends JpaFilterState<CSVDataset> {
 
     private static final long serialVersionUID = -3419455862012018431L;
 
+    private Integer year;
+
+    private String status;
+
     private String service;
 
     @Override
@@ -34,8 +38,32 @@ public class CSVDatasetFilterState extends JpaFilterState<CSVDataset> {
                 predicates.add(sc.cb().equal(sc.cb().lower(sc.root().get(CSVDataset_.destinationService)), service.toLowerCase()));
             }
 
+            if (year != null) {
+                predicates.add(sc.cb().equal(sc.root().get(CSVDataset_.year), year));
+            }
+
+            if (StringUtils.isNotBlank(status)) {
+                predicates.add(sc.cb().like(sc.root().get(CSVDataset_.status), status));
+            }
+
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         };
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(final Integer year) {
+        this.year = year;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(final String status) {
+        this.status = status;
     }
 
     public String getService() {

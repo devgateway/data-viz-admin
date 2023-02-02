@@ -52,6 +52,7 @@ import org.devgateway.toolkit.forms.wicket.page.edit.AbstractEditPage;
 import org.devgateway.toolkit.forms.wicket.providers.SortableJpaServiceDataProvider;
 import org.devgateway.toolkit.persistence.dao.GenericPersistable;
 import org.devgateway.toolkit.persistence.excel.service.ExcelGeneratorService;
+import org.devgateway.toolkit.persistence.service.AdminSettingsService;
 import org.devgateway.toolkit.persistence.service.BaseJpaService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -73,6 +74,9 @@ import java.util.zip.ZipOutputStream;
  */
 public abstract class AbstractListPage<T extends GenericPersistable & Serializable> extends BasePage {
     private static final long serialVersionUID = 1958350868666244087L;
+
+    @SpringBean
+    AdminSettingsService adminSettingsService;
 
     protected Class<? extends AbstractEditPage<T>> editPageClass;
 
@@ -108,8 +112,12 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
     protected void onInitialize() {
         super.onInitialize();
 
+        add(new Fragment("topPage", "topPageTitleFragment", this));
+
         Fragment fragment = new Fragment("bottomPageFragment", "noBottomPageFragment", this);
         add(fragment);
+
+        add(new Fragment("bottomPage", "bottomPageTitleFragment", this));
 
         if (jpaService == null) {
             throw new NullJpaServiceException();
@@ -118,7 +126,7 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
             throw new NullEditPageClassException();
         }
 
-        dataProvider = new SortableJpaServiceDataProvider<>(jpaService);
+        dataProvider = new SortableJpaServiceDataProvider<>(jpaService, getPageSize());
         dataProvider.setFilterState(newFilterState());
 
         // create the excel download form; by default this form is hidden and we should make it visible only to pages
@@ -137,7 +145,7 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
                 cellItem.add(getActionPanel(componentId, model));
             }
         });
-        dataTable = new AjaxFallbackBootstrapDataTable<>("table", columns, dataProvider, WebConstants.PAGE_SIZE);
+        dataTable = new AjaxFallbackBootstrapDataTable<>("table", columns, dataProvider, getPageSize());
 
         ResettingFilterForm<JpaFilterState<T>> filterForm =
                 new ResettingFilterForm<>("filterForm", dataProvider, dataTable);
@@ -166,6 +174,10 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
         add(editPageLink);
     }
 
+    private Integer getPageSize() {
+        return adminSettingsService.get().getPageSize();
+    }
+
     protected PageParameters getEditPageParameters() {
         PageParameters pageParameters = new PageParameters();
         pageParameters.set(WebConstants.PARAM_ID, null);
@@ -191,6 +203,7 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
             if (entity != null) {
                 pageParameters.set(WebConstants.PARAM_ID, entity.getId());
             }
+            addEditLinkPageParameters(pageParameters);
 
             editItemPageLink =
                     new BootstrapBookmarkablePageLink<>("edit", editPageClass, pageParameters, Buttons.Type.Info);
@@ -202,6 +215,10 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
             add(getPrintButton(pageParameters));
             add(getRevisionsLink(entity));
         }
+    }
+
+    protected void addEditLinkPageParameters(final PageParameters pageParameters) {
+
     }
 
     protected Component getRevisionsLink(final T entity) {
