@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Development Gateway, Inc and others.
+ * Copyright (c) 2023 Development Gateway, Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the MIT License (MIT)
@@ -51,6 +51,13 @@ public class ListServiceMeasuresPage extends AbstractListServiceEntityPage<Servi
         columns = new ArrayList<>();
         columns.add(new BootstrapTextFilteredPropertyColumn<>(new Model<>("Value"), "code", "code", "code"));
         columns.add(new BootstrapTextFilteredPropertyColumn<>(new Model<>("System Label"), "value", "value", "value"));
+        columns.add(new PropertyColumn<ServiceMeasure, String>(new Model<>("Label Translations"), null, "labels") {
+            @Override
+            public void populateItem(final Item<ICellPopulator<ServiceMeasure>> item, final String componentId, final IModel<ServiceMeasure> rowModel) {
+                item.add(getLableTranslations(componentId, rowModel));
+            }
+        });
+
         columns.add(new BootstrapTextFilteredPropertyColumn<>(new Model<>("Group"), "parent", "parent", "parent"));
         columns.add(new PropertyColumn<>(new Model<>("Position"), "position", "position"));
         columns.add(new PropertyColumn<ServiceMeasure, String>(new Model<>("Color"), null,

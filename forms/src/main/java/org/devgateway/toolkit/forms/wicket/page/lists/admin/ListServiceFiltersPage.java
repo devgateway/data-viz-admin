@@ -1,6 +1,10 @@
 package org.devgateway.toolkit.forms.wicket.page.lists.admin;
 
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.table.filter.BootstrapTextFilteredPropertyColumn;
+import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -37,6 +41,12 @@ public class ListServiceFiltersPage extends AbstractListServiceEntityPage<Servic
         columns = new ArrayList<>();
         columns.add(new BootstrapTextFilteredPropertyColumn<>(new Model<>("Value"), "code", "code", "code"));
         columns.add(new BootstrapTextFilteredPropertyColumn<>(new Model<>("System Label"), "value", "value", "value"));
+        columns.add(new PropertyColumn<ServiceFilter, String>(new Model<>("Label Translations"), null, "labels") {
+            @Override
+            public void populateItem(final Item<ICellPopulator<ServiceFilter>> item, final String componentId, final IModel<ServiceFilter> rowModel) {
+                item.add(getLableTranslations(componentId, rowModel));
+            }
+        });
         columns.add(new BootstrapTextFilteredPropertyColumn<>(new Model<>("Type"), "fieldType", "fieldType", "fieldType"));
     }
 

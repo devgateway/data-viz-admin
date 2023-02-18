@@ -11,6 +11,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.IFilt
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
@@ -26,15 +27,17 @@ import org.devgateway.toolkit.forms.wicket.components.table.ResettingFilterForm;
 import org.devgateway.toolkit.forms.wicket.components.table.filter.ServiceEntityFilterState;
 import org.devgateway.toolkit.forms.wicket.page.BasePage;
 import org.devgateway.toolkit.forms.wicket.page.edit.admin.AbstractEditServiceEntityPage;
-import org.devgateway.toolkit.persistence.dto.ServiceEntity;
+import org.devgateway.toolkit.persistence.dto.ServiceCategory;
+import org.devgateway.toolkit.persistence.dto.ServiceTextTranslation;
 import org.devgateway.toolkit.persistence.service.AdminSettingsService;
 
 import java.text.MessageFormat;
 import java.util.List;
 
+import static java.util.Comparator.comparing;
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_SERVICE;
 
-public abstract class AbstractListServiceEntityPage<T extends ServiceEntity> extends BasePage {
+public abstract class AbstractListServiceEntityPage<T extends ServiceCategory> extends BasePage {
 
     private static final long serialVersionUID = 652587400391540726L;
 
@@ -166,6 +169,16 @@ public abstract class AbstractListServiceEntityPage<T extends ServiceEntity> ext
                 }
             }
         }
+    }
+
+    protected RepeatingView getLableTranslations(final String componentId, final IModel<T> rowModel) {
+        RepeatingView labelsList = new RepeatingView(componentId);
+        rowModel.getObject().getLabels().stream().sorted(comparing(ServiceTextTranslation::getLanguage))
+                .forEach(label -> {
+                    Label labelItem = new Label(labelsList.newChildId(), label.getLanguage() + ": " + label.getText());
+                    labelsList.add(labelItem);
+                });
+        return labelsList;
     }
 
     @Override

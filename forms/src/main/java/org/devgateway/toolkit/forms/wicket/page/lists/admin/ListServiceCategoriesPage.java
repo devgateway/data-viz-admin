@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Development Gateway, Inc and others.
+ * Copyright (c) 2023 Development Gateway, Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the MIT License (MIT)
@@ -55,8 +55,17 @@ public class ListServiceCategoriesPage extends AbstractListServiceEntityPage<Ser
         columns = new ArrayList<>();
         columns.add(new BootstrapTextFilteredPropertyColumn<>(new Model<>("Value"), "code", "code", "code"));
         columns.add(new BootstrapTextFilteredPropertyColumn<>(new Model<>("System Label"), "value", "value", "value"));
+
+        columns.add(new PropertyColumn<ServiceCategory, String>(new Model<>("Label Translations"), null, "labels") {
+            @Override
+            public void populateItem(final Item<ICellPopulator<ServiceCategory>> item, final String componentId, final IModel<ServiceCategory> rowModel) {
+                item.add(getLableTranslations(componentId, rowModel));
+            }
+        });
+
         columns.add(new BootstrapTextFilteredPropertyColumn<>(new Model<>("Type"), "type", "type", "type"));
         columns.add(new PropertyColumn<>(new Model<>("Position"), "position", "position"));
+
         columns.add(new PropertyColumn<ServiceCategory, String>(new Model<>("Color"), null,
                 "categoryStyle.color") {
             @Override

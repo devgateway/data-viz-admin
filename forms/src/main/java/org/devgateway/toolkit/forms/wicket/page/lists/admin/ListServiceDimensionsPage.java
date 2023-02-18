@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Development Gateway, Inc and others.
+ * Copyright (c) 2023 Development Gateway, Inc and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the MIT License (MIT)
@@ -12,7 +12,10 @@
 package org.devgateway.toolkit.forms.wicket.page.lists.admin;
 
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.table.filter.BootstrapTextFilteredPropertyColumn;
+import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -49,6 +52,12 @@ public class ListServiceDimensionsPage extends AbstractListServiceEntityPage<Ser
         columns = new ArrayList<>();
         columns.add(new BootstrapTextFilteredPropertyColumn<>(new Model<>("Value"), "code", "code", "code"));
         columns.add(new BootstrapTextFilteredPropertyColumn<>(new Model<>("System Label"), "value", "value", "value"));
+        columns.add(new PropertyColumn<ServiceDimension, String>(new Model<>("Label Translations"), null, "labels") {
+            @Override
+            public void populateItem(final Item<ICellPopulator<ServiceDimension>> item, final String componentId, final IModel<ServiceDimension> rowModel) {
+                item.add(getLableTranslations(componentId, rowModel));
+            }
+        });
         columns.add(new PropertyColumn<>(new Model<>("Position"), "position", "position"));
     }
 
