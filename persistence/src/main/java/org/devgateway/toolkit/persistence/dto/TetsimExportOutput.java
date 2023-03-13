@@ -73,10 +73,38 @@ public class TetsimExportOutput implements Serializable {
 
     private Double levyUndershift;
 
+    private Double legalConsumptionPerfectshift;
+
+    private Double legalConsumptionChangePerfectshift;
+
+    private Double consumptionIllicitPerfectshift;
+
+    private Double exciseRevPerfectshift;
+
+    private Double exciseRevChangePerfectshift;
+
+    private Double totalGovRevPerfectshift;
+
+    private Double exciseBurdenPerfectshift;
+
+    private Double totalTaxBurdenPerfectshift;
+
+    private Double baselineTotalTaxBurdenPerfectshift;
+
+    private Double retailPricePerfectshift;
+
+    private Double notPerfectshift;
+
+    private Double exciseTaxPerfectshift;
+
+    private Double vatPerfectshift;
+
+    private Double levyPerfectshift;
+
     public TetsimExportOutput() {
     }
 
-    public TetsimExportOutput(TetsimOutput overShift, TetsimOutput underShift) {
+    public TetsimExportOutput(TetsimOutput overShift, TetsimOutput underShift, TetsimOutput perfectShift) {
         this.year = overShift.getYear();
         this.taxChange = overShift.getTaxChange();
         this.tobaccoProduct = overShift.getTobaccoProduct();
@@ -108,6 +136,20 @@ public class TetsimExportOutput implements Serializable {
         this.exciseTaxUndershift = underShift.getExciseTax();
         this.vatUndershift = underShift.getVat();
         this.levyUndershift = underShift.getLevy();
+        this.legalConsumptionPerfectshift = perfectShift.getLegalConsumption();
+        this.legalConsumptionChangePerfectshift = perfectShift.getLegalConsumptionChange();
+        this.consumptionIllicitPerfectshift = perfectShift.getConsumptionIllicit();
+        this.exciseRevPerfectshift = perfectShift.getExciseRev();
+        this.exciseRevChangePerfectshift = perfectShift.getExciseRevChange();
+        this.totalGovRevPerfectshift = perfectShift.getTotalGovRev();
+        this.exciseBurdenPerfectshift = perfectShift.getExciseBurden();
+        this.totalTaxBurdenPerfectshift = perfectShift.getTotalTaxBurden();
+        this.baselineTotalTaxBurdenPerfectshift = perfectShift.getTotalTaxBurdenBaseline();
+        this.retailPricePerfectshift = perfectShift.getRetailPrice();
+        this.notPerfectshift = perfectShift.getNot();
+        this.exciseTaxPerfectshift = perfectShift.getExciseTax();
+        this.vatPerfectshift = perfectShift.getVat();
+        this.levyPerfectshift = perfectShift.getLevy();
     }
 
     public Integer getYear() {
@@ -356,5 +398,117 @@ public class TetsimExportOutput implements Serializable {
 
     public void setBaselineTotalTaxBurdenUndershift(final Double baselineTotalTaxBurdenUndershift) {
         this.baselineTotalTaxBurdenUndershift = baselineTotalTaxBurdenUndershift;
+    }
+
+    public Double getLegalConsumptionPerfectshift() {
+        return legalConsumptionPerfectshift;
+    }
+
+    public void setLegalConsumptionPerfectshift(final Double legalConsumptionPerfectshift) {
+        this.legalConsumptionPerfectshift = legalConsumptionPerfectshift;
+    }
+
+    public Double getLegalConsumptionChangePerfectshift() {
+        return legalConsumptionChangePerfectshift;
+    }
+
+    public void setLegalConsumptionChangePerfectshift(final Double legalConsumptionChangePerfectshift) {
+        this.legalConsumptionChangePerfectshift = legalConsumptionChangePerfectshift;
+    }
+
+    public Double getConsumptionIllicitPerfectshift() {
+        return consumptionIllicitPerfectshift;
+    }
+
+    public void setConsumptionIllicitPerfectshift(final Double consumptionIllicitPerfectshift) {
+        this.consumptionIllicitPerfectshift = consumptionIllicitPerfectshift;
+    }
+
+    public Double getExciseRevPerfectshift() {
+        return exciseRevPerfectshift;
+    }
+
+    public void setExciseRevPerfectshift(final Double exciseRevPerfectshift) {
+        this.exciseRevPerfectshift = exciseRevPerfectshift;
+    }
+
+    public Double getExciseRevChangePerfectshift() {
+        return exciseRevChangePerfectshift;
+    }
+
+    public void setExciseRevChangePerfectshift(final Double exciseRevChangePerfectshift) {
+        this.exciseRevChangePerfectshift = exciseRevChangePerfectshift;
+    }
+
+    public Double getTotalGovRevPerfectshift() {
+        return totalGovRevPerfectshift;
+    }
+
+    public void setTotalGovRevPerfectshift(final Double totalGovRevPerfectshift) {
+        this.totalGovRevPerfectshift = totalGovRevPerfectshift;
+    }
+
+    public Double getExciseBurdenPerfectshift() {
+        return exciseBurdenPerfectshift;
+    }
+
+    public void setExciseBurdenPerfectshift(final Double exciseBurdenPerfectshift) {
+        this.exciseBurdenPerfectshift = exciseBurdenPerfectshift;
+    }
+
+    public Double getTotalTaxBurdenPerfectshift() {
+        return totalTaxBurdenPerfectshift;
+    }
+
+    public void setTotalTaxBurdenPerfectshift(final Double totalTaxBurdenPerfectshift) {
+        this.totalTaxBurdenPerfectshift = totalTaxBurdenPerfectshift;
+    }
+
+    public Double getBaselineTotalTaxBurdenPerfectshift() {
+        return baselineTotalTaxBurdenPerfectshift;
+    }
+
+    public void setBaselineTotalTaxBurdenPerfectshift(final Double baselineTotalTaxBurdenPerfectshift) {
+        this.baselineTotalTaxBurdenPerfectshift = baselineTotalTaxBurdenPerfectshift;
+    }
+
+    public Double getRetailPricePerfectshift() {
+        return retailPricePerfectshift;
+    }
+
+    public void setRetailPricePerfectshift(final Double retailPricePerfectshift) {
+        this.retailPricePerfectshift = retailPricePerfectshift;
+    }
+
+    public Double getNotPerfectshift() {
+        return notPerfectshift;
+    }
+
+    public void setNotPerfectshift(final Double notPerfectshift) {
+        this.notPerfectshift = notPerfectshift;
+    }
+
+    public Double getExciseTaxPerfectshift() {
+        return exciseTaxPerfectshift;
+    }
+
+    public void setExciseTaxPerfectshift(final Double exciseTaxPerfectshift) {
+        this.exciseTaxPerfectshift = exciseTaxPerfectshift;
+    }
+
+    public Double getVatPerfectshift() {
+        return vatPerfectshift;
+    }
+
+    public void setVatPerfectshift(final Double vatPerfectshift) {
+        this.vatPerfectshift = vatPerfectshift;
+    }
+
+    public Double getLevyPerfectshift() {
+        return levyPerfectshift;
+    }
+
+    public void setLevyPerfectshift(final Double levyPerfectshift) {
+        this.levyPerfectshift = levyPerfectshift;
     }
 }

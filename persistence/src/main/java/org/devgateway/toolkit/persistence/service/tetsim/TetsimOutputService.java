@@ -13,6 +13,7 @@ import org.devgateway.toolkit.persistence.dto.TetsimExportOutput;
 import org.devgateway.toolkit.persistence.dto.TetsimOutput;
 import org.devgateway.toolkit.persistence.service.data.TetsimDatasetService;
 import org.devgateway.toolkit.persistence.util.tetsim.TetsimOutputOvershiftCalculator;
+import org.devgateway.toolkit.persistence.util.tetsim.TetsimOutputPerfectshiftCalculator;
 import org.devgateway.toolkit.persistence.util.tetsim.TetsimOutputUndershiftCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,11 @@ public class TetsimOutputService {
                     "consumptionIllicitUndershift", "exciseRevUndershift", "exciseRevChangeUndershift",
                     "totalGovRevUndershift", "exciseBurdenUndershift", "totalTaxBurdenUndershift",
                     "baselineTotalTaxBurdenUndershift", "retailPriceUndershift", "notUndershift", "exciseTaxUndershift",
-                    "vatUndershift", "levyUndershift")
+                    "vatUndershift", "levyUndershift", "legalConsumptionPerfectshift",
+                    "legalConsumptionChangePerfectshift", "consumptionIllicitPerfectshift", "exciseRevPerfectshift",
+                    "exciseRevChangePerfectshift", "totalGovRevPerfectshift", "exciseBurdenPerfectshift",
+                    "totalTaxBurdenPerfectshift", "baselineTotalTaxBurdenPerfectshift", "retailPricePerfectshift",
+                    "notPerfectshift", "exciseTaxPerfectshift", "vatPerfectshift", "levyPerfectshift")
             .build();
     @Autowired
     private TetsimDatasetService tetsimDatasetService;
@@ -58,7 +63,8 @@ public class TetsimOutputService {
             for (TobaccoProduct t : TobaccoProduct.values()) {
                 TetsimOutput overShift = new TetsimOutputOvershiftCalculator(dataset, i).calculate(t);
                 TetsimOutput underShift = new TetsimOutputUndershiftCalculator(dataset, i).calculate(t);
-                outputs.add(new TetsimExportOutput(overShift, underShift));
+                TetsimOutput perfectShift = new TetsimOutputPerfectshiftCalculator(dataset, i).calculate(t);
+                outputs.add(new TetsimExportOutput(overShift, underShift, perfectShift));
             }
         }
 
