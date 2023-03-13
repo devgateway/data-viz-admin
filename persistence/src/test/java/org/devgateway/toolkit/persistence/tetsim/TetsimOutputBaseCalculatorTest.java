@@ -45,7 +45,7 @@ public class TetsimOutputBaseCalculatorTest {
                 .withCrossElasticityPrice(createPriceVariable(ZERO, ZERO, BigDecimal.valueOf(0.2), BigDecimal.valueOf(0.3), BigDecimal.valueOf(0.3)))
                 .withChangeInIllicitNot(createPriceVariable(null, null,null, null, BigDecimal.valueOf(0.5)))
                 .withOvershifting(createPriceVariable(BigDecimal.valueOf(0.3), BigDecimal.valueOf(0.3), BigDecimal.valueOf(0.2), BigDecimal.valueOf(0.1), ZERO))
-                .withUndershifting(createPriceVariable(BigDecimal.valueOf(-0.2), BigDecimal.valueOf(-0.2), BigDecimal.valueOf(-0.3), BigDecimal.valueOf(-0.5), ZERO))
+                .withUndershifting(createPriceVariable(BigDecimal.valueOf(-0.2), BigDecimal.valueOf(-0.2), BigDecimal.valueOf(-0.3), BigDecimal.valueOf(-0.15), ZERO))
                 .build();
     }
 

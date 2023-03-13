@@ -2,6 +2,7 @@ package org.devgateway.toolkit.persistence.tetsim;
 
 import org.devgateway.toolkit.persistence.dao.data.TobaccoProduct;
 import org.devgateway.toolkit.persistence.util.tetsim.TetsimOutputOvershiftCalculator;
+import org.devgateway.toolkit.persistence.util.tetsim.TetsimOutputPerfectshiftCalculator;
 import org.devgateway.toolkit.persistence.util.tetsim.TetsimOutputUndershiftCalculator;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +59,20 @@ public class TetsimOutputCalculatorAbsChangeTest extends TetsimOutputBaseCalcula
         assertAll("TETSIM Undershift Abs Change",
                 () -> assertEquals(-1.13, tetsimOutputCalculator.calculateAbsChangeShift(POPULAR).doubleValue(),
                         delta, "Check Abs change undershift popular"),
-                () -> assertEquals(-1.88, tetsimOutputCalculator.calculateAbsChangeShift(DISCOUNT).doubleValue(),
+                () -> assertEquals(-0.56, tetsimOutputCalculator.calculateAbsChangeShift(DISCOUNT).doubleValue(),
+                        delta, "Check Abs change undershift discount"),
+                () -> assertEquals(0.00, tetsimOutputCalculator.calculateAbsChangeShift(ILLICIT).doubleValue(),
+                        delta, "Check Abs change undershift illicit")
+        );
+    }
+
+    @Test
+    public void testPerfectshiftAbsChange() {
+        TetsimOutputPerfectshiftCalculator tetsimOutputCalculator = new TetsimOutputPerfectshiftCalculator(datasetWithAllTobaccoProducts, 20);
+        assertAll("TETSIM Perfectshift Abs Change",
+                () -> assertEquals(0.00, tetsimOutputCalculator.calculateAbsChangeShift(POPULAR).doubleValue(),
+                        delta, "Check Abs change undershift popular"),
+                () -> assertEquals(0.00, tetsimOutputCalculator.calculateAbsChangeShift(DISCOUNT).doubleValue(),
                         delta, "Check Abs change undershift discount"),
                 () -> assertEquals(0.00, tetsimOutputCalculator.calculateAbsChangeShift(ILLICIT).doubleValue(),
                         delta, "Check Abs change undershift illicit")
