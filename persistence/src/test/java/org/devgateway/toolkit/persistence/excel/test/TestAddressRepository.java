@@ -6,9 +6,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.FluentQuery;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * @author idobre
@@ -69,6 +71,11 @@ public class TestAddressRepository implements BaseJpaRepository<TestAddress, Lon
     }
 
     @Override
+    public void deleteAllById(Iterable<? extends Long> longs) {
+
+    }
+
+    @Override
     public void deleteAll(Iterable entities) {
 
     }
@@ -99,6 +106,16 @@ public class TestAddressRepository implements BaseJpaRepository<TestAddress, Lon
     }
 
     @Override
+    public TestAddress getById(Long aLong) {
+        return null;
+    }
+
+    @Override
+    public TestAddress getReferenceById(Long aLong) {
+        return null;
+    }
+
+    @Override
     public List findAll(Example example, Sort sort) {
         return null;
     }
@@ -111,6 +128,21 @@ public class TestAddressRepository implements BaseJpaRepository<TestAddress, Lon
     @Override
     public <S extends TestAddress> S saveAndFlush(S entity) {
         return null;
+    }
+
+    @Override
+    public <S extends TestAddress> List<S> saveAllAndFlush(Iterable<S> entities) {
+        return null;
+    }
+
+    @Override
+    public void deleteAllInBatch(Iterable<TestAddress> entities) {
+
+    }
+
+    @Override
+    public void deleteAllByIdInBatch(Iterable<Long> longs) {
+
     }
 
     @Override
@@ -161,5 +193,25 @@ public class TestAddressRepository implements BaseJpaRepository<TestAddress, Lon
     @Override
     public boolean exists(Example example) {
         return false;
+    }
+
+    @Override
+    public boolean exists(Specification<TestAddress> spec) {
+        return false;
+    }
+
+    @Override
+    public long delete(Specification<TestAddress> spec) {
+        return 0;
+    }
+
+    @Override
+    public <S extends TestAddress, R> R findBy(Specification<TestAddress> spec, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+        return null;
+    }
+
+    @Override
+    public <S extends TestAddress, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+        return null;
     }
 }

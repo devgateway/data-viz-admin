@@ -18,8 +18,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <start-class>org.devgateway.toolkit.persistence.spring.PersistenceApplication</start-class>
-        <java.version>1.8</java.version>
-        <ehcache.version>3.8.1</ehcache.version>
+        <java.version>17</java.version>
+        <ehcache.version>3.10.8</ehcache.version>
         <dozer.hibernate.model.version>0.3.8</dozer.hibernate.model.version>
         <commons.lang3.version>3.2.1</commons.lang3.version>
         <guava.version>30.0-jre</guava.version>
@@ -111,6 +111,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jcache</artifactId>
+            <version>7.0.0.Beta1</version>
         </dependency>
 
         <dependency>
@@ -121,11 +122,13 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
+            <version>6.0.0.Alpha7</version>
         </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-envers</artifactId>
+            <version>6.6.1.Final</version>
             <exclusions>
                 <exclusion>
                     <artifactId>hibernate-entitymanager</artifactId>
@@ -137,6 +140,8 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
+            <version>6.6.1.Final</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -155,7 +160,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>${pgsql.version}</version>
+<!--            <version>${pgsql.version}</version>-->
         </dependency>
 
         <!-- This is used just in case we need bean validation -->
@@ -211,6 +216,17 @@
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>5.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>3.0.1</version>
         </dependency>
     </dependencies>
 

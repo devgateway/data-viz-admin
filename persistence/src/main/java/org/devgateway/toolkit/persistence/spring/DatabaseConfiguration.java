@@ -26,9 +26,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
-import org.springframework.mock.jndi.SimpleNamingContextBuilder;
 
-import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
@@ -46,39 +44,6 @@ import javax.sql.DataSource;
 @Profile("!integration")
 public class DatabaseConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(DatabaseConfiguration.class);
-
-    @Value("${dg-toolkit.datasource.jndi-name}")
-    private String datasourceJndiName;
-
-    /**
-     * This bean creates the JNDI tree and registers the
-     * {@link javax.sql.DataSource} to this tree. This allows Pentaho Classic
-     * Engine to use a {@link javax.sql.DataSource} ,in our case backed by a
-     * connection pool instead of always opening up JDBC connections. Should
-     * significantly improve performance of all classic reports. In PRD use
-     * connection type=JNDI and name toolkitDS. To use it in PRD you need to add
-     * the configuration to the local PRD. Edit
-     * ~/.pentaho/simple-jndi/default.properties and add the following:
-     * toolkitDS/type=javax.sql.DataSource
-     * toolkitDS/driver=org.apache.derby.jdbc.ClientDriver toolkitDS/user=app
-     * toolkitDS/password=app
-     * toolkitDS/url=jdbc:derby://localhost//derby/toolkit
-     *
-     * @return
-     */
-    @Bean
-    public SimpleNamingContextBuilder jndiBuilder() {
-        SimpleNamingContextBuilder builder = new SimpleNamingContextBuilder();
-        builder.bind(datasourceJndiName, dataSource());
-        try {
-            builder.activate();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        } catch (NamingException e) {
-            e.printStackTrace();
-        }
-        return builder;
-    }
 
     /**
      * Creates a {@link javax.sql.DataSource} based on HikariCP {@link HikariDataSource}

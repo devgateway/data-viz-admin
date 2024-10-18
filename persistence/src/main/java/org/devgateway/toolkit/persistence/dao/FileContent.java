@@ -11,11 +11,12 @@
  *******************************************************************************/
 package org.devgateway.toolkit.persistence.dao;
 
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Lob;
 
 /**
  * @author idobre
@@ -30,7 +31,7 @@ public class FileContent extends AbstractAuditableEntity {
 
     @Lob
     @Column(length = LOB_LENGTH)
-    @Type(type = "org.hibernate.type.BinaryType")
+    @JdbcTypeCode(SqlTypes.BLOB)
     private byte[] bytes;
 
     public byte[] getBytes() {
