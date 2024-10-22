@@ -40,7 +40,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.Strings;
-import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.util.visit.IVisit;
 import org.apache.wicket.util.visit.IVisitor;
 import org.devgateway.toolkit.forms.WebConstants;
@@ -62,6 +61,7 @@ import org.wicketstuff.datetime.markup.html.basic.DateLabel;
 import org.wicketstuff.select2.Select2Choice;
 
 import java.text.MessageFormat;
+import java.time.Duration;
 
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_AUTO_SAVE;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DRAFT;
@@ -457,7 +457,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
     private AbstractAjaxTimerBehavior getAutosaveBehavior() {
         final AbstractAjaxTimerBehavior ajaxTimerBehavior = new AbstractAjaxTimerBehavior(
-                Duration.minutes(adminSettingsService.getAutosaveTime())) {
+                Duration.ofMinutes(adminSettingsService.getAutosaveTime())) {
             @Override
             protected void onTimer(final AjaxRequestTarget target) {
                 // display block UI message until the page is reloaded

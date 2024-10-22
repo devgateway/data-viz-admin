@@ -97,7 +97,7 @@ public class Header extends Panel {
         add(rebootAlert);
         MetaDataRoleAuthorizationStrategy.authorize(rebootAlert, Component.RENDER, SecurityConstants.Roles.ROLE_USER);
 
-        add(new AbstractAjaxTimerBehavior(org.apache.wicket.util.time.Duration.seconds(ALERT_UPDATE_INTERVAL_SECONDS)) {
+        add(new AbstractAjaxTimerBehavior(Duration.ofSeconds(ALERT_UPDATE_INTERVAL_SECONDS)) {
             private static final long serialVersionUID = -1168209018766325709L;
 
             @Override

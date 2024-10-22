@@ -7,9 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -20,11 +20,6 @@ public class HTTPErrorController implements ErrorController {
 
     @Autowired
     private SettingsUtils settingsUtils;
-
-    @Override
-    public String getErrorPath() {
-        return null;
-    }
 
     @RequestMapping("/error")
     public void handleError(final HttpServletRequest request, final HttpServletResponse response) throws IOException {

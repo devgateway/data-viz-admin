@@ -32,7 +32,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxNewWindowNotifyingBehavior;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
-import org.apache.wicket.devutils.diskstore.DebugDiskDataStore;
+//import org.apache.wicket.devutils.diskstore.DebugDiskDataStore;
 import org.apache.wicket.markup.html.IPackageResourceGuard;
 import org.apache.wicket.markup.html.SecurePackageResourceGuard;
 import org.apache.wicket.markup.html.WebPage;
@@ -59,7 +59,8 @@ import org.devgateway.toolkit.persistence.converter.DefaultDecimalFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+//import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
@@ -81,7 +82,7 @@ import java.time.ZonedDateTime;
 @EnableScheduling
 @SpringBootApplication(exclude = {org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration.class})
 @ComponentScan("org.devgateway.toolkit")
-@EnableEurekaClient
+@EnableDiscoveryClient
 @PropertySource("classpath:/org/devgateway/toolkit/forms/application.properties")
 public class FormsWebApplication extends AuthenticatedWebApplication {
 
@@ -168,7 +169,7 @@ public class FormsWebApplication extends AuthenticatedWebApplication {
      */
     private void optimizeForWebPerformance() {
         // add javascript files at the bottom of the page
-        setHeaderResponseDecorator(new RenderJavaScriptToFooterHeaderResponseDecorator("scripts-bucket"));
+//        setHeaderResponseDecorator(new RenderJavaScriptToFooterHeaderResponseDecorator("scripts-bucket"));
 
         // This is only enabled for deployment configuration
         // -Dwicket.configuration=deployment
@@ -243,9 +244,9 @@ public class FormsWebApplication extends AuthenticatedWebApplication {
 
         // watch this using the URL
         // http://.../wicket/internal/debug/diskDataStore
-        if (usesDevelopmentConfig()) {
-            DebugDiskDataStore.register(this);
-        }
+//        if (usesDevelopmentConfig()) {
+//            DebugDiskDataStore.register(this);
+//        }
 
         SessionFinderHolder.setSessionFinder(sessionFinderService);
 

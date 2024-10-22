@@ -25,13 +25,16 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.security.web.firewall.HttpFirewall;
@@ -51,7 +54,7 @@ import java.util.stream.Collectors;
 // them overlayed, it must pick that one first)
 @PropertySource("classpath:allowedApiEndpoints.properties")
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig {
 
     @Autowired
     protected CustomJPAUserDetailsService customJPAUserDetailsService;
@@ -89,14 +92,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return securityContextPersistenceFilter;
     }
 
-    @Override
-    public void configure(final WebSecurity web) throws Exception {
-        web.httpFirewall(allowUrlEncodedSlashHttpFirewall())
-                .ignoring().antMatchers(getAllowedAPIEndpointsWithBasePath()).and()
-                .ignoring().antMatchers(
-                        settingsUtils.getFormsBasePath() + "/login",
-                        settingsUtils.getFormsBasePath() + "/forgotPassword/**");
-    }
+//    @Override
+//    public void configure(final WebSecurity web) throws Exception {
+//        web.httpFirewall(allowUrlEncodedSlashHttpFirewall())
+//                .ignoring().antMatchers(getAllowedAPIEndpointsWithBasePath()).and()
+//                .ignoring().antMatchers(
+//                        settingsUtils.getFormsBasePath() + "/login",
+//                        settingsUtils.getFormsBasePath() + "/forgotPassword/**");
+//    }
 
     private String[] getAllowedAPIEndpointsWithBasePath() {
         if (allowedApiEndpoints != null) {
@@ -108,15 +111,46 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new String[]{};
     }
 
-    @Override
-    protected void configure(final HttpSecurity http) throws Exception {
-        http.authorizeRequests().expressionHandler(webExpressionHandler()) // inject role hierarchy
-                .antMatchers(settingsUtils.getFormsBasePath() + "/monitoring/**").access("hasRole('ROLE_ADMIN')")
-                .antMatchers(settingsUtils.getFormsBasePath() + "/**").authenticated().and()
-                .formLogin().loginPage(settingsUtils.getFormsBasePath() + "/login").permitAll().and()
-                .requestCache().and().logout().permitAll().and()
-                .sessionManagement().and().csrf().disable();
-        http.addFilter(securityContextPersistenceFilter());
+//    @Override
+//    protected void configure(final HttpSecurity http) throws Exception {
+//        http.authorizeRequests().expressionHandler(webExpressionHandler()) // inject role hierarchy
+//                .antMatchers(settingsUtils.getFormsBasePath() + "/monitoring/**").access("hasRole('ROLE_ADMIN')")
+//                .antMatchers(settingsUtils.getFormsBasePath() + "/**").authenticated().and()
+//                .formLogin().loginPage(settingsUtils.getFormsBasePath() + "/login").permitAll().and()
+//                .requestCache().and().logout().permitAll().and()
+//                .sessionManagement().and().csrf().disable();
+//        http.addFilter(securityContextPersistenceFilter());
+//    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.securityContext(securityContext -> securityContext.securityContextRepository(httpSessionSecurityContextRepository()))
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers(settingsUtils.getFormsBasePath() + "/monitoring/**").hasRole("ROLE_ADMIN")
+                        .requestMatchers(settingsUtils.getFormsBasePath() + "/**").authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage(settingsUtils.getFormsBasePath() + "/login").permitAll()
+                )
+                .requestCache(requestCache -> requestCache.disable())
+                .logout(logout -> logout.permitAll())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .csrf(csrf -> csrf.disable());
+
+        // Apply the custom SecurityExpressionHandler here
+        http.setSharedObject(SecurityExpressionHandler.class, webExpressionHandler());
+
+        // Firewall configuration, equivalent to 'allowUrlEncodedSlashHttpFirewall'
+        http.getSharedObject(WebSecurity.class)
+                .httpFirewall(allowUrlEncodedSlashHttpFirewall());
+
+        // Ignoring paths (migrated from 'configure(WebSecurity web)')
+        http.getSharedObject(WebSecurity.class)
+                .ignoring()
+                .requestMatchers(getAllowedAPIEndpointsWithBasePath())
+                .requestMatchers(settingsUtils.getFormsBasePath() + "/login", settingsUtils.getFormsBasePath() + "/forgotPassword/**");
+
+        return http.build();
     }
 
     /**
@@ -143,9 +177,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Autowired

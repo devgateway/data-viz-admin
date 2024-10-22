@@ -28,7 +28,7 @@ import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.string.StringValue;
-import org.apache.wicket.util.time.Duration;
+//import org.apache.wicket.util.time.Duration;
 import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.security.SecurityUtil;
 import org.devgateway.toolkit.forms.wicket.SSAuthenticatedWebSession;
@@ -42,8 +42,9 @@ import org.devgateway.toolkit.persistence.service.PersonService;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.wicketstuff.annotation.mount.MountPath;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.time.Duration;
 
 /**
  * @author mpostelnicu
@@ -124,7 +125,8 @@ public class LoginPage extends BasePage {
             retrieveReferrerFromSavedRequestIfPresent();
 
             final NotificationPanel notificationPanel = new NotificationPanel("loginFeedback");
-            notificationPanel.hideAfter(Duration.seconds(HIDE_NOTIFICATION_SECONDS));
+//            notificationPanel.hideAfter(Duration.seconds(HIDE_NOTIFICATION_SECONDS));
+            notificationPanel.hideAfter(Duration.ofSeconds(HIDE_NOTIFICATION_SECONDS));
             notificationPanel.setOutputMarkupId(true);
             add(notificationPanel);
 

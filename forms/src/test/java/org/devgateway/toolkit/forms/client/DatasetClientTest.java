@@ -2,8 +2,8 @@ package org.devgateway.toolkit.forms.client;
 
 
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -18,7 +18,7 @@ public class DatasetClientTest {
 
     private String baseUrl = "http://localhost:8084/";
 
-    @Before
+    @BeforeEach
     public void initClient() {
         this.client = new DatasetClient(baseUrl);
     }

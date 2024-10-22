@@ -20,7 +20,7 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.Navbar;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.NavbarButton;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.NavbarComponents;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.NavbarDropDownButton;
-import de.agilecoders.wicket.core.markup.html.references.RespondJavaScriptReference;
+//import de.agilecoders.wicket.core.markup.html.references.RespondJavaScriptReference;
 import de.agilecoders.wicket.core.markup.html.themes.bootstrap.BootstrapCssReference;
 import de.agilecoders.wicket.core.util.CssClassNames;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5CssReference;
@@ -339,8 +339,8 @@ public abstract class BasePage extends GenericWebPage<Void> {
         response.render(CssHeaderItem.forReference(BaseStyles.INSTANCE));
 
         // Load Scripts.
-        response.render(RespondJavaScriptReference.headerItem());
-        response.render(JavaScriptHeaderItem.forReference(JQueryResourceReference.getV2()));
+//        response.render(RespondJavaScriptReference.headerItem());
+        response.render(JavaScriptHeaderItem.forReference(JQueryResourceReference.getV3()));
 
         response.render(JavaScriptHeaderItem.forReference(new JavaScriptResourceReference(BaseStyles.class,
                 "assets/js/fileupload.js")));
