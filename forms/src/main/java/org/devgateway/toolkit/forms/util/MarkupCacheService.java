@@ -17,8 +17,9 @@ import org.apache.wicket.markup.MarkupCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.cache.Cache;
-import javax.cache.CacheManager;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+
 import java.util.Collection;
 
 /**
@@ -68,7 +69,7 @@ public class MarkupCacheService {
                                         final byte[] buffer) {
 
         // get the reports cache "reportsCache", declared in ehcache.xml
-        final Cache<String, byte[]> cache = cm.getCache("reportsCache", String.class, byte[].class);
+        final Cache cache = cm.getCache("reportsCache");
 
         cache.put(createCacheKey(outputType, reportName, parameters), buffer);
     }
@@ -84,12 +85,11 @@ public class MarkupCacheService {
     public byte[] getPentahoReportFromCache(final String outputType, final String reportName, final String parameters) {
 
         // get the reports cache "reportsCache", declared in ehcache.xml
-        final Cache<String, byte[]> cache = cm.getCache("reportsCache", String.class, byte[].class);
+        final Cache cache = cm.getCache("reportsCache");
 
-        final String key = createCacheKey(outputType, reportName, parameters);
-
-        if (cache.containsKey(key)) {
-            return cache.get(key);
+        if (cache != null) {
+            String key = createCacheKey(outputType, reportName, parameters);
+            return cache.get(key, byte[].class);
         }
 
         return null;
@@ -101,10 +101,10 @@ public class MarkupCacheService {
     public void clearPentahoReportsCache() {
 
         // get the reports cache "reportsCache", declared in ehcache.xml
-        final Cache<Object, Object> cache = cm.getCache("reportsCache");
+        final Cache cache = cm.getCache("reportsCache");
 
         if (cache != null) {
-            cache.removeAll();
+            cache.clear();
         }
     }
 
@@ -114,15 +114,15 @@ public class MarkupCacheService {
     public void clearAllCaches() {
 
         // get the reports cache "reportsApiCache", declared in ehcache.xml
-        final Cache<Object, Object> cache = cm.getCache("reportsApiCache");
+        final Cache cache = cm.getCache("reportsApiCache");
         if (cache != null) {
-            cache.removeAll();
+            cache.clear();
         }
 
         // get the reports cache "excelExportCache", declared in ehcache.xml
-        final Cache<Object, Object> excelExportCache = cm.getCache("excelExportCache");
+        final Cache excelExportCache = cm.getCache("excelExportCache");
         if (excelExportCache != null) {
-            excelExportCache.removeAll();
+            excelExportCache.clear();
         }
     }
 

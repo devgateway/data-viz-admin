@@ -15,7 +15,7 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.dialog.TextContentModal;
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapCheckbox;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType;
-import de.agilecoders.wicket.extensions.markup.html.bootstrap.ladda.LaddaAjaxButton;
+import org.devgateway.toolkit.forms.wicket.components.buttons.ladda.LaddaAjaxButton;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;

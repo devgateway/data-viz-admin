@@ -3,7 +3,7 @@ package org.devgateway.toolkit.forms.wicket.page.edit.dataset;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxButton;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType;
-import de.agilecoders.wicket.extensions.markup.html.bootstrap.ladda.LaddaAjaxButton;
+import org.devgateway.toolkit.forms.wicket.components.buttons.ladda.LaddaAjaxButton;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;

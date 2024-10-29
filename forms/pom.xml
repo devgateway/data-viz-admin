@@ -32,10 +32,10 @@
         <java.version>17</java.version>
         <wicket.version>10.0.0</wicket.version>
         <wicketstuff.version>10.0.0</wicketstuff.version>
-        <wicket.bootstrap.version>4.0.4</wicket.bootstrap.version>
-<!--        <wicket.bootstrap.version>7.0.0</wicket.bootstrap.version>-->
+<!--        <wicket.bootstrap.version>4.0.4</wicket.bootstrap.version>-->
+        <wicket.bootstrap.version>7.0.0</wicket.bootstrap.version>
         <zt.zip.version>1.13</zt.zip.version>
-        <wicket.webjars.version>2.0.19</wicket.webjars.version>
+        <wicket.webjars.version>4.0.5</wicket.webjars.version>
         <closure.compiler.version>v20200406</closure.compiler.version>
         <cglib.version>3.1</cglib.version>
         <yuicompressor.version>2.4.8</yuicompressor.version>
@@ -189,7 +189,6 @@
             <groupId>de.agilecoders.wicket</groupId>
             <artifactId>wicket-bootstrap-core</artifactId>
             <version>6.0.0</version>
-<!--            <version>${wicket.bootstrap.version}</version>-->
             <exclusions>
                 <exclusion>
                     <artifactId>javassist</artifactId>
@@ -235,11 +234,11 @@
             <version>${yuicompressor.version}</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>de.agilecoders.wicket</groupId>-->
-<!--            <artifactId>wicket-bootstrap-themes</artifactId>-->
-<!--            <version>${wicket.bootstrap.version}</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>de.agilecoders.wicket</groupId>
+            <artifactId>wicket-bootstrap-themes</artifactId>
+            <version>${wicket.bootstrap.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>de.agilecoders.wicket</groupId>
@@ -322,6 +321,27 @@
             <version>4.0.1</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.sun.jersey.contribs</groupId>
+            <artifactId>jersey-apache-client4</artifactId>
+            <version>1.19.4</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.netflix.eureka</groupId>-->
+<!--            <artifactId>eureka-client</artifactId>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>com.sun.jersey</groupId>-->
+<!--                    <artifactId>jersey-client</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.glassfish.jersey.core</groupId>-->
+<!--                    <artifactId>jersey-client</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
+
     </dependencies>
 
     <build>

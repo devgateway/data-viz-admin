@@ -9,7 +9,7 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.editor.SummernoteE
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.editor.SummernoteEditorOverlayCssReference;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.editor.SummernoteStorage;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.editor.SummernoteStoredImageResourceReference;
-import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesomeCssReference;
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5CssReference;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.references.SpinJsReference;
 import de.agilecoders.wicket.jquery.IKey;
 import org.apache.commons.fileupload2.core.FileItem;
@@ -159,7 +159,7 @@ public class ToolkitSummernoteEditor extends FormComponent<String> {
             return;
         }
         response.render(CssHeaderItem.forReference(SummernoteEditorCssReference.instance()));
-        response.render(CssHeaderItem.forReference(FontAwesomeCssReference.instance()));
+        response.render(CssHeaderItem.forReference(FontAwesome5CssReference.instance()));
         response.render(CssHeaderItem.forReference(SummernoteEditorOverlayCssReference.instance()));
         response.render(JavaScriptHeaderItem.forReference(SummernoteEditorJavaScriptReference.instance()));
         response.render(JavaScriptHeaderItem.forReference(SummernoteEditorFormDataReference.instance()));

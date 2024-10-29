@@ -15,7 +15,7 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.dialog.TextContentModal;
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
 import de.agilecoders.wicket.core.util.Attributes;
-import de.agilecoders.wicket.extensions.markup.html.bootstrap.ladda.LaddaAjaxButton;
+import org.devgateway.toolkit.forms.wicket.components.buttons.ladda.LaddaAjaxButton;
 import nl.dries.wicket.hibernate.dozer.DozerModel;
 import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxEventBehavior;

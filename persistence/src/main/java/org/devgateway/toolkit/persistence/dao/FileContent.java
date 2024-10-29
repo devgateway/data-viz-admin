@@ -18,6 +18,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Lob;
 
+import java.sql.Types;
+
 /**
  * @author idobre
  * @since 11/13/14
@@ -31,7 +33,7 @@ public class FileContent extends AbstractAuditableEntity {
 
     @Lob
     @Column(length = LOB_LENGTH)
-    @JdbcTypeCode(SqlTypes.BLOB)
+    @JdbcTypeCode(Types.VARBINARY)
     private byte[] bytes;
 
     public byte[] getBytes() {

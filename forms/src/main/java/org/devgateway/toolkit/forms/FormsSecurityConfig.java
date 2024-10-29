@@ -133,7 +133,7 @@ public class FormsSecurityConfig extends WebSecurityConfig {
                         securityContext.securityContextRepository(httpSessionSecurityContextRepository())
                 )
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers(formsBasePath + "/monitoring/**").hasRole("ROLE_ADMIN")
+                        .requestMatchers(formsBasePath + "/monitoring/**").hasRole("ADMIN")
                         .requestMatchers(formsBasePath + "/img/**", formsBasePath + "/css*/**",
                                 formsBasePath + "/js*/**", formsBasePath + "/assets*/**",
                                 formsBasePath + "/favicon.ico", formsBasePath + "/resources/**",

@@ -1,13 +1,14 @@
 <ehcache:config
         xmlns:ehcache="http://www.ehcache.org/v3"
-        xmlns:jcache="http://www.ehcache.org/v3/jsr107" xmlns:ehache="http://www.ehcache.org/v3">
+        xmlns:jcache="http://www.ehcache.org/v3/jsr107">
     <ehcache:service>
         <jcache:defaults default-template="template" enable-management="true" enable-statistics="true"/>
     </ehcache:service>
-    <ehache:cache-template name="template">
+
+    <ehcache:cache-template name="template">
         <ehcache:heap>100000</ehcache:heap>
         <jcache:mbeans enable-management="true" enable-statistics="true"/>
-    </ehache:cache-template>
+    </ehcache:cache-template>
 
     <ehcache:cache alias="excelExportCache">
         <ehcache:heap>100000</ehcache:heap>

@@ -29,6 +29,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.FilterInvocation;
@@ -126,7 +127,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.securityContext(securityContext -> securityContext.securityContextRepository(httpSessionSecurityContextRepository()))
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers(settingsUtils.getFormsBasePath() + "/monitoring/**").hasRole("ROLE_ADMIN")
+                        .requestMatchers(settingsUtils.getFormsBasePath() + "/monitoring/**").hasRole("ADMIN")
                         .requestMatchers(settingsUtils.getFormsBasePath() + "/**").authenticated()
                 )
                 .formLogin(form -> form
@@ -140,17 +141,32 @@ public class WebSecurityConfig {
         // Apply the custom SecurityExpressionHandler here
         http.setSharedObject(SecurityExpressionHandler.class, webExpressionHandler());
 
-        // Firewall configuration, equivalent to 'allowUrlEncodedSlashHttpFirewall'
-        http.getSharedObject(WebSecurity.class)
-                .httpFirewall(allowUrlEncodedSlashHttpFirewall());
+//        http.setSharedObject(HttpFirewall.class, allowUrlEncodedSlashHttpFirewall());
+//
+//        http.ignoring()
+//                .requestMatchers(getAllowedAPIEndpointsWithBasePath())
+//                .requestMatchers(settingsUtils.getFormsBasePath() + "/login", settingsUtils.getFormsBasePath() + "/forgotPassword/**");
+//        // Firewall configuration, equivalent to 'allowUrlEncodedSlashHttpFirewall'
+//        http.getSharedObject(WebSecurity.class)
+//                .httpFirewall(allowUrlEncodedSlashHttpFirewall());
 
         // Ignoring paths (migrated from 'configure(WebSecurity web)')
-        http.getSharedObject(WebSecurity.class)
-                .ignoring()
-                .requestMatchers(getAllowedAPIEndpointsWithBasePath())
-                .requestMatchers(settingsUtils.getFormsBasePath() + "/login", settingsUtils.getFormsBasePath() + "/forgotPassword/**");
+//        http.getSharedObject(WebSecurity.class)
+//                .ignoring()
+//                .requestMatchers(getAllowedAPIEndpointsWithBasePath())
+//                .requestMatchers(settingsUtils.getFormsBasePath() + "/login", settingsUtils.getFormsBasePath() + "/forgotPassword/**");
 
         return http.build();
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> {
+            web.httpFirewall(allowUrlEncodedSlashHttpFirewall());
+            web.ignoring()
+                    .requestMatchers(getAllowedAPIEndpointsWithBasePath())
+                    .requestMatchers(settingsUtils.getFormsBasePath() + "/login", settingsUtils.getFormsBasePath() + "/forgotPassword/**");
+        };
     }
 
     /**

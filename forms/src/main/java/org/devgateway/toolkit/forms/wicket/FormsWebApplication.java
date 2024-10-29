@@ -59,7 +59,6 @@ import org.devgateway.toolkit.persistence.converter.DefaultDecimalFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-//import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
@@ -79,10 +78,11 @@ import java.time.ZonedDateTime;
  *
  * @author Stefan Kloe, mpostelnicu
  */
+
+@EnableDiscoveryClient(autoRegister = true)
 @EnableScheduling
 @SpringBootApplication(exclude = {org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration.class})
 @ComponentScan("org.devgateway.toolkit")
-@EnableDiscoveryClient
 @PropertySource("classpath:/org/devgateway/toolkit/forms/application.properties")
 public class FormsWebApplication extends AuthenticatedWebApplication {
 
