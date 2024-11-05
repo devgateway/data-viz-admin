@@ -23,6 +23,7 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.editor.SummernoteC
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.editor.SummernoteStoredImageResourceReference;
 import de.agilecoders.wicket.less.BootstrapLess;
 import de.agilecoders.wicket.webjars.WicketWebjars;
+import de.agilecoders.wicket.webjars.request.resource.WebjarsJavaScriptResourceReference;
 import nl.dries.wicket.hibernate.dozer.DozerRequestCycleListener;
 import nl.dries.wicket.hibernate.dozer.SessionFinderHolder;
 import org.apache.wicket.Application;
@@ -35,6 +36,9 @@ import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 //import org.apache.wicket.devutils.diskstore.DebugDiskDataStore;
 import org.apache.wicket.csp.CSPDirective;
 import org.apache.wicket.csp.CSPDirectiveSrcValue;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.filter.JavaScriptFilteredIntoFooterHeaderResponse;
+import org.apache.wicket.markup.html.IHeaderResponseDecorator;
 import org.apache.wicket.markup.html.IPackageResourceGuard;
 import org.apache.wicket.markup.html.SecurePackageResourceGuard;
 import org.apache.wicket.markup.html.WebPage;
@@ -42,6 +46,7 @@ import org.apache.wicket.request.resource.JavaScriptResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.request.resource.caching.FilenameWithVersionResourceCachingStrategy;
 import org.apache.wicket.request.resource.caching.version.CachingResourceVersion;
+import org.apache.wicket.resource.JQueryResourceReference;
 import org.apache.wicket.settings.RequestCycleSettings.RenderStrategy;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.file.Folder;
@@ -70,8 +75,10 @@ import org.wicketstuff.annotation.scan.AnnotatedMountScanner;
 import org.wicketstuff.select2.ApplicationSettings;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.Iterator;
 
 /**
  * The web application class also serves as spring boot starting point by using
@@ -171,7 +178,14 @@ public class FormsWebApplication extends AuthenticatedWebApplication {
      */
     private void optimizeForWebPerformance() {
         // add javascript files at the bottom of the page
-//        setHeaderResponseDecorator(new RenderJavaScriptToFooterHeaderResponseDecorator("scripts-bucket"));
+        getHeaderResponseDecorators().addPostProcessingDecorator(new RenderJavaScriptToFooterHeaderResponseDecorator("scripts-bucket"));
+        // Replace all decorators with our footer JavaScript decorator
+//        getHeaderResponseDecorators().addPostProcessingDecorator(new IHeaderResponseDecorator() {
+//            @Override
+//            public IHeaderResponse decorate(IHeaderResponse response) {
+//                return new JavaScriptFilteredIntoFooterHeaderResponse(response, "scripts-bucket");
+//            }
+//        });
 
         // This is only enabled for deployment configuration
         // -Dwicket.configuration=deployment
@@ -191,6 +205,12 @@ public class FormsWebApplication extends AuthenticatedWebApplication {
                 new CachingResourceVersion(new Adler32ResourceVersion())));
 
         getRequestCycleSettings().setRenderStrategy(RenderStrategy.ONE_PASS_RENDER);
+
+
+        // Prevent unnecessary resource polling
+        getResourceSettings().setResourcePollFrequency(null);
+        getResourceSettings().setThrowExceptionOnMissingResource(false);
+
         // be sure that we have added Dozer Listener
         getRequestCycleListeners().add(new DozerRequestCycleListener());
 
@@ -219,6 +239,8 @@ public class FormsWebApplication extends AuthenticatedWebApplication {
     @Override
     protected void init() {
         super.init();
+
+        getJavaScriptLibrarySettings().setJQueryReference(JQueryResourceReference.getV3());
 
         // add allowed woff2 extension
         IPackageResourceGuard packageResourceGuard = getResourceSettings().getPackageResourceGuard();
@@ -257,7 +279,7 @@ public class FormsWebApplication extends AuthenticatedWebApplication {
     }
 
     private void configureCsp() {
-        getCspSettings().blocking()
+        getCspSettings().blocking().clear()
                 .add(CSPDirective.SCRIPT_SRC, CSPDirectiveSrcValue.SELF)
                 .add(CSPDirective.SCRIPT_SRC, CSPDirectiveSrcValue.UNSAFE_INLINE)
                 .add(CSPDirective.STYLE_SRC, CSPDirectiveSrcValue.SELF)

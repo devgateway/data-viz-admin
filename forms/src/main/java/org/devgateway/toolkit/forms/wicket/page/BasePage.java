@@ -25,6 +25,7 @@ import de.agilecoders.wicket.core.markup.html.themes.bootstrap.BootstrapCssRefer
 import de.agilecoders.wicket.core.util.CssClassNames;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5CssReference;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType;
+import org.apache.wicket.Application;
 import org.apache.wicket.Page;
 import org.apache.wicket.authroles.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
 import org.apache.wicket.markup.head.*;
@@ -336,16 +337,11 @@ public abstract class BasePage extends GenericWebPage<Void> {
         response.render(CssHeaderItem.forReference(BaseStyles.INSTANCE));
 
         // Load Scripts.
-//        response.render(RespondJavaScriptReference.headerItem());
+        //  response.render(RespondJavaScriptReference.headerItem());
         response.render(JavaScriptHeaderItem.forReference(JQueryResourceReference.getV3()));
 
         response.render(JavaScriptHeaderItem.forReference(new JavaScriptResourceReference(BaseStyles.class,
                 "assets/js/fileupload.js")));
-
-        response.render(JavaScriptHeaderItem.forReference(getApplication().getJavaScriptLibrarySettings().getWicketAjaxReference()));
-
-        response.render(JavaScriptHeaderItem.forReference(getApplication().getJavaScriptLibrarySettings().getJQueryReference()));
-
     }
 
     protected BreadCrumbPanel createBreadcrumbPanel(final String markupId) {
