@@ -200,11 +200,6 @@ public class FormsWebApplication extends AuthenticatedWebApplication {
 
         getRequestCycleSettings().setRenderStrategy(RenderStrategy.ONE_PASS_RENDER);
 
-
-        // Prevent unnecessary resource polling
-        getResourceSettings().setResourcePollFrequency(null);
-        getResourceSettings().setThrowExceptionOnMissingResource(false);
-
         // be sure that we have added Dozer Listener
         getRequestCycleListeners().add(new DozerRequestCycleListener());
 
@@ -255,7 +250,6 @@ public class FormsWebApplication extends AuthenticatedWebApplication {
         getApplicationSettings().setAccessDeniedPage(AccessDeniedPage.class);
 
         configureBootstrap();
-        configureCsp();
         configureSummernote();
         optimizeForWebPerformance();
 
@@ -268,6 +262,8 @@ public class FormsWebApplication extends AuthenticatedWebApplication {
         SessionFinderHolder.setSessionFinder(sessionFinderService);
 
         useCustomizedSelect2Version();
+
+        configureCsp();
     }
 
     private void configureCsp() {

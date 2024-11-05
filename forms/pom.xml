@@ -33,10 +33,10 @@
         <wicket.version>10.0.0</wicket.version>
         <wicketstuff.version>10.0.0</wicketstuff.version>
 <!--        <wicket.bootstrap.version>4.0.4</wicket.bootstrap.version>-->
-        <wicket.bootstrap.version>7.0.0</wicket.bootstrap.version>
-        <zt.zip.version>1.13</zt.zip.version>
-        <wicket.webjars.version>4.0.5</wicket.webjars.version>
-        <closure.compiler.version>v20200406</closure.compiler.version>
+        <wicket.bootstrap.version>5.0.4</wicket.bootstrap.version>
+        <zt.zip.version>1.14</zt.zip.version>
+        <wicket.webjars.version>3.0.3</wicket.webjars.version>
+        <closure.compiler.version>v20210406</closure.compiler.version>
         <cglib.version>3.3.0</cglib.version>
         <yuicompressor.version>2.4.8</yuicompressor.version>
         <javamelody.version>2.2.0</javamelody.version>
@@ -188,7 +188,7 @@
         <dependency>
             <groupId>de.agilecoders.wicket</groupId>
             <artifactId>wicket-bootstrap-core</artifactId>
-            <version>6.0.0</version>
+            <version>${wicket.bootstrap.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>javassist</artifactId>
