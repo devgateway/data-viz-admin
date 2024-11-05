@@ -337,7 +337,6 @@ public abstract class BasePage extends GenericWebPage<Void> {
         response.render(CssHeaderItem.forReference(BaseStyles.INSTANCE));
 
         // Load Scripts.
-        //  response.render(RespondJavaScriptReference.headerItem());
         response.render(JavaScriptHeaderItem.forReference(JQueryResourceReference.getV3()));
 
         response.render(JavaScriptHeaderItem.forReference(new JavaScriptResourceReference(BaseStyles.class,

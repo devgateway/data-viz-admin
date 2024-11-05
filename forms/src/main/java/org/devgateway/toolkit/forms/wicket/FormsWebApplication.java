@@ -178,14 +178,8 @@ public class FormsWebApplication extends AuthenticatedWebApplication {
      */
     private void optimizeForWebPerformance() {
         // add javascript files at the bottom of the page
-        getHeaderResponseDecorators().addPostProcessingDecorator(new RenderJavaScriptToFooterHeaderResponseDecorator("scripts-bucket"));
-        // Replace all decorators with our footer JavaScript decorator
-//        getHeaderResponseDecorators().addPostProcessingDecorator(new IHeaderResponseDecorator() {
-//            @Override
-//            public IHeaderResponse decorate(IHeaderResponse response) {
-//                return new JavaScriptFilteredIntoFooterHeaderResponse(response, "scripts-bucket");
-//            }
-//        });
+        getHeaderResponseDecorators().add(response ->
+                new JavaScriptFilteredIntoFooterHeaderResponse(response, "scripts-bucket"));
 
         // This is only enabled for deployment configuration
         // -Dwicket.configuration=deployment
@@ -240,8 +234,6 @@ public class FormsWebApplication extends AuthenticatedWebApplication {
     protected void init() {
         super.init();
 
-        getJavaScriptLibrarySettings().setJQueryReference(JQueryResourceReference.getV3());
-
         // add allowed woff2 extension
         IPackageResourceGuard packageResourceGuard = getResourceSettings().getPackageResourceGuard();
         if (packageResourceGuard instanceof SecurePackageResourceGuard) {
@@ -269,9 +261,9 @@ public class FormsWebApplication extends AuthenticatedWebApplication {
 
         // watch this using the URL
         // http://.../wicket/internal/debug/diskDataStore
-//        if (usesDevelopmentConfig()) {
-//            DebugDiskDataStore.register(this);
-//        }
+        if (usesDevelopmentConfig()) {
+            getDebugSettings().setDevelopmentUtilitiesEnabled(true);
+        }
 
         SessionFinderHolder.setSessionFinder(sessionFinderService);
 
