@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.devgateway.toolkit.forms.wicket;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.wicket.Session;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
@@ -18,6 +20,7 @@ import org.apache.wicket.injection.Injector;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.devgateway.toolkit.forms.wicket.components.util.PageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -29,8 +32,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.RememberMeServices;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+
 import java.util.Collection;
 
 /**
@@ -54,6 +57,9 @@ public class SSAuthenticatedWebSession extends AuthenticatedWebSession {
 
     @SpringBean
     private AuthenticationManager authenticationManager;
+
+    @SpringBean
+    private HttpSessionSecurityContextRepository securityContextRepository;
 
     @SpringBean
     private RoleHierarchy roleHierarchy;
@@ -98,6 +104,11 @@ public class SSAuthenticatedWebSession extends AuthenticatedWebSession {
             Authentication authentication =
                     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // (since Spring Security 5.7) explicitly save context, no longer done by security filter
+            securityContextRepository.saveContext(SecurityContextHolder.getContext(), PageUtil.getHttpServletRequest(),
+                    PageUtil.getHttpServletResponse());
+
             // httpSession.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
             // SecurityContextHolder.getContext());
             authenticated = authentication.isAuthenticated();

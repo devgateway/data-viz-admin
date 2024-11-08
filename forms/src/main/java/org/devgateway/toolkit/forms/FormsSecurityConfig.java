@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
-public class FormsSecurityConfig {
+public class FormsSecurityConfig extends WebSecurityConfig {
 
     /**
      * Remember me key for {@link TokenBasedRememberMeServices}
@@ -80,56 +80,6 @@ public class FormsSecurityConfig {
         return new String[]{};
     }
 
-    @Bean
-    public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
-        final StrictHttpFirewall firewall = new StrictHttpFirewall();
-        firewall.setAllowUrlEncodedSlash(true);
-        firewall.setAllowSemicolon(true);
-        firewall.setAllowUrlEncodedDoubleSlash(true);
-        return firewall;
-    }
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> {
-            web.httpFirewall(allowUrlEncodedSlashHttpFirewall());
-            web.ignoring()
-                    .requestMatchers(getAllowedAPIEndpointsWithBasePath());
-        };
-    }
-
-    /**
-     * Instantiates {@see DefaultWebSecurityExpressionHandler} and assigns to it
-     * role hierarchy.
-     *
-     * @return
-     */
-    private SecurityExpressionHandler<FilterInvocation> webExpressionHandler() {
-        final DefaultWebSecurityExpressionHandler handler = new DefaultWebSecurityExpressionHandler();
-        handler.setRoleHierarchy(roleHierarchy());
-        return handler;
-    }
-
-    /**
-     * Enable hierarchical roles. This bean can be used to extract all effective
-     * roles.
-     */
-    @Bean
-    RoleHierarchy roleHierarchy() {
-        final RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        roleHierarchy.setHierarchy(roleHierarchyStringRepresentation);
-        return roleHierarchy;
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    @Autowired
-    public void configureGlobal(final AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(customJPAUserDetailsService).passwordEncoder(passwordEncoder);
-    }
-
 
     /**
      * This bean defines the same key in the
@@ -154,11 +104,6 @@ public class FormsSecurityConfig {
                 new TokenBasedRememberMeServices(UNIQUE_SECRET_REMEMBER_ME_KEY, customJPAUserDetailsService);
         rememberMeServices.setAlwaysRemember(true);
         return rememberMeServices;
-    }
-
-    @Bean
-    public HttpSessionSecurityContextRepository httpSessionSecurityContextRepository() {
-        return new HttpSessionSecurityContextRepository();
     }
 
     /**
