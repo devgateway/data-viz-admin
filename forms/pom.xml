@@ -30,13 +30,13 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>
-        <wicket.version>10.0.0</wicket.version>
+        <wicket.version>10.2.0</wicket.version>
         <wicketstuff.version>10.0.0</wicketstuff.version>
 <!--        <wicket.bootstrap.version>4.0.4</wicket.bootstrap.version>-->
         <wicket.bootstrap.version>5.0.4</wicket.bootstrap.version>
-        <zt.zip.version>1.14</zt.zip.version>
+        <zt.zip.version>1.17</zt.zip.version>
         <wicket.webjars.version>3.0.3</wicket.webjars.version>
-        <closure.compiler.version>v20210406</closure.compiler.version>
+        <closure.compiler.version>v20240317</closure.compiler.version>
         <cglib.version>3.3.0</cglib.version>
         <yuicompressor.version>2.4.8</yuicompressor.version>
         <javamelody.version>2.2.0</javamelody.version>
@@ -67,7 +67,7 @@
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
-            <version>1.4.18</version>
+            <version>1.4.20</version>
         </dependency>
 
         <dependency>
@@ -260,12 +260,12 @@
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
-            <version>2.0.0</version>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parsers</artifactId>
-            <version>2.0.0</version>
+            <version>3.0.0</version>
             <type>pom</type>
         </dependency>
 

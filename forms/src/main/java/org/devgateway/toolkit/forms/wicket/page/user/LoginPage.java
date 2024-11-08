@@ -124,7 +124,6 @@ public class LoginPage extends BasePage {
             retrieveReferrerFromSavedRequestIfPresent();
 
             final NotificationPanel notificationPanel = new NotificationPanel("loginFeedback");
-//            notificationPanel.hideAfter(Duration.seconds(HIDE_NOTIFICATION_SECONDS));
             notificationPanel.hideAfter(Duration.ofSeconds(HIDE_NOTIFICATION_SECONDS));
             notificationPanel.setOutputMarkupId(true);
             add(notificationPanel);
