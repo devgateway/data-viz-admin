@@ -17,6 +17,7 @@ package org.devgateway.toolkit.forms.wicket.page.user;
 import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel;
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
@@ -129,9 +130,11 @@ public class LoginPage extends BasePage {
             add(notificationPanel);
 
             username = ComponentUtil.addTextLoginField(this, "username");
+            username.getBorder().add(AttributeModifier.append("class", "required-field"));
             username.required();
 
             password = ComponentUtil.addTextPasswordField(this, "password");
+            password.getBorder().add(AttributeModifier.append("class", "required-field"));
             password.required();
             password.getField().setResetPassword(false);
 

@@ -34,6 +34,7 @@
         <wicketstuff.version>10.0.0</wicketstuff.version>
 <!--        <wicket.bootstrap.version>4.0.4</wicket.bootstrap.version>-->
         <wicket.bootstrap.version>5.0.4</wicket.bootstrap.version>
+        <wicket.bootstrap.less.version>4.0.4</wicket.bootstrap.less.version>
         <zt.zip.version>1.17</zt.zip.version>
         <wicket.webjars.version>3.0.3</wicket.webjars.version>
         <closure.compiler.version>v20240317</closure.compiler.version>
@@ -243,7 +244,7 @@
         <dependency>
             <groupId>de.agilecoders.wicket</groupId>
             <artifactId>wicket-bootstrap-less</artifactId>
-            <version>4.0.4</version>
+            <version>${wicket.bootstrap.less.version}</version>
         </dependency>
 
         <dependency>

@@ -48,6 +48,7 @@ import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
+@Order(1)
 public class FormsSecurityConfig extends WebSecurityConfig {
 
     /**

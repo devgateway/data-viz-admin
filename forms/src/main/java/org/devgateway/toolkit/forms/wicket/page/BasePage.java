@@ -313,6 +313,7 @@ public abstract class BasePage extends GenericWebPage<Void> {
          * @see org.devgateway.toolkit.forms.wicket.styles.BaseStyles
          */
         navbar.setPosition(Navbar.Position.TOP);
+        navbar.add(new CssClassNameAppender( "navbar-default", "navbar-border"));
         navbar.setBrandImage(new PackageResourceReference(BaseStyles.class, "assets/img/tcdi-horizontal-logo.svg"),
                 new StringResourceModel("brandImageAltText", this, null));
 
