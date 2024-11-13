@@ -6,12 +6,12 @@
 </head>
 <body>
 <wicket:extend>
-    <div class="panel panel-danger">
-        <div class="panel-heading">
+    <div class="card border-danger mb-4">
+        <div class="card-header bg-danger text-white">
             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
             <span wicket:id="systemTitle">[[System Settings]]</span>
         </div>
-        <div class="panel-body">
+        <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
                     <div wicket:id="rebootServer"></div>
@@ -21,12 +21,12 @@
         </div>
     </div>
 
-    <div class="panel panel-info">
-        <div class="panel-heading">
+    <div class="card border-info mb-4">
+        <div class="card-header bg-info text-white">
             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
             <span wicket:id="appSettingsTitle">[[Application Settings]]</span>
         </div>
-        <div class="panel-body">
+        <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
                     <div wicket:id="tetsimCurrency"></div>
