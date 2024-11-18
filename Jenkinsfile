@@ -3,7 +3,7 @@ pipeline {
   agent { label 'docker' }
 
   environment {
-    MAVEN_IMAGE = 'maven:3.8-jdk-11'
+    MAVEN_IMAGE = 'maven:3.8-openjdk-17-slim'
     DOCKER_BUILDKIT = '1'
     PROJECT_TITLE = 'TCDI Admin'
     REPO = 'registry.developmentgateway.org/'

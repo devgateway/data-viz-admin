@@ -24,7 +24,6 @@
         <java.version>17</java.version>
         <liquibase.version>4.29.2</liquibase.version>
         <spring.boot.version>3.2.10</spring.boot.version>
-<!--        <pgsql.version>42.2.5</pgsql.version>-->
         <derby.version>10.17.1.0</derby.version>
         <poi.version>4.1.2</poi.version>
         <docker.image.prefix>devgateway/toolkit</docker.image.prefix>

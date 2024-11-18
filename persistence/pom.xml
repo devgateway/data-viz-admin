@@ -166,21 +166,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-<!--            <version>${pgsql.version}</version>-->
         </dependency>
-
-        <!-- This is used just in case we need bean validation -->
-        <!--<dependency>-->
-        <!--<groupId>javax.validation</groupId>-->
-        <!--<artifactId>validation-api</artifactId>-->
-        <!--<version>2.0.1.Final</version>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-        <!--<groupId>javax.el</groupId>-->
-        <!--<artifactId>javax.el-api</artifactId>-->
-        <!--<version>3.0.1-b06</version>-->
-        <!--</dependency>-->
 
         <dependency>
             <groupId>org.liquibase</groupId>
