@@ -16,6 +16,7 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.dialog.TextContentModal;
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
 import de.agilecoders.wicket.core.util.Attributes;
 import org.devgateway.toolkit.forms.wicket.components.buttons.ladda.LaddaAjaxButton;
+import nl.dries.wicket.hibernate.dozer.DozerModel;
 import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -582,13 +583,22 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
 
         IModel<T> model = null;
 
+//        if (entityId != null) {
+//            T entity = jpaService.findById(entityId).orElse(null);
+//            model = new CompoundPropertyModel<>(entity);
+//        } else {
+//            T instance = newInstance();
+//            if (instance != null) {
+//                model = new CompoundPropertyModel<>(instance);
+//            }
+//        }
+
         if (entityId != null) {
-            T entity = jpaService.findById(entityId).orElse(null);
-            model = new CompoundPropertyModel<>(entity);
+            model = new DozerModel<>(jpaService.findById(entityId).orElse(null));
         } else {
             T instance = newInstance();
             if (instance != null) {
-                model = new CompoundPropertyModel<>(instance);
+                model = new DozerModel<>(instance);
             }
         }
 

@@ -1,5 +1,6 @@
 package org.devgateway.toolkit.forms.client;
 
+import jakarta.ws.rs.ProcessingException;
 import org.devgateway.toolkit.persistence.dto.ServiceEntity;
 import org.glassfish.jersey.client.JerseyClient;
 import org.glassfish.jersey.client.JerseyClientBuilder;
@@ -108,14 +109,24 @@ public abstract class ServiceEntityClient<T extends ServiceEntity> {
     }
 
     public boolean isUp() {
-        Response healthResponse = client.target(baseUrl).path(PATH_HEALTH)
-                .request(APPLICATION_JSON).get();
+        try {
+            Response healthResponse = client.target(baseUrl).path(PATH_HEALTH)
+                    .request(APPLICATION_JSON).get();
 
-        if (healthResponse.getStatusInfo().getFamily() == SUCCESSFUL) {
-            return healthResponse.readEntity(ServiceHealthStatus.class).isUp();
+            if (healthResponse.getStatusInfo().getFamily() == SUCCESSFUL) {
+                try {
+                    // First try the direct mapping to ServiceHealthStatus
+                    ServiceHealthStatus status = healthResponse.readEntity(ServiceHealthStatus.class);
+                    return status.isUp();
+                } catch (ProcessingException e) {
+                    return false;
+                }
+            }
+            return false;
+        } catch (Exception e) {
+            System.err.println("Health check failed: " + e.getMessage());
+            return false;
         }
-
-        return false;
     }
 
     protected abstract GenericType<T> getGenericType();
