@@ -395,7 +395,6 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
 
     private void addBootstrapFileInputComponent() {
         // this is where the newly uploaded files are saved
-//        final IModel<List<FileUpload>> internalUploadModel = new ListModel<>();
         internalUploadModel = new ListModel<>();
 
         /*
@@ -406,6 +405,8 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
                 new StringResourceModel("browseLabel", FileInputBootstrapFormComponentWrapper.this, null).getString());
         fileInputConfig.put(new Key<String>("uploadClass"), "btn btn-blue");
         fileInputConfig.put(new Key<String>("browseClass"), "btn btn-blue");
+        fileInputConfig.put(new Key<String>("browseIcon"), "<i class=\"fa fa-folder-open\"></i>");
+        fileInputConfig.put(new Key<String>("browseIcon"), "<i class=\"fa fa-upload\"></i>");
 
         bootstrapFileInput = new BootstrapFileInput("bootstrapFileInput", internalUploadModel, fileInputConfig) {
             private static final long serialVersionUID = 1L;
@@ -420,45 +421,45 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
                     if (fileUploads != null) {
                         // Existing validation checks
                         if (maxFiles > 0 && filesModel.size() + fileUploads.size() > maxFiles) {
-                            handleMaxFilesError(target);
+                            if (maxFiles == 1) {
+                                FileInputBootstrapFormComponentWrapper.this.fatal(new StringResourceModel("OneUpload",
+                                        FileInputBootstrapFormComponentWrapper.this, null).getString());
+                            } else {
+                                FileInputBootstrapFormComponentWrapper.this.fatal(new StringResourceModel("tooManyFiles",
+                                        FileInputBootstrapFormComponentWrapper.this, Model.of(maxFiles)).getString());
+                            }
+                            FileInputBootstrapFormComponentWrapper.this.invalid();
                         } else if (!fileContentsAndExtensionsAreValid(fileUploads)) {
-                            handleInvalidContentError(target);
+                            String error = new StringResourceModel("fileContentsDoNotMatchExtension",
+                                    FileInputBootstrapFormComponentWrapper.this, null).getString();
+                            FileInputBootstrapFormComponentWrapper.this.fatal(error);
+                            FileInputBootstrapFormComponentWrapper.this.invalid();
                         } else if (!fileExtensionAreAllowed(fileUploads)) {
-                            handleInvalidExtensionError(target);
+                            String error = new StringResourceModel("fileTypeNotAllowed",
+                                    FileInputBootstrapFormComponentWrapper.this, null)
+                                    .setParameters(String.join(", ", allowedFileExtensions))
+                                    .getString();
+                            FileInputBootstrapFormComponentWrapper.this.fatal(error);
+                            FileInputBootstrapFormComponentWrapper.this.invalid();
                         } else {
                             // Process uploads
                             for (FileUpload upload : fileUploads) {
                                 processAndStoreUpload(upload);
                             }
-
-                            // Explicitly update the model
-                            FileInputBootstrapFormComponentWrapper.this.getModel().setObject((T) filesModel);
-
-                            // Force visibility update on pendingFiles container
-                            pendingFiles.setVisible(true);
-
-                            // Add all necessary components to target
-                            target.add(pendingFiles);
-                            target.add(fileUploadFeedback);
-                            target.add(alreadyUploadedFiles);
-
-                            // Update any parent containers if needed
-                            Component parent = pendingFiles.getParent();
-                            while (parent != null) {
-                                target.add(parent);
-                                parent = parent.getParent();
-                            }
                         }
                     }
 
+
+
+                    FileInputBootstrapFormComponentWrapper.this.getModel().setObject((T) filesModel);
+
+                    target.add(fileUploadFeedback);
+                    target.add(pendingFiles);
+                    target.appendJavaScript("$('.cover-buttons-div').css(\"z-index\", -1);");
+                    FileInputBootstrapFormComponentWrapper.this.onUpdate(target);
+
                     // Clear the upload model
                     internalUploadModel.setObject(null);
-
-                    // Ensure proper z-index for buttons
-                    target.appendJavaScript("$('.cover-buttons-div').css('z-index', -1);");
-
-                    // Trigger any custom update handling
-                    FileInputBootstrapFormComponentWrapper.this.onUpdate(target);
 
                 } catch (Exception e) {
                     logger.error("Error processing file upload", e);
@@ -488,7 +489,7 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
         FormComponent<?> fileInput = (FormComponent<?>) bootstrapFileInput.get("fileInputForm").get("fileInput");
         fileInput.setLabel(this.getLabel());
 
-        // there are situation when we want to display the upload file component
+        // there are situation when we want to display the upload file componentadmin_settings_aud
         // only to admins
         if (visibleOnlyToAdmin) {
             MetaDataRoleAuthorizationStrategy.authorize(bootstrapFileInput, Component.RENDER,
@@ -522,33 +523,6 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
             upload.closeStreams();  // Clean up resources
         }
     }
-
-    private void handleMaxFilesError(AjaxRequestTarget target) {
-        String errorMsg = maxFiles == 1
-                ? new StringResourceModel("OneUpload", this, null).getString()
-                : new StringResourceModel("tooManyFiles", this, Model.of(maxFiles)).getString();
-
-        FileInputBootstrapFormComponentWrapper.this.fatal(errorMsg);
-        FileInputBootstrapFormComponentWrapper.this.invalid();
-        target.add(fileUploadFeedback);
-    }
-
-    private void handleInvalidContentError(AjaxRequestTarget target) {
-        String error = new StringResourceModel("fileContentsDoNotMatchExtension", this, null).getString();
-        FileInputBootstrapFormComponentWrapper.this.fatal(error);
-        FileInputBootstrapFormComponentWrapper.this.invalid();
-        target.add(fileUploadFeedback);
-    }
-
-    private void handleInvalidExtensionError(AjaxRequestTarget target) {
-        String error = new StringResourceModel("fileTypeNotAllowed", this, null)
-                .setParameters(String.join(", ", allowedFileExtensions))
-                .getString();
-        FileInputBootstrapFormComponentWrapper.this.fatal(error);
-        FileInputBootstrapFormComponentWrapper.this.invalid();
-        target.add(fileUploadFeedback);
-    }
-
     private boolean fileExtensionAreAllowed(List<FileUpload> fileUploads) {
         if (allowedFileExtensions.isEmpty()) {
             return true;
@@ -594,6 +568,11 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
     }
 
     protected void onUpdate(final AjaxRequestTarget target) {
+        pendingFiles.remove();
+        fileUploadFeedback.remove();
+
+        addPendingFilesComponent();
+        addFileUploadFeedbackComponent();
     }
 
     public void setVisibleOnlyToAdmin(final Boolean visibleOnlyToAdmin) {
