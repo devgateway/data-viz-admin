@@ -406,7 +406,7 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
         fileInputConfig.put(new Key<String>("uploadClass"), "btn btn-blue");
         fileInputConfig.put(new Key<String>("browseClass"), "btn btn-blue");
         fileInputConfig.put(new Key<String>("browseIcon"), "<i class=\"fa fa-folder-open\"></i>");
-        fileInputConfig.put(new Key<String>("browseIcon"), "<i class=\"fa fa-upload\"></i>");
+        fileInputConfig.put(new Key<String>("uploadIcon"), "<i class=\"fa fa-upload\"></i>");
 
         bootstrapFileInput = new BootstrapFileInput("bootstrapFileInput", internalUploadModel, fileInputConfig) {
             private static final long serialVersionUID = 1L;
