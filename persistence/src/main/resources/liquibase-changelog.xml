@@ -14,7 +14,7 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet id="create-hibernate-sequence" author="dmbugua">
-        <preConditions>
+        <preConditions onFail="CONTINUE">
             <not>
                 <sequenceExists sequenceName="hibernate_sequence" />
             </not>
