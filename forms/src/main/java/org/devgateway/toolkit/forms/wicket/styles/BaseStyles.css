@@ -17,6 +17,8 @@ body {
      * suddenly the content doesn't fit above the fold.
      */
     overflow-y: scroll;
+    font-size: 14px;
+    
 }
 
 .mainHeader.with-navbar-default .navbar-default {
@@ -394,7 +396,7 @@ button .btn-home-label {
 /*Media Queries*/
 @media (min-width: 768px) {
     .navbar-default{
-        padding-left: 15em;
-        padding-right: 15em;
+        padding-left: 2em;
+        padding-right: 2em;
     }
 }
