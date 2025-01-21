@@ -484,7 +484,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
     private Label addStatusLabel() {
         statusLabel = new Label("statusLabel", editForm.getModelObject().getStatus());
-        statusLabel.add(new AttributeModifier("class", new Model<>("label " + getStatusLabelClass())));
+        statusLabel.add(new AttributeModifier("class", new Model<>("badge " + getStatusLabelClass())));
         statusLabel.setVisibilityAllowed(editForm.getModelObject().getVisibleStatusLabel());
         return statusLabel;
     }
@@ -496,16 +496,16 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
         switch (editForm.getModelObject().getStatus()) {
             case PUBLISHED:
-                return "label-success";
+                return "badge-success";
             case DRAFT:
             case ERROR_IN_PUBLISHING:
             case ERROR_IN_UNPUBLISHING:
-                return "label-danger";
+                return "badge-danger";
             case SAVED:
-                return "label-primary";
+                return "badge-primary";
             case PUBLISHING:
             case UNPUBLISHING:
-                return "label-warning";
+                return "badge-warning";
             default:
                 return "";
         }
