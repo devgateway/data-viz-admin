@@ -128,6 +128,10 @@ body {
 label{
     font-weight: 600 !important;
 }
+
+.pull-right{
+    float: right !important;
+}
 /* file upload
 -------------------------------------------------- */
 .file-preview.loading {
