@@ -90,7 +90,6 @@ public class EditUserPage extends AbstractEditPage<Person> {
 
     protected PasswordFieldBootstrapFormComponent plainPasswordCheck;
 
-
     public EditUserPage(final PageParameters parameters) {
         super(parameters);
 
@@ -158,6 +157,12 @@ public class EditUserPage extends AbstractEditPage<Person> {
         changeProfilePassword = new CheckBoxToggleBootstrapFormComponent("changeProfilePassword") {
             @Override
             protected void onUpdate(final AjaxRequestTarget target) {
+                plainPassword.remove();
+                plainPasswordCheck.remove();
+
+                editForm.add(plainPassword);
+                editForm.add(plainPasswordCheck);
+
                 plainPassword.setVisibilityAllowed(this.getModelObject());
                 plainPasswordCheck.setVisibilityAllowed(this.getModelObject());
 
@@ -173,9 +178,15 @@ public class EditUserPage extends AbstractEditPage<Person> {
         plainPassword.getField().setResetPassword(false);
         plainPassword.getField().add(new PasswordPatternValidator());
 
+        plainPassword.setOutputMarkupPlaceholderTag(true);
+        plainPassword.setOutputMarkupId(true);
+
         plainPasswordCheck = ComponentUtil.addTextPasswordField(editForm, "plainPasswordCheck");
         plainPasswordCheck.required();
         plainPasswordCheck.getField().setResetPassword(false);
+
+        plainPasswordCheck.setOutputMarkupPlaceholderTag(true);
+        plainPasswordCheck.setOutputMarkupId(true);
 
         if (SecurityUtil.isCurrentUserAdmin() && idPerson.isNull()) {
             // hide the change password checkbox and set it's model to true
