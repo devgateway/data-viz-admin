@@ -96,7 +96,11 @@ public class DatasetClientService {
         String serviceURL = getDestinationService(dataset).getUrl();
         DatasetClient client = new DatasetClient(serviceURL);
 
+        String description = dataset.getDescription();
         String name = "Dataset " + dataset.getYear();
+        if (description != null){
+            name = description;
+        }
         String code = CODE_PREFIX + dataset.getId();
 
         File tempUploadFile;

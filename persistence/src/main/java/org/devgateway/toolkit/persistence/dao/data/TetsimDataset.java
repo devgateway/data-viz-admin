@@ -30,6 +30,9 @@ public class TetsimDataset extends Dataset {
     @Audited
     private BigDecimal smokingPrevalence;
 
+    @Audited
+    private String description;
+
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Audited
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -211,5 +214,14 @@ public class TetsimDataset extends Dataset {
 
     public void setUndershifting(final TetsimPriceVariable undershifting) {
         this.undershifting = undershifting;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

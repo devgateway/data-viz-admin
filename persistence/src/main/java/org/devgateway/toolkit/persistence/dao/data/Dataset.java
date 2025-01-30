@@ -18,6 +18,8 @@ public abstract class Dataset extends AbstractStatusAuditableEntity implements S
     @Audited
     private String destinationService;
 
+    public abstract String getDescription();
+
     @Override
     public AbstractAuditableEntity getParent() {
         return null;
