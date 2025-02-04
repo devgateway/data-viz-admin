@@ -27,7 +27,7 @@ public abstract class AbstractStatusAuditableEntity extends AbstractAuditableEnt
     @Audited
     private String status = DRAFT;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @OrderColumn(name = "index")
     @JsonIgnore
