@@ -23,6 +23,8 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.NavbarDropDownBut
 //import de.agilecoders.wicket.core.markup.html.references.RespondJavaScriptReference;
 import de.agilecoders.wicket.core.markup.html.themes.bootstrap.BootstrapCssReference;
 import de.agilecoders.wicket.core.util.CssClassNames;
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.ColorPickerTextField;
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.ColorPickerTextFieldCssReference;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5CssReference;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType;
 import org.apache.wicket.Application;
@@ -43,6 +45,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.request.resource.CssResourceReference;
 import org.apache.wicket.request.resource.JavaScriptResourceReference;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.resource.JQueryResourceReference;
@@ -333,6 +336,13 @@ public abstract class BasePage extends GenericWebPage<Void> {
         response.render(getFavicon());
 
         // Load Styles.
+        // Add the color picker CSS
+        response.render(CssHeaderItem.forReference(
+                new CssResourceReference(
+                        ColorPickerTextFieldCssReference.class,
+                        "css/bootstrap-colorpicker.css"
+                )
+        ));
         response.render(CssHeaderItem.forReference(BootstrapCssReference.instance()));
         response.render(CssHeaderItem.forReference(FontAwesome5CssReference.instance()));
         response.render(CssHeaderItem.forReference(BaseStyles.INSTANCE));
@@ -342,6 +352,14 @@ public abstract class BasePage extends GenericWebPage<Void> {
 
         response.render(JavaScriptHeaderItem.forReference(new JavaScriptResourceReference(BaseStyles.class,
                 "assets/js/fileupload.js")));
+
+        // Add the color picker JavaScript
+        response.render(JavaScriptHeaderItem.forReference(
+                new JavaScriptResourceReference(
+                        ColorPickerTextFieldCssReference.class,
+                        "js/bootstrap-colorpicker.js"
+                )
+        ));
     }
 
     protected BreadCrumbPanel createBreadcrumbPanel(final String markupId) {

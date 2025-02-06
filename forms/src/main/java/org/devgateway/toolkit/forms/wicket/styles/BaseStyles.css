@@ -397,6 +397,18 @@ button .btn-home-label {
     font-weight: 700;
 }
 
+/*-----------------Color picker --------------------*/
+.colorpicker-saturation {
+    background:
+            linear-gradient(to bottom right, rgba(255, 255, 255, 0), rgba(0, 0, 0, 1)),
+            linear-gradient(to top right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+}
+
+.colorpicker-hue {
+    background: linear-gradient(to bottom, #ff0000, #ff00ff, #0000ff, #00ffff, #00ff00, #ffff00, #ff0000);
+
+}
+
 /*Media Queries*/
 @media (min-width: 768px) {
     .navbar-default{
