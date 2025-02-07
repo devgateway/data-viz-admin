@@ -15,7 +15,7 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.dialog.TextContentModal;
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapForm;
 import de.agilecoders.wicket.core.util.Attributes;
-import de.agilecoders.wicket.extensions.markup.html.bootstrap.ladda.LaddaAjaxButton;
+import org.devgateway.toolkit.forms.wicket.components.buttons.ladda.LaddaAjaxButton;
 import nl.dries.wicket.hibernate.dozer.DozerModel;
 import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxEventBehavior;
@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import java.io.Serializable;
 
 /**
@@ -582,6 +582,16 @@ public abstract class AbstractEditPage<T extends GenericPersistable & Serializab
         }
 
         IModel<T> model = null;
+
+//        if (entityId != null) {
+//            T entity = jpaService.findById(entityId).orElse(null);
+//            model = new CompoundPropertyModel<>(entity);
+//        } else {
+//            T instance = newInstance();
+//            if (instance != null) {
+//                model = new CompoundPropertyModel<>(instance);
+//            }
+//        }
 
         if (entityId != null) {
             model = new DozerModel<>(jpaService.findById(entityId).orElse(null));

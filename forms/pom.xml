@@ -29,18 +29,20 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
-        <wicket.version>8.10.0</wicket.version>
-        <wicketstuff.version>8.10.0</wicketstuff.version>
-        <wicket.bootstrap.version>2.0.11</wicket.bootstrap.version>
-        <zt.zip.version>1.13</zt.zip.version>
-        <wicket.webjars.version>2.0.19</wicket.webjars.version>
-        <closure.compiler.version>v20200406</closure.compiler.version>
-        <cglib.version>3.1</cglib.version>
+        <java.version>17</java.version>
+        <wicket.version>10.2.0</wicket.version>
+        <wicketstuff.version>10.0.0</wicketstuff.version>
+        <wicket.bootstrap.version>5.0.4</wicket.bootstrap.version>
+        <wicket.bootstrap.less.version>4.0.4</wicket.bootstrap.less.version>
+        <zt.zip.version>1.17</zt.zip.version>
+        <wicket.webjars.version>3.0.3</wicket.webjars.version>
+        <closure.compiler.version>v20240317</closure.compiler.version>
+        <cglib.version>3.3.0</cglib.version>
         <yuicompressor.version>2.4.8</yuicompressor.version>
-        <javamelody.version>1.86.0</javamelody.version>
-        <font.awesome.version>5.15.3</font.awesome.version>
-        <jersey.version>2.36</jersey.version>
+        <javamelody.version>2.2.0</javamelody.version>
+        <font.awesome.version>6.5.2</font.awesome.version>
+        <jersey.version>3.1.9</jersey.version>
+        <netflix.eureka.version>4.1.3</netflix.eureka.version>
     </properties>
 
     <dependencies>
@@ -65,7 +67,7 @@
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
-            <version>1.4.18</version>
+            <version>1.4.20</version>
         </dependency>
 
         <dependency>
@@ -241,7 +243,7 @@
         <dependency>
             <groupId>de.agilecoders.wicket</groupId>
             <artifactId>wicket-bootstrap-less</artifactId>
-            <version>${wicket.bootstrap.version}</version>
+            <version>${wicket.bootstrap.less.version}</version>
         </dependency>
 
         <dependency>
@@ -258,12 +260,12 @@
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
-            <version>2.0.0</version>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parsers</artifactId>
-            <version>2.0.0</version>
+            <version>3.0.0</version>
             <type>pom</type>
         </dependency>
 
@@ -297,9 +299,58 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-            <version>2.2.10.RELEASE</version>
+            <version>${netflix.eureka.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.glassfish.jersey.core</groupId>
+                    <artifactId>jersey-client</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>org.glassfish.jersey.core</groupId>
+                    <artifactId>jersey-common</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>org.glassfish.jersey.inject</groupId>
+                    <artifactId>jersey-hk2</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.glassfish.jersey.media</groupId>
+                    <artifactId>jersey-media-json-jackson</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.glassfish.jersey.media</groupId>
+                    <artifactId>jersey-media-multipart</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>jakarta.mail</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jersey</artifactId>
+            <version>3.3.4</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -380,10 +431,17 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.11.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.hibernate.orm</groupId>
+                            <artifactId>hibernate-jpamodelgen</artifactId>
+                            <version>${hibernate.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
 
@@ -392,6 +450,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <!-- Import dependency management from Spring Boot without messing messing
                     up the project parent -->

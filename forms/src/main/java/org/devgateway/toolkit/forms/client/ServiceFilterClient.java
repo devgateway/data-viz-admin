@@ -2,7 +2,7 @@ package org.devgateway.toolkit.forms.client;
 
 import org.devgateway.toolkit.persistence.dto.ServiceFilter;
 
-import javax.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.GenericType;
 import java.util.List;
 
 public class ServiceFilterClient extends ServiceEntityClient<ServiceFilter> {

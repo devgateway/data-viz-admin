@@ -6,7 +6,7 @@ import org.devgateway.toolkit.persistence.dao.TestForm_;
 import org.devgateway.toolkit.persistence.repository.SpecificationContext;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,5 +1,8 @@
 package org.devgateway.toolkit.forms.client;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ServiceHealthStatus {
 
     private String status;

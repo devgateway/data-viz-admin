@@ -1,5 +1,6 @@
 package org.devgateway.toolkit.forms.wicket.page;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.StringResourceModel;
@@ -68,12 +69,14 @@ public class EditAdminSettingsPage extends AbstractEditPage<AdminSettings> {
 
         TextFieldBootstrapFormComponent<String> tetsimCurrency = new TextFieldBootstrapFormComponent<>("tetsimCurrency");
         tetsimCurrency.required();
+        tetsimCurrency.getBorder().add(AttributeModifier.append("class", "required-field"));
         editForm.add(tetsimCurrency);
 
         editForm.add(new TextFieldBootstrapFormComponent<>("countryName"));
 
         autosaveTime = new TextFieldBootstrapFormComponent<>("autosaveTime");
         autosaveTime.integer().required();
+        autosaveTime.getBorder().add(AttributeModifier.append("class", "required-field"));
         autosaveTime.getField().add(RangeValidator.range(0, 60));
         autosaveTime.setShowTooltip(true);
         editForm.add(autosaveTime);
@@ -81,6 +84,7 @@ public class EditAdminSettingsPage extends AbstractEditPage<AdminSettings> {
         pageSize = new Select2ChoiceBootstrapFormComponent<>("pageSize",
                 new GenericChoiceProvider<>(getPageSizeRange()));
         pageSize.required();
+        pageSize.getBorder().add(AttributeModifier.append("class", "required-field"));
         editForm.add(pageSize);
 
     }

@@ -56,7 +56,7 @@ public class DataPage extends BasePage {
     public DataPage(final PageParameters parameters) {
         super(parameters);
 
-        List<ServiceMetadata> services = eurekaClientService.findAllWithData();
+         List<ServiceMetadata> services = eurekaClientService.findAllWithData();
 
         List<BigLinkDefinition> links = new ArrayList<>();
         for (ServiceMetadata service : services) {

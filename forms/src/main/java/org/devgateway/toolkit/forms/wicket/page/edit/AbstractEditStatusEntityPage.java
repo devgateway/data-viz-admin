@@ -15,7 +15,7 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.dialog.TextContentModal;
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapCheckbox;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType;
-import de.agilecoders.wicket.extensions.markup.html.bootstrap.ladda.LaddaAjaxButton;
+import org.devgateway.toolkit.forms.wicket.components.buttons.ladda.LaddaAjaxButton;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
@@ -40,7 +40,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.Strings;
-import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.util.visit.IVisit;
 import org.apache.wicket.util.visit.IVisitor;
 import org.devgateway.toolkit.forms.WebConstants;
@@ -62,6 +61,7 @@ import org.wicketstuff.datetime.markup.html.basic.DateLabel;
 import org.wicketstuff.select2.Select2Choice;
 
 import java.text.MessageFormat;
+import java.time.Duration;
 
 import static org.devgateway.toolkit.forms.WebConstants.PARAM_AUTO_SAVE;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DRAFT;
@@ -457,7 +457,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
     private AbstractAjaxTimerBehavior getAutosaveBehavior() {
         final AbstractAjaxTimerBehavior ajaxTimerBehavior = new AbstractAjaxTimerBehavior(
-                Duration.minutes(adminSettingsService.getAutosaveTime())) {
+                Duration.ofMinutes(adminSettingsService.getAutosaveTime())) {
             @Override
             protected void onTimer(final AjaxRequestTarget target) {
                 // display block UI message until the page is reloaded
@@ -484,7 +484,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
     private Label addStatusLabel() {
         statusLabel = new Label("statusLabel", editForm.getModelObject().getStatus());
-        statusLabel.add(new AttributeModifier("class", new Model<>("label " + getStatusLabelClass())));
+        statusLabel.add(new AttributeModifier("class", new Model<>("badge " + getStatusLabelClass())));
         statusLabel.setVisibilityAllowed(editForm.getModelObject().getVisibleStatusLabel());
         return statusLabel;
     }
@@ -496,16 +496,16 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
         switch (editForm.getModelObject().getStatus()) {
             case PUBLISHED:
-                return "label-success";
+                return "badge-success";
             case DRAFT:
             case ERROR_IN_PUBLISHING:
             case ERROR_IN_UNPUBLISHING:
-                return "label-danger";
+                return "badge-danger";
             case SAVED:
-                return "label-primary";
+                return "badge-primary";
             case PUBLISHING:
             case UNPUBLISHING:
-                return "label-warning";
+                return "badge-warning";
             default:
                 return "";
         }

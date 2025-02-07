@@ -23,6 +23,7 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.editor.SummernoteC
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.editor.SummernoteStoredImageResourceReference;
 import de.agilecoders.wicket.less.BootstrapLess;
 import de.agilecoders.wicket.webjars.WicketWebjars;
+import de.agilecoders.wicket.webjars.request.resource.WebjarsJavaScriptResourceReference;
 import nl.dries.wicket.hibernate.dozer.DozerRequestCycleListener;
 import nl.dries.wicket.hibernate.dozer.SessionFinderHolder;
 import org.apache.wicket.Application;
@@ -32,7 +33,12 @@ import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxNewWindowNotifyingBehavior;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
-import org.apache.wicket.devutils.diskstore.DebugDiskDataStore;
+//import org.apache.wicket.devutils.diskstore.DebugDiskDataStore;
+import org.apache.wicket.csp.CSPDirective;
+import org.apache.wicket.csp.CSPDirectiveSrcValue;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.filter.JavaScriptFilteredIntoFooterHeaderResponse;
+import org.apache.wicket.markup.html.IHeaderResponseDecorator;
 import org.apache.wicket.markup.html.IPackageResourceGuard;
 import org.apache.wicket.markup.html.SecurePackageResourceGuard;
 import org.apache.wicket.markup.html.WebPage;
@@ -40,6 +46,7 @@ import org.apache.wicket.request.resource.JavaScriptResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.request.resource.caching.FilenameWithVersionResourceCachingStrategy;
 import org.apache.wicket.request.resource.caching.version.CachingResourceVersion;
+import org.apache.wicket.resource.JQueryResourceReference;
 import org.apache.wicket.settings.RequestCycleSettings.RenderStrategy;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.file.Folder;
@@ -59,7 +66,7 @@ import org.devgateway.toolkit.persistence.converter.DefaultDecimalFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
@@ -68,8 +75,10 @@ import org.wicketstuff.annotation.scan.AnnotatedMountScanner;
 import org.wicketstuff.select2.ApplicationSettings;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.Iterator;
 
 /**
  * The web application class also serves as spring boot starting point by using
@@ -78,10 +87,11 @@ import java.time.ZonedDateTime;
  *
  * @author Stefan Kloe, mpostelnicu
  */
+
+@EnableDiscoveryClient(autoRegister = true)
 @EnableScheduling
 @SpringBootApplication(exclude = {org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration.class})
 @ComponentScan("org.devgateway.toolkit")
-@EnableEurekaClient
 @PropertySource("classpath:/org/devgateway/toolkit/forms/application.properties")
 public class FormsWebApplication extends AuthenticatedWebApplication {
 
@@ -168,7 +178,8 @@ public class FormsWebApplication extends AuthenticatedWebApplication {
      */
     private void optimizeForWebPerformance() {
         // add javascript files at the bottom of the page
-        setHeaderResponseDecorator(new RenderJavaScriptToFooterHeaderResponseDecorator("scripts-bucket"));
+        getHeaderResponseDecorators().add(response ->
+                new JavaScriptFilteredIntoFooterHeaderResponse(response, "scripts-bucket"));
 
         // This is only enabled for deployment configuration
         // -Dwicket.configuration=deployment
@@ -188,6 +199,7 @@ public class FormsWebApplication extends AuthenticatedWebApplication {
                 new CachingResourceVersion(new Adler32ResourceVersion())));
 
         getRequestCycleSettings().setRenderStrategy(RenderStrategy.ONE_PASS_RENDER);
+
         // be sure that we have added Dozer Listener
         getRequestCycleListeners().add(new DozerRequestCycleListener());
 
@@ -244,12 +256,30 @@ public class FormsWebApplication extends AuthenticatedWebApplication {
         // watch this using the URL
         // http://.../wicket/internal/debug/diskDataStore
         if (usesDevelopmentConfig()) {
-            DebugDiskDataStore.register(this);
+            getDebugSettings().setDevelopmentUtilitiesEnabled(true);
         }
 
         SessionFinderHolder.setSessionFinder(sessionFinderService);
 
         useCustomizedSelect2Version();
+
+        configureCsp();
+    }
+
+    private void configureCsp() {
+        getCspSettings().blocking().clear()
+                .add(CSPDirective.SCRIPT_SRC, CSPDirectiveSrcValue.SELF)
+                .add(CSPDirective.SCRIPT_SRC, CSPDirectiveSrcValue.UNSAFE_INLINE)
+                .add(CSPDirective.STYLE_SRC, CSPDirectiveSrcValue.SELF)
+                .add(CSPDirective.STYLE_SRC, CSPDirectiveSrcValue.UNSAFE_INLINE)
+                .add(CSPDirective.IMG_SRC, CSPDirectiveSrcValue.SELF)
+                .add(CSPDirective.CONNECT_SRC, CSPDirectiveSrcValue.SELF)
+                .add(CSPDirective.FONT_SRC, CSPDirectiveSrcValue.SELF)
+                .add(CSPDirective.MANIFEST_SRC, CSPDirectiveSrcValue.SELF)
+                .add(CSPDirective.CHILD_SRC, CSPDirectiveSrcValue.SELF)
+                .add(CSPDirective.BASE_URI, CSPDirectiveSrcValue.SELF)
+                .add(CSPDirective.FRAME_SRC, CSPDirectiveSrcValue.SELF)
+                .add(CSPDirective.DEFAULT_SRC, CSPDirectiveSrcValue.NONE);
     }
 
     /**

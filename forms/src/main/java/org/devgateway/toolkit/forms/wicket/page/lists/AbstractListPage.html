@@ -11,10 +11,10 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row d-flex justify-content-end py-4">
         <div class="col-md-1 col-md-offset-10">
             <form wicket:id="excelForm">
-                <button wicket:id="excelButton" type="button" id="excelButton" class="pull-right btn btn-lg btn-warning">
+                <button wicket:id="excelButton" type="button" id="excelButton" class="pull-right btn btn-md btn-warning">
                     <i class="fa fa-file-excel-o"></i>
                     Excel export
                 </button>
@@ -22,8 +22,8 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-10 col-md-offset-1">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-12 col-md-offset-1">
             <form wicket:id="filterForm">
                 <button type="submit" style="display: none;">Submit</button>
                 <table class="dataview table" wicket:id="table"></table>

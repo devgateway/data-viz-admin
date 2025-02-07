@@ -2,12 +2,12 @@ package org.devgateway.toolkit.forms.client;
 
 import org.devgateway.toolkit.persistence.dto.ServiceDataset;
 
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 import java.util.List;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.Response.Status.Family.SUCCESSFUL;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.Response.Status.Family.SUCCESSFUL;
 
 public class ServiceDatasetClient extends ServiceEntityClient<ServiceDataset> {
 

@@ -4,10 +4,10 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToOne;
 import java.math.BigDecimal;
 
 @Entity
@@ -29,6 +29,9 @@ public class TetsimDataset extends Dataset {
 
     @Audited
     private BigDecimal smokingPrevalence;
+
+    @Audited
+    private String description;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Audited
@@ -211,5 +214,14 @@ public class TetsimDataset extends Dataset {
 
     public void setUndershifting(final TetsimPriceVariable undershifting) {
         this.undershifting = undershifting;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

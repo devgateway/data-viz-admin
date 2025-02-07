@@ -20,17 +20,17 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.Navbar;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.NavbarButton;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.NavbarComponents;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navbar.NavbarDropDownButton;
-import de.agilecoders.wicket.core.markup.html.references.RespondJavaScriptReference;
+//import de.agilecoders.wicket.core.markup.html.references.RespondJavaScriptReference;
 import de.agilecoders.wicket.core.markup.html.themes.bootstrap.BootstrapCssReference;
 import de.agilecoders.wicket.core.util.CssClassNames;
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.ColorPickerTextField;
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.ColorPickerTextFieldCssReference;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5CssReference;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType;
+import org.apache.wicket.Application;
 import org.apache.wicket.Page;
 import org.apache.wicket.authroles.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
-import org.apache.wicket.markup.head.CssHeaderItem;
-import org.apache.wicket.markup.head.IHeaderResponse;
-import org.apache.wicket.markup.head.JavaScriptHeaderItem;
-import org.apache.wicket.markup.head.MetaDataHeaderItem;
+import org.apache.wicket.markup.head.*;
 import org.apache.wicket.markup.head.filter.HeaderResponseContainer;
 import org.apache.wicket.markup.html.GenericWebPage;
 import org.apache.wicket.markup.html.TransparentWebMarkupContainer;
@@ -45,6 +45,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.request.resource.CssResourceReference;
 import org.apache.wicket.request.resource.JavaScriptResourceReference;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.resource.JQueryResourceReference;
@@ -315,6 +316,7 @@ public abstract class BasePage extends GenericWebPage<Void> {
          * @see org.devgateway.toolkit.forms.wicket.styles.BaseStyles
          */
         navbar.setPosition(Navbar.Position.TOP);
+        navbar.add(new CssClassNameAppender( "navbar-default", "navbar-border"));
         navbar.setBrandImage(new PackageResourceReference(BaseStyles.class, "assets/img/tcdi-horizontal-logo.svg"),
                 new StringResourceModel("brandImageAltText", this, null));
 
@@ -334,16 +336,30 @@ public abstract class BasePage extends GenericWebPage<Void> {
         response.render(getFavicon());
 
         // Load Styles.
+        // Add the color picker CSS
+        response.render(CssHeaderItem.forReference(
+                new CssResourceReference(
+                        ColorPickerTextFieldCssReference.class,
+                        "css/bootstrap-colorpicker.css"
+                )
+        ));
         response.render(CssHeaderItem.forReference(BootstrapCssReference.instance()));
         response.render(CssHeaderItem.forReference(FontAwesome5CssReference.instance()));
         response.render(CssHeaderItem.forReference(BaseStyles.INSTANCE));
 
         // Load Scripts.
-        response.render(RespondJavaScriptReference.headerItem());
-        response.render(JavaScriptHeaderItem.forReference(JQueryResourceReference.getV2()));
+        response.render(JavaScriptHeaderItem.forReference(JQueryResourceReference.getV3()));
 
         response.render(JavaScriptHeaderItem.forReference(new JavaScriptResourceReference(BaseStyles.class,
                 "assets/js/fileupload.js")));
+
+        // Add the color picker JavaScript
+        response.render(JavaScriptHeaderItem.forReference(
+                new JavaScriptResourceReference(
+                        ColorPickerTextFieldCssReference.class,
+                        "js/bootstrap-colorpicker.js"
+                )
+        ));
     }
 
     protected BreadCrumbPanel createBreadcrumbPanel(final String markupId) {

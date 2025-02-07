@@ -3,6 +3,8 @@ package org.devgateway.toolkit.web.excelcharts;
 import org.apache.poi.ss.usermodel.Chart;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.charts.ChartDataSource;
+import org.apache.poi.xddf.usermodel.chart.XDDFDataSource;
+import org.apache.poi.xssf.usermodel.XSSFChart;
 
 import java.util.List;
 
