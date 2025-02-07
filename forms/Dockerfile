@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-slim
+FROM openjdk:21-jdk-slim
 WORKDIR /opt/devgateway/tcdi/admin
 COPY target/deps/BOOT-INF/lib lib
 COPY target/deps/META-INF META-INF
