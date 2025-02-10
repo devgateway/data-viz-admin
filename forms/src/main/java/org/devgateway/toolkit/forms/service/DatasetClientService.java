@@ -6,7 +6,6 @@ import org.devgateway.toolkit.forms.client.DatasetClient;
 import org.devgateway.toolkit.persistence.dao.data.CSVDataset;
 import org.devgateway.toolkit.persistence.dao.data.Dataset;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
-import org.devgateway.toolkit.persistence.dto.ServiceMeasure;
 import org.devgateway.toolkit.persistence.dto.ServiceMetadata;
 import org.devgateway.toolkit.persistence.service.data.CSVDatasetService;
 import org.devgateway.toolkit.persistence.service.data.TetsimDatasetService;
