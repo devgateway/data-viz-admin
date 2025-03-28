@@ -7,14 +7,64 @@ on:
       - main
       - release/*
 
-
+permissions:
+  contents: write
+  pull-requests: write
+  packages: write
 
 jobs:
-  build_and_release:
+  release-and-tag:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+          cache: 'maven'
+  
+      - name: Configure Git user
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+
+      - name: Prepare Release
+        id: release
+        run: |
+          # Get current version from pom.xml
+          CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "Current version: $CURRENT_VERSION"
+            
+          # Remove -SNAPSHOT and calculate next version
+          VERSION=${CURRENT_VERSION%-SNAPSHOT}
+          IFS='.' read -r major minor patch <<< "$VERSION"
+          NEXT_VERSION="$major.$minor.$((patch + 1))-SNAPSHOT"
+            
+          # Perform release
+          mvn -B release:prepare release:perform \
+            -DreleaseVersion=$VERSION \
+            -DdevelopmentVersion=$NEXT_VERSION \
+            -DtagNameFormat=v@{project.version} \
+            -DpushChanges=true \
+            -DlocalCheckout=true \
+            -DpreparationGoals="clean verify" \
+            -DskipTests
+            
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Released version $VERSION"
+
+  build-and-push-docker-image:
+    needs: release-and-tag
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -31,17 +81,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Determine the version tag
-        id: version
-        run: |
-          if [ "${{ github.event_name }}" = "release" ]; then
-            echo "Using release tag: ${{ github.ref_name }}"
-            echo "version=${{ github.ref_name }}" >> $GITHUB_OUTPUT
-          else
-            echo "No release detected. Using tag: latest"
-            echo "version=latest" >> $GITHUB_OUTPUT
-          fi
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
@@ -50,5 +89,9 @@ jobs:
           cache-to: type=gha, scope=data-viz-admin
           context: .
           push: true
-          tags: ${{ vars.DOCKER_REGISTRY }}/data-viz-admin:${{ steps.version.outputs.version }}
-
+          build-args: |
+            VERSION=${{ needs.release-and-tag.outputs.version }}
+            TAG=${{ needs.release-and-tag.outputs.version }}
+          tags: |
+            ${{ vars.DOCKER_REGISTRY }}/data-viz-admin:latest
+            ${{ vars.DOCKER_REGISTRY }}/data-viz-admin:v${{ needs.release-and-tag.outputs.version }}
