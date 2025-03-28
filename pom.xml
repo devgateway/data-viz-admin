@@ -60,12 +60,9 @@
     </ciManagement>
 
     <scm>
-        <url>git@github.com:devgateway/data-viz-admin.git</url>
         <developerConnection>
-            scm:git:git@github.com:devgateway/data-viz-admin.git
+            scm:git:https://github.com/devgateway/data-viz-admin.git
         </developerConnection>
-        <connection>git@github.com:devgateway/data-viz-admin.git</connection>
-        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
