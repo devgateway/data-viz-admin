@@ -63,8 +63,9 @@ jobs:
             -DtagNameFormat=v@{project.version} \
             -DpushChanges=true \
             -DlocalCheckout=true \
-            -DpreparationGoals="clean verify -Dcheckstyle.skip" \
-            -DskipTests
+            -DpreparationGoals="clean verify -Dcheckstyle.skip -DskipTests" \
+            -DcompletionGoals="verify -Dcheckstyle.skip -DskipTests" \
+            -Darguments="-DskipTests -Dcheckstyle.skip"
             
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Released version $VERSION"
