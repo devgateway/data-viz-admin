@@ -60,12 +60,11 @@
     </ciManagement>
 
     <scm>
-        <url>git@github.com:devgateway/dg-toolkit.git</url>
+        <url>git@github.com:devgateway/data-viz-admin.git</url>
         <developerConnection>
-            scm:git:git@github.com:devgateway/dg-toolkit.git
+            scm:git:git@github.com:devgateway/data-viz-admin.git
         </developerConnection>
-        <connection>git@github.com:devgateway/dg-toolkit.git
-        </connection>
+        <connection>git@github.com:devgateway/data-viz-admin.git</connection>
         <tag>HEAD</tag>
     </scm>
 
