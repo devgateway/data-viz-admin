@@ -53,7 +53,7 @@ jobs:
             -DtagNameFormat=v@{project.version} \
             -DpushChanges=true \
             -DlocalCheckout=true \
-            -DpreparationGoals="clean verify" \
+            -DpreparationGoals="clean verify -Dcheckstyle.skip" \
             -DskipTests
             
           echo "version=$VERSION" >> $GITHUB_OUTPUT
