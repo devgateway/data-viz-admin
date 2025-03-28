@@ -45,6 +45,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64
+          cache-from: type=gha, scope=data-viz-admin
+          cache-to: type=gha, scope=data-viz-admin
           context: .
           push: true
           tags: ${{ vars.DOCKER_REGISTRY }}/data-viz-admin:${{ steps.version.outputs.version }}
