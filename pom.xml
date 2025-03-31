@@ -13,7 +13,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.devgateway.tcdi</groupId>
     <artifactId>tcdi-admin</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>TCDI Admin</name>
     <description>TCDI Admin</description>
@@ -69,7 +69,7 @@
         <repository>
             <id>dgtoolkit-releases</id>
             <name>dgtoolkit-releases</name>
-            <url>http://artifactory.ampdev.net/artifactory/dg-toolkit-releases</url>
+            <url>https://artifactory.dgdev.org/artifactory/devgateway-open-source/dg-toolkit-releases</url>
         </repository>
     </distributionManagement>
 
