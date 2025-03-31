@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.devgateway.tcdi</groupId>
         <artifactId>tcdi-admin</artifactId>
-        <version>0.0.1</version>
+        <version>0.0.2-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -48,7 +48,7 @@
         <dependency>
             <groupId>org.devgateway.tcdi</groupId>
             <artifactId>tcdi-admin-persistence</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.2-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -60,7 +60,7 @@
         <dependency>
             <groupId>org.devgateway.tcdi</groupId>
             <artifactId>tcdi-admin-web</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.2-SNAPSHOT</version>
         </dependency>
 
         <dependency>
