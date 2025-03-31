@@ -57,10 +57,11 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release_branches: 'master,main,release/*'
 
+
       - uses: ncipollo/release-action@v1
         with:
-          tag: ${{ steps.tag_version.outputs.new_tag }}
-          name: Release ${{ steps.tag_version.outputs.new_tag }}
+          tag: ${{ steps.tag_version.outputs.new_tag || '1.0.0' }}
+          name: Release ${{ steps.tag_version.outputs.new_tag || '1.0.0' }}
           body: ${{ steps.tag_version.outputs.changelog }}
           artifacts: forms/target/*.jar
 
