@@ -44,33 +44,25 @@ jobs:
           git config user.email "tmugo@developmentgateway.org"
           git config user.name "Timothy Mugo Gachengo"
 
-      - name: Prepare Release
-        id: release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build the Maven project
         run: |
-          # Get current version from pom.xml
-          CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "Current version: $CURRENT_VERSION"
-            
-          # Remove -SNAPSHOT and calculate next version
-          VERSION=${CURRENT_VERSION%-SNAPSHOT}
-          IFS='.' read -r major minor patch <<< "$VERSION"
-          NEXT_VERSION="$major.$minor.$((patch + 1))-SNAPSHOT"
-            
-          # Perform release
-          mvn -B release:prepare release:perform \
-            -DreleaseVersion=$VERSION \
-            -DdevelopmentVersion=$NEXT_VERSION \
-            -DtagNameFormat=v@{project.version} \
-            -DpushChanges=true \
-            -DlocalCheckout=true \
-            -DpreparationGoals="clean verify -Dcheckstyle.skip -DskipTests" \
-            -DcompletionGoals="verify -Dcheckstyle.skip -DskipTests" \
-            -Darguments="-DskipTests -Dcheckstyle.skip"
-            
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Released version $VERSION"
+          mvn package -DskipTests=true -Dcheckstyle.skip \
+          && mkdir -p forms/target/deps \
+          && cd forms/target/deps \
+          && jar -xf ../*.jar
+
+      - name: Generate Tag
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: 'master,main,release/*'
+
+      - uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
+          artifacts: forms/target/*.jar
 
   build-and-push-docker-image:
     needs: release-and-tag
