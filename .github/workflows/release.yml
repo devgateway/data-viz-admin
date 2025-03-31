@@ -39,6 +39,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      - name: Configure Git user
+        run: |
+          git config user.email "tmugo@developmentgateway.org"
+          git config user.name "Timothy Mugo Gachengo"
+
       - name: Prepare Release
         id: release
         env:
