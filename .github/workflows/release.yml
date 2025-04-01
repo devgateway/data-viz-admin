@@ -71,6 +71,7 @@ jobs:
           release_branches: 'master,main,release/*'
           tag_prefix: 'v'
           dry_run: 'true'
+          custom_tag: '1.0.0'
 
   build-and-push-docker-image:
     needs: prepare-a-release
