@@ -114,7 +114,6 @@ jobs:
         id: changelog
         with:
           config: cliff.toml
-          version: ${{ needs.build-and-push-docker-image.outputs.new_version }}
           args: '--unreleased'
         env:
           OUTPUT: CHANGELOG.md
