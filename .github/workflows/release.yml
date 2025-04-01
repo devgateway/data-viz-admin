@@ -104,21 +104,21 @@ jobs:
           context: .
           push: true
           build-args: |
-            VERSION=${{ needs.release-and-tag.outputs.new_version }}
-            TAG=${{ needs.release-and-tag.outputs.new_version }}
+            VERSION=${{ needs.prepare-a-release.outputs.new_version }}
+            TAG=${{ needs.prepare-a-release.outputs.new_tag }}
           tags: |
             ${{ vars.DOCKER_REGISTRY }}/data-viz-admin:latest
-            ${{ vars.DOCKER_REGISTRY }}/data-viz-admin:v${{ needs.release-and-tag.outputs.new_version }}
+            ${{ vars.DOCKER_REGISTRY }}/data-viz-admin:v${{ needs.prepare-a-release.outputs.new_version }}
     
   release-on-github:
-    needs: build-and-push-docker-image
+    needs: prepare-a-release
     runs-on: ubuntu-latest
     steps:
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ needs.release-and-tag.outputs.new_tag }}
+          tag_name: ${{ needs.prepare-a-release.outputs.new_tag }}
           files: forms/target/deps/*.jar
           body_path: CHANGELOG.md
           draft: false
