@@ -84,8 +84,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: '0'
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -112,10 +110,12 @@ jobs:
           && jar -xf ../*.jar
 
       - name: Generate a changelog
-        uses: orhun/git-cliff-action@v3
+        uses: orhun/git-cliff-action@v4
         id: changelog
         with:
           config: cliff.toml
+          version: ${{ needs.build-and-push-docker-image.outputs.new_version }}
+          args: '--unreleased'
         env:
           OUTPUT: CHANGELOG.md
           GITHUB_REPO: ${{ github.repository }}
