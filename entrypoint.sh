@@ -1,35 +1,31 @@
-#!/bin/sh
+#!/bin/bash
 
+PROP_FILE="/etc/$1.properties"
+truncate -s 0 $PROP_FILE
+echo "..................... Writing to $PROP_FILE: ............... "
 
-	PROP_FILE="tcdi-admin.properties"
-	echo "Writing to $PROP_FILE:"
+while IFS='=' read -r -d '' n v; do
+    if [[ $n == SPRING* ]]; then
+        VAR_NAME="$(echo "$n" | tr '[:upper:]_' '[:lower:].')"
+        echo "$VAR_NAME=$v" >> $PROP_FILE
+    fi
+done < <(env -0)
 
-	PROPERTIES="$(cat <<-EOF
-		server.port
-		spring.application.name
-		spring.liquibase.enabled
-		spring.datasource.jdbc-url
-		spring.datasource.url
-		spring.mail.host
-		spring.jpa.hibernate.ddl-auto
-	EOF
-	)"
+while IFS='=' read -r -d '' n v; do
+    if [[ $n == TCDI_* ]]; then
+        VAR_NAME="$(echo "$n" | tr '[:upper:]_' '[:lower:].' | cut -c 6-)"
+        echo "$VAR_NAME=$v" >> $PROP_FILE
+    fi
+done < <(env -0)
 
-  env
+echo "................. Properties ................."
+cat $PROP_FILE
+echo "................. End Properties ................."
 
-	echo "$PROPERTIES" | while IFS=read PROPERTY; do
-		VAR_NAME="$(echo "$PROPERTY" | tr '[:lower:].-' '[:upper:]__')"
-		eval VALUE="\$$VAR_NAME"
-		if [ -n "$VALUE" ]; then
-			echo "$PROPERTY=$VALUE"
-		fi
-	done | tee -a "$PROP_FILE"
+# Set up correct classpath to include all dependencies
+JAVA_OPTS="-Dspring.config.location=file://$PROP_FILE"
 
-	JAR="tcdi-admin-forms-0.0.1-SNAPSHOT.jar"
-	JAVA_OPTS="-Dspring.config.location=file://$PROP_FILE"
-	#exec /bin/sh -c "java -jar '$JAR' $JAVA_OPTS $@" nobody
-	exec /bin/bash
-	;;
-*)
-	exec $@
-	;;
+# Run the application with the correct classpath
+cd /opt/devgateway/tcdi/admin/deps
+exec java -cp .:BOOT-INF/classes:BOOT-INF/lib/* org.devgateway.toolkit.forms.wicket.FormsWebApplication $JAVA_OPTS $@
+

@@ -175,7 +175,7 @@ public abstract class AbstractListPage<T extends GenericPersistable & Serializab
     }
 
     private Integer getPageSize() {
-        return adminSettingsService.get().getPageSize();
+        return adminSettingsService.get() != null ? adminSettingsService.get().getPageSize() : 10;
     }
 
     protected PageParameters getEditPageParameters() {
