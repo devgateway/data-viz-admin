@@ -24,34 +24,10 @@ jobs:
         with:
           fetch-depth: '0'
 
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'corretto'
-          cache: 'maven'
-
-      - name: Cache Maven packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.m2/repository
-            !~/.m2/repository/org/devgateway/tcdi
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
       - name: Configure Git user
         run: |
           git config user.email "tmugo@developmentgateway.org"
           git config user.name "Timothy Mugo Gachengo"
-
-      - name: Build the Maven project
-        run: |
-          mvn package -DskipTests=true -Dcheckstyle.skip \
-          && mkdir -p forms/target/deps \
-          && cd forms/target/deps \
-          && jar -xf ../*.jar
 
       - name: Generate Tag
         id: tag_version
@@ -107,6 +83,30 @@ jobs:
     needs: build-and-push-docker-image
     runs-on: ubuntu-latest
     steps:
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+          cache: 'maven'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2/repository
+            !~/.m2/repository/org/devgateway/tcdi
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build the Maven project
+        run: |
+          mvn package -DskipTests=true -Dcheckstyle.skip \
+          && mkdir -p forms/target/deps \
+          && cd forms/target/deps \
+          && jar -xf ../*.jar
+
       - name: Generate a changelog
         uses: orhun/git-cliff-action@v3
         id: changelog
