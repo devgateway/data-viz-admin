@@ -46,6 +46,8 @@ body = """
 # template for the changelog footer
 footer = """
 \n
+Full changelog is available at \
+[{{ remote.github.owner }}/{{ remote.github.repo }}]/{{release.version}}\n
 Developed by Development Gateway
 """
 # remove the leading and trailing whitespace from the templates
