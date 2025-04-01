@@ -53,16 +53,6 @@ jobs:
           && cd forms/target/deps \
           && jar -xf ../*.jar
 
-      - name: Generate a changelog
-        uses: orhun/git-cliff-action@v3
-        id: changelog
-        with:
-          config: cliff.toml
-        env:
-          OUTPUT: CHANGELOG.md
-          GITHUB_REPO: ${{ github.repository }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Generate Tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.2
@@ -76,6 +66,9 @@ jobs:
   build-and-push-docker-image:
     needs: prepare-a-release
     runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ needs.prepare-a-release.outputs.new_version }}
+      new_tag: ${{ needs.prepare-a-release.outputs.new_tag }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -111,15 +104,25 @@ jobs:
             ${{ vars.DOCKER_REGISTRY }}/data-viz-admin:v${{ needs.prepare-a-release.outputs.new_version }}
     
   release-on-github:
-    needs: prepare-a-release
+    needs: build-and-push-docker-image
     runs-on: ubuntu-latest
     steps:
+      - name: Generate a changelog
+        uses: orhun/git-cliff-action@v3
+        id: changelog
+        with:
+          config: cliff.toml
+        env:
+          OUTPUT: CHANGELOG.md
+          GITHUB_REPO: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ needs.prepare-a-release.outputs.new_tag }}
-          files: forms/target/deps/*.jar
+          tag_name: ${{ needs.build-and-push-docker-image.outputs.new_tag }}
+          files: forms/target/*.jar
           body_path: CHANGELOG.md
           draft: false
           prerelease: false
