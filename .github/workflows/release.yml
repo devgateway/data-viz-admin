@@ -73,7 +73,7 @@ jobs:
           dry_run: 'true'
 
   build-and-push-docker-image:
-    needs: release-and-tag
+    needs: prepare-a-release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
