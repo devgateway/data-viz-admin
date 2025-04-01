@@ -46,8 +46,19 @@ body = """
 # template for the changelog footer
 footer = """
 \n
-Full changelog is available at \
-[{{ remote.github.owner }}/{{ remote.github.repo }}]/{{release.version}}\n
+{% for release in releases -%}
+    {% if release.version -%}
+        {% if release.previous.version -%}
+            [{{ release.version | trim_start_matches(pat="v") }}]: \
+                https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}\
+                    /compare/{{ release.previous.version }}..{{ release.version }}
+        {% endif -%}
+    {% else -%}
+        [{{release.version}}]: https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}\
+            /compare/{{ release.previous.version }}..HEAD
+    {% endif -%}
+{% endfor %}
+
 Developed by Development Gateway
 """
 # remove the leading and trailing whitespace from the templates
@@ -84,6 +95,3 @@ filter_commits = false
 topo_order = false
 # sort the commits inside sections by oldest/newest order
 sort_commits = "newest"
-
-[bump]
-initial_tag = "v1.0.0"
