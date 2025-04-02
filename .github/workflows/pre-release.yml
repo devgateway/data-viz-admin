@@ -38,7 +38,6 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          release_branches: 'develop'
           tag_prefix: 'v'
           pre_release_branches: 'develop'
           append_to_pre_release_tag: 'snapshot-${{ steps.current_date.outputs.current_date }}'
@@ -82,7 +81,6 @@ jobs:
             VERSION=${{ needs.prepare-a-release.outputs.new_version }}
             TAG=${{ needs.prepare-a-release.outputs.new_tag }}
           tags: |
-            ${{ vars.DOCKER_REGISTRY }}/data-viz-admin:latest
             ${{ vars.DOCKER_REGISTRY }}/data-viz-admin:v${{ needs.prepare-a-release.outputs.new_version }}
     
   release-on-github:
