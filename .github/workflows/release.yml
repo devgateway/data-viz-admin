@@ -24,11 +24,6 @@ jobs:
         with:
           fetch-depth: '0'
 
-      - name: Configure Git user
-        run: |
-          git config user.email "tmugo@developmentgateway.org"
-          git config user.name "Timothy Mugo Gachengo"
-
       - name: Generate Tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.2
