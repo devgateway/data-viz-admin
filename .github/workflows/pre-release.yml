@@ -31,7 +31,7 @@ jobs:
 
       - name: Get Current Date And Time
         id: current_date
-        run: echo "current_date=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+        run: echo "current_date=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
 
       - name: Generate Tag
         id: tag_version
