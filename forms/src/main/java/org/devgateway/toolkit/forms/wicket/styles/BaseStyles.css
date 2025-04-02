@@ -352,6 +352,8 @@ button .btn-home-label {
     min-height: 58px;
 }
 
+
+
 .pull-down {
     position: absolute;
     bottom: 0;
@@ -423,4 +425,62 @@ button .btn-home-label {
         padding-left: 2em;
         padding-right: 2em;
     }
+}
+
+ul.pagination {
+    display: inline-flex;
+    list-style: none;
+    border-radius: 4px;
+    overflow: hidden;
+    padding: 6px 12px;
+}
+
+ul.pagination li {
+    display: inline;
+}
+
+ul.pagination li a {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    text-decoration: none;
+    min-width: 36px;
+    text-align: center;
+}
+
+ul.pagination li a.first {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+ul.pagination li a.last {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+ul.pagination li a:hover {
+    background-color: #eee;
+    text-decoration: none;
+}
+
+ul.pagination li.active a,
+ul.pagination li a.active {
+    background-color: #337ab7;
+    color: white;
+    border-color: #337ab7;
+    cursor: default;
+}
+
+ul.pagination li.disabled a,
+ul.pagination li a.disabled {
+    color: #ccc;
+    pointer-events: none;
+    background-color: #f9f9f9;
+    border-color: #ddd;
+}
+
+ul.pagination.l-float {
+    float: right;
 }
