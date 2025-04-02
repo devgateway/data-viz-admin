@@ -29,7 +29,7 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          release_branches: 'master,main,release/*'
+          release_branches: 'production,release/*'
           tag_prefix: 'v'
           dry_run: 'true'
 
