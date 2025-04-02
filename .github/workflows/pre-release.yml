@@ -31,7 +31,7 @@ jobs:
 
       - name: Get Current Date And Time
         id: current_date
-        run: echo "current_date=$(date +'%Y%m%d%')" >> $GITHUB_OUTPUT
+        run: echo "current_date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
 
       - name: Generate Tag
         id: tag_version
@@ -40,7 +40,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           tag_prefix: 'v'
           pre_release_branches: 'develop'
-          append_to_pre_release_tag: 'snapshot-${{ steps.current_date.outputs.current_date }}'
+          append_to_pre_release_tag: 'snapshot-${{steps.current_date.outputs.current_date}}'
           dry_run: 'true'
 
   build-and-push-docker-image:
