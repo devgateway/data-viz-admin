@@ -35,7 +35,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           tag_prefix: 'v'
           release_branches: 'production,release/*'
-          pre_release_branches: 'develop'
+          pre_release_branches: 'main'
           append_to_pre_release_tag: 'snapshot-${{steps.current_date.outputs.current_date}}'
           dry_run: 'true'
 
