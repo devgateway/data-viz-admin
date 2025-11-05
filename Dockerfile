@@ -1,4 +1,4 @@
-FROM maven:3-amazoncorretto-21 AS base
+FROM maven:3-eclipse-temurin-21 AS base
 
 FROM base AS builder
 WORKDIR /app
@@ -16,7 +16,8 @@ WORKDIR /app/forms/target/deps
 RUN jar -xf ../*.jar
 
 # Build the runtime image
-FROM openjdk:21-jdk-slim AS runtime
+FROM eclipse-temurin:21-jre-alpine AS runtime
+RUN apk add --no-cache bash curl
 WORKDIR /opt/devgateway/tcdi/admin
 
 # Copy the application code

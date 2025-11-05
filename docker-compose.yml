@@ -1,6 +1,9 @@
 services:
   web:
-    image: data-viz-admin:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
     environment:
       SPRING_DATASOURCE_JDBC_URL: "jdbc:postgresql://postgres:5432/tcdi_admin"
       SPRING_JPA_HIBERNATE_DDL-AUTO: "update"
