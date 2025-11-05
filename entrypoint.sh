@@ -18,6 +18,11 @@ while IFS='=' read -r -d '' n v; do
     fi
 done < <(env -0)
 
+# Add git.branch if it exists
+if [[ -n "${git.branch}" ]]; then
+    echo "git.branch=${git.branch}" >> $PROP_FILE
+fi
+
 echo "................. Properties ................."
 cat $PROP_FILE
 echo "................. End Properties ................."

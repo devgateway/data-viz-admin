@@ -66,10 +66,11 @@ jobs:
           build-args: |
             VERSION=${{ needs.prepare-a-release.outputs.new_version }}
             TAG=${{ needs.prepare-a-release.outputs.new_tag }}
+            GIT_BRANCH=${{ needs.prepare-a-release.outputs.new_tag }}
           tags: |
             ${{ vars.DOCKER_REGISTRY }}/data-viz-admin:latest
             ${{ vars.DOCKER_REGISTRY }}/data-viz-admin:v${{ needs.prepare-a-release.outputs.new_version }}
-    
+
   release-on-github:
     needs: build-and-push-docker-image
     runs-on: ubuntu-latest

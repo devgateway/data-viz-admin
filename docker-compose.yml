@@ -1,6 +1,11 @@
 services:
   web:
-    image: data-viz-admin:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        GIT_BRANCH: main
+    restart: unless-stopped
     environment:
       SPRING_DATASOURCE_JDBC_URL: "jdbc:postgresql://postgres:5432/tcdi_admin"
       SPRING_JPA_HIBERNATE_DDL-AUTO: "update"
@@ -10,7 +15,8 @@ services:
     networks:
       - backend
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
 
   postgres:
@@ -27,7 +33,6 @@ services:
       interval: 10s
       timeout: 30s
       retries: 3
-      start_period: 50s
     networks:
       backend:
 

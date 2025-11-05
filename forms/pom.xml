@@ -378,22 +378,6 @@
 
         <plugins>
 
-<!--            <plugin>-->
-<!--                <groupId>pl.project13.maven</groupId>-->
-<!--                <artifactId>git-commit-id-plugin</artifactId>-->
-<!--                <version>2.2.4</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <goals>-->
-<!--                            <goal>revision</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--                <configuration>-->
-<!--                    <dotGitDirectory>${project.basedir}/../../.git</dotGitDirectory>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-
             <!-- tag::plugin[] -->
             <plugin>
                 <groupId>com.spotify</groupId>
