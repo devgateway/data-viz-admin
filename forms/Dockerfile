@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jre-alpine
+FROM docker.io/library/eclipse-temurin:21-jre-alpine
 WORKDIR /opt/devgateway/tcdi/admin
 COPY target/deps/BOOT-INF/lib lib
 COPY target/deps/META-INF META-INF
