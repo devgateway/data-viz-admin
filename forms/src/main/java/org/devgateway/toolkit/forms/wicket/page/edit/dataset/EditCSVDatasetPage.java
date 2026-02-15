@@ -1,9 +1,15 @@
 package org.devgateway.toolkit.forms.wicket.page.edit.dataset;
 
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DELETED;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.ERROR_IN_PUBLISHING;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.UNPUBLISHING;
+
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxButton;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType;
-import org.devgateway.toolkit.forms.wicket.components.buttons.ladda.LaddaAjaxButton;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
@@ -19,6 +25,7 @@ import org.devgateway.toolkit.forms.client.DataSetClientException;
 import org.devgateway.toolkit.forms.service.DatasetClientService;
 import org.devgateway.toolkit.forms.service.EurekaClientService;
 import org.devgateway.toolkit.forms.wicket.components.breadcrumbs.BreadCrumbPage;
+import org.devgateway.toolkit.forms.wicket.components.buttons.ladda.LaddaAjaxButton;
 import org.devgateway.toolkit.forms.wicket.components.form.AJAXDownload;
 import org.devgateway.toolkit.forms.wicket.components.form.BootstrapCancelButton;
 import org.devgateway.toolkit.forms.wicket.components.form.FileInputBootstrapFormComponent;
@@ -36,23 +43,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.wicketstuff.annotation.mount.MountPath;
 
-import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
-import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DELETED;
-import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
-import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.UNPUBLISHING;
-
 /**
  * @author vchihai
  */
 @MountPath(value = "/editCSVDataset")
 @BreadCrumbPage(parent = ListCSVDatasetPage.class, hasServiceParam = true)
-public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset> {
+public class EditCSVDatasetPage
+    extends AbstractEditStatusEntityPage<CSVDataset>
+{
 
     private static final long serialVersionUID = -5231470856974604314L;
 
-    private static final Logger logger = LoggerFactory.getLogger(EditCSVDatasetPage.class);
+    private static final Logger logger = LoggerFactory.getLogger(
+        EditCSVDatasetPage.class
+    );
 
     protected Select2ChoiceBootstrapFormComponent<Integer> year;
 
@@ -81,29 +85,37 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
         super.onInitialize();
 
         if (entityId == null) {
-            String service = getPageParameters().get(WebConstants.PARAM_SERVICE).toString();
+            String service = getPageParameters()
+                .get(WebConstants.PARAM_SERVICE)
+                .toString();
             editForm.getModelObject().setDestinationService(service);
         }
 
         editForm.add(getYear());
 
         final TextFieldBootstrapFormComponent<String> description =
-                new TextFieldBootstrapFormComponent<>("description");
-        description.getField().add(WebConstants.StringValidators.MAXIMUM_LENGTH_VALIDATOR_ONE_LINE_TEXT);
+            new TextFieldBootstrapFormComponent<>("description");
+        description
+            .getField()
+            .add(
+                WebConstants.StringValidators.MAXIMUM_LENGTH_VALIDATOR_ONE_LINE_TEXT
+            );
         editForm.add(description);
 
-        final FileInputBootstrapFormComponent files = new FileInputBootstrapFormComponent("files");
+        final FileInputBootstrapFormComponent files =
+            new FileInputBootstrapFormComponent("files");
         files.allowedFileExtensions("csv");
         files.required();
         files.maxFiles(1);
-        files.getFileInputBootstrapFormComponentWrapper().setAllowDownloadWhenReadonly(true);
+        files
+            .getFileInputBootstrapFormComponentWrapper()
+            .setAllowDownloadWhenReadonly(true);
         editForm.add(files);
         editForm.add(getService());
 
         AJAXDownload downloadTemplateBehaviour = getDownloadTemplateBehaviour();
         editForm.add(downloadTemplateBehaviour);
         editForm.add(getDownloadTemplateButton(downloadTemplateBehaviour));
-
     }
 
     private AJAXDownload getDownloadTemplateBehaviour() {
@@ -113,20 +125,35 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
                 return new IRequestHandler() {
                     @Override
                     public void respond(final IRequestCycle requestCycle) {
-                        final HttpServletResponse response = (HttpServletResponse) requestCycle.getResponse().getContainerResponse();
+                        final HttpServletResponse response =
+                            (HttpServletResponse) requestCycle
+                                .getResponse()
+                                .getContainerResponse();
                         try {
-                            String serviceName = editForm.getModelObject().getDestinationService();
+                            String serviceName = editForm
+                                .getModelObject()
+                                .getDestinationService();
 
-                            final byte[] bytes = datasetClientService.getTemplateDownload(serviceName);
+                            final byte[] bytes =
+                                datasetClientService.getTemplateDownload(
+                                    serviceName
+                                );
 
                             response.setContentType("text/csv");
-                            response.setHeader("Content-Disposition", "attachment; filename=" + serviceName + "-template.csv");
+                            response.setHeader(
+                                "Content-Disposition",
+                                "attachment; filename=" +
+                                    serviceName +
+                                    "-template.csv"
+                            );
                             response.getOutputStream().write(bytes);
                         } catch (IOException e) {
                             logger.error("Download Template error", e);
                         }
 
-                        RequestCycle.get().scheduleRequestHandlerAfterCurrent(null);
+                        RequestCycle.get().scheduleRequestHandlerAfterCurrent(
+                            null
+                        );
                     }
 
                     @Override
@@ -140,10 +167,14 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
         return download;
     }
 
-    private BootstrapAjaxButton getDownloadTemplateButton(final AJAXDownload downloadTemplateBehaviour) {
-        final LaddaAjaxButton templateDownloadButton = new LaddaAjaxButton("templateDownloadButton",
-                new Model<>("Template Download"),
-                Buttons.Type.Warning) {
+    private BootstrapAjaxButton getDownloadTemplateButton(
+        final AJAXDownload downloadTemplateBehaviour
+    ) {
+        final LaddaAjaxButton templateDownloadButton = new LaddaAjaxButton(
+            "templateDownloadButton",
+            new Model<>("Template Download"),
+            Buttons.Type.Warning
+        ) {
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
                 super.onSubmit(target);
@@ -158,8 +189,10 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
     }
 
     private Select2ChoiceBootstrapFormComponent<Integer> getYear() {
-        year = new Select2ChoiceBootstrapFormComponent<>("year",
-                new GenericChoiceProvider<>(settingsUtils.getYearsRange()));
+        year = new Select2ChoiceBootstrapFormComponent<>(
+            "year",
+            new GenericChoiceProvider<>(settingsUtils.getYearsRange())
+        );
         editForm.add(year);
         year.required();
 
@@ -167,7 +200,9 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
     }
 
     private TextFieldBootstrapFormComponent<String> getService() {
-        destinationService = new TextFieldBootstrapFormComponent("destinationService");
+        destinationService = new TextFieldBootstrapFormComponent(
+            "destinationService"
+        );
         destinationService.setEnabled(false);
 
         return destinationService;
@@ -213,7 +248,11 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
         try {
             CSVDataset dataset = editForm.getModelObject();
 
-            FileMetadata fileMetadata = dataset.getFiles().stream().findFirst().get();
+            FileMetadata fileMetadata = dataset
+                .getFiles()
+                .stream()
+                .findFirst()
+                .get();
             String fileName = fileMetadata.getName();
             byte[] content = fileMetadata.getContent().getBytes();
 
@@ -226,14 +265,37 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
         setResponsePage(listPageClass);
     }
 
+    @Override
+    protected void onCancelPublishing(final AjaxRequestTarget target) {
+        try {
+            CSVDataset dataset = editForm.getModelObject();
+            datasetClientService.cancelPublishing(dataset);
+            logger.info("Cancelled publishing for dataset {}", dataset.getId());
+        } catch (Exception e) {
+            logger.error("Error cancelling publishing: " + e.getMessage(), e);
+            // Even if cleanup fails on remote, still mark as error locally so user can retry
+            CSVDataset dataset = editForm.getModelObject();
+            dataset.setStatus(ERROR_IN_PUBLISHING);
+            csvDatasetService.save(dataset);
+        }
+        setResponsePage(listPageClass, getParamsWithServiceInformation());
+    }
+
     protected BootstrapCancelButton getCancelButton(final String id) {
-        return new CancelEditPageButton(id, new StringResourceModel("cancelButton", this, null));
+        return new CancelEditPageButton(
+            id,
+            new StringResourceModel("cancelButton", this, null)
+        );
     }
 
     public class CancelEditPageButton extends BootstrapCancelButton {
+
         private static final long serialVersionUID = -1474498211555760931L;
 
-        public CancelEditPageButton(final String id, final IModel<String> model) {
+        public CancelEditPageButton(
+            final String id,
+            final IModel<String> model
+        ) {
             super(id, model);
         }
 
@@ -248,7 +310,11 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
     protected void enableDisableAutosaveFields(final AjaxRequestTarget target) {
         super.enableDisableAutosaveFields(target);
 
-        if (StringUtils.isBlank(editForm.getModelObject().getDestinationService())) {
+        if (
+            StringUtils.isBlank(
+                editForm.getModelObject().getDestinationService()
+            )
+        ) {
             saveApproveButton.setEnabled(false);
             approveButton.setEnabled(false);
         }
@@ -267,7 +333,10 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
     protected PageParameters getParamsWithServiceInformation() {
         PageParameters pageParams = new PageParameters();
         // add service to the page parameters
-        pageParams.add(WebConstants.PARAM_SERVICE, editForm.getModelObject().getDestinationService());
+        pageParams.add(
+            WebConstants.PARAM_SERVICE,
+            editForm.getModelObject().getDestinationService()
+        );
 
         return pageParams;
     }

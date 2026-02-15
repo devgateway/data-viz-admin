@@ -11,11 +11,21 @@
  *******************************************************************************/
 package org.devgateway.toolkit.forms.wicket.page.edit;
 
+import static org.devgateway.toolkit.forms.WebConstants.PARAM_AUTO_SAVE;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DRAFT;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.ERROR_IN_PUBLISHING;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.ERROR_IN_UNPUBLISHING;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHED;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.SAVED;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.UNPUBLISHING;
+
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.dialog.TextContentModal;
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapCheckbox;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType;
-import org.devgateway.toolkit.forms.wicket.components.buttons.ladda.LaddaAjaxButton;
+import java.text.MessageFormat;
+import java.time.Duration;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
@@ -44,6 +54,7 @@ import org.apache.wicket.util.visit.IVisit;
 import org.apache.wicket.util.visit.IVisitor;
 import org.devgateway.toolkit.forms.WebConstants;
 import org.devgateway.toolkit.forms.security.SecurityConstants;
+import org.devgateway.toolkit.forms.wicket.components.buttons.ladda.LaddaAjaxButton;
 import org.devgateway.toolkit.forms.wicket.components.form.BootstrapSubmitButton;
 import org.devgateway.toolkit.forms.wicket.components.form.CheckBoxBootstrapFormComponent;
 import org.devgateway.toolkit.forms.wicket.components.form.CheckBoxYesNoToggleBootstrapFormComponent;
@@ -60,24 +71,16 @@ import org.springframework.util.ObjectUtils;
 import org.wicketstuff.datetime.markup.html.basic.DateLabel;
 import org.wicketstuff.select2.Select2Choice;
 
-import java.text.MessageFormat;
-import java.time.Duration;
-
-import static org.devgateway.toolkit.forms.WebConstants.PARAM_AUTO_SAVE;
-import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.DRAFT;
-import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.ERROR_IN_PUBLISHING;
-import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.ERROR_IN_UNPUBLISHING;
-import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHED;
-import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
-import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.SAVED;
-import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.UNPUBLISHING;
-
 /**
  * @author mpostelnicu
  * Page used to make editing easy, extend to get easy access to one entity for editing
  */
-public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAuditableEntity>
-        extends AbstractEditPage<T> implements DefaultValidatorRoleAssignable, ResourceLockable {
+public abstract class AbstractEditStatusEntityPage<
+        T extends AbstractStatusAuditableEntity
+    >
+    extends AbstractEditPage<T>
+    implements DefaultValidatorRoleAssignable, ResourceLockable
+{
 
     protected Fragment entityButtonsFragment;
 
@@ -96,6 +99,10 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     protected TextContentModal approveModal;
 
     protected TextContentModal unpublishModal;
+
+    protected TextContentModal cancelPublishingModal;
+
+    protected SaveEditPageButton cancelPublishingButton;
 
     private CheckBoxYesNoToggleBootstrapFormComponent visibleStatusComments;
 
@@ -126,27 +133,33 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         super(parameters);
     }
 
-
     @Override
     public AbstractStatusAuditableEntity getLockableResource() {
         return editForm.getModelObject();
     }
 
     public class ButtonContentModal extends TextContentModal {
+
         private final Buttons.Type buttonType;
         private LaddaAjaxButton button;
         private IModel<String> buttonModel;
         private ModalSaveEditPageButton modalSavePageButton;
 
-        public ButtonContentModal(String markupId, IModel<String> model, IModel<String> buttonModel,
-                                  Buttons.Type buttonType) {
+        public ButtonContentModal(
+            String markupId,
+            IModel<String> model,
+            IModel<String> buttonModel,
+            Buttons.Type buttonType
+        ) {
             super(markupId, model);
             addCloseButton();
             this.buttonModel = buttonModel;
             this.buttonType = buttonType;
         }
 
-        public ButtonContentModal modalSavePageButton(ModalSaveEditPageButton modalSavePageButton) {
+        public ButtonContentModal modalSavePageButton(
+            ModalSaveEditPageButton modalSavePageButton
+        ) {
             this.modalSavePageButton = modalSavePageButton;
             return this;
         }
@@ -167,11 +180,18 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     }
 
     protected TextContentModal createApproveModal() {
-        final TextContentModal modal = new TextContentModal("approveModal",
-                Model.of(" Are you sure you want to Publish? This information will be visible in the website. "
-                        + "Please remember to check if the text content needs to be updated too."));
+        final TextContentModal modal = new TextContentModal(
+            "approveModal",
+            Model.of(
+                " Are you sure you want to Publish? This information will be visible in the website. " +
+                    "Please remember to check if the text content needs to be updated too."
+            )
+        );
 
-        final SaveEditPageButton publishButton = new SaveEditPageButton("button", Model.of("Yes")) {
+        final SaveEditPageButton publishButton = new SaveEditPageButton(
+            "button",
+            Model.of("Yes")
+        ) {
             @Override
             protected String getOnClickScript() {
                 return WebConstants.DISABLE_FORM_LEAVING_JS;
@@ -192,10 +212,17 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     }
 
     protected TextContentModal createUnpublishModal() {
-        final TextContentModal modal = new TextContentModal("unpublishModal",
-                Model.of("Are you sure you want to Unpublish? This information will be removed from the website."));
+        final TextContentModal modal = new TextContentModal(
+            "unpublishModal",
+            Model.of(
+                "Are you sure you want to Unpublish? This information will be removed from the website."
+            )
+        );
 
-        final SaveEditPageButton unpublishButton = new SaveEditPageButton("button", Model.of("Yes")) {
+        final SaveEditPageButton unpublishButton = new SaveEditPageButton(
+            "button",
+            Model.of("Yes")
+        ) {
             @Override
             protected String getOnClickScript() {
                 return WebConstants.DISABLE_FORM_LEAVING_JS;
@@ -217,20 +244,28 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
     protected ButtonContentModal createTerminateModal() {
         ButtonContentModal buttonContentModal = new ButtonContentModal(
-                "terminateModal",
-                Model.of("Are you sure you want to TERMINATE the contracting process?"),
-                Model.of("TERMINATE"), Buttons.Type.Danger);
+            "terminateModal",
+            Model.of(
+                "Are you sure you want to TERMINATE the contracting process?"
+            ),
+            Model.of("TERMINATE"),
+            Buttons.Type.Danger
+        );
         return buttonContentModal;
     }
 
     public class ModalSaveEditPageButton extends SaveEditPageButton {
+
         private TextContentModal modal;
 
-        public ModalSaveEditPageButton(String id, IModel<String> model, TextContentModal modal) {
+        public ModalSaveEditPageButton(
+            String id,
+            IModel<String> model,
+            TextContentModal modal
+        ) {
             super(id, model);
             this.modal = modal;
         }
-
 
         @Override
         protected String getOnClickScript() {
@@ -260,7 +295,9 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     protected void onInitialize() {
         super.onInitialize();
 
-        if (editForm.getModelObject().isDeleted() || !canEditLockableResource()) {
+        if (
+            editForm.getModelObject().isDeleted() || !canEditLockableResource()
+        ) {
             setResponsePage(listPageClass);
         }
 
@@ -275,7 +312,9 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         visibleStatusComments = getVisibleStatusComments();
         editForm.add(visibleStatusComments);
 
-        statusCommentsWrapper = new TransparentWebMarkupContainer("statusCommentsWrapper");
+        statusCommentsWrapper = new TransparentWebMarkupContainer(
+            "statusCommentsWrapper"
+        );
         statusCommentsWrapper.setOutputMarkupId(true);
         statusCommentsWrapper.setOutputMarkupPlaceholderTag(true);
         statusCommentsWrapper.setVisibilityAllowed(false);
@@ -288,10 +327,18 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
         editForm.add(getErrorInPublishing());
 
-        entityButtonsFragment = new Fragment("extraButtons", "entityButtons", this);
+        entityButtonsFragment = new Fragment(
+            "extraButtons",
+            "entityButtons",
+            this
+        );
         editForm.replace(entityButtonsFragment);
 
-        Fragment fragment = new Fragment("extraStatusEntityButtons", "noButtons", this);
+        Fragment fragment = new Fragment(
+            "extraStatusEntityButtons",
+            "noButtons",
+            this
+        );
         entityButtonsFragment.add(fragment);
 
         saveSubmitButton = getSaveSubmitPageButton();
@@ -316,8 +363,14 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         revertToDraftPageButton = getRevertToDraftPageButton();
         entityButtonsFragment.add(revertToDraftPageButton);
 
+        cancelPublishingButton = getCancelPublishingButton();
+        entityButtonsFragment.add(cancelPublishingButton);
+
         unpublishModal = createUnpublishModal();
         editForm.add(unpublishModal);
+
+        cancelPublishingModal = createCancelPublishingModal();
+        editForm.add(cancelPublishingModal);
 
         applyDraftSaveBehavior(saveButton);
         applyDraftSaveBehavior(saveDraftContinueButton);
@@ -329,8 +382,12 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     }
 
     private TransparentWebMarkupContainer getErrorInPublishing() {
-        TransparentWebMarkupContainer errorInPublishing = new TransparentWebMarkupContainer("errorInPublishingPanel");
-        Label errorInPublishingLabel = new Label("errorInPublishingTitle", getErrorInPublishingMessage());
+        TransparentWebMarkupContainer errorInPublishing =
+            new TransparentWebMarkupContainer("errorInPublishingPanel");
+        Label errorInPublishingLabel = new Label(
+            "errorInPublishingTitle",
+            getErrorInPublishingMessage()
+        );
         errorInPublishing.setOutputMarkupId(true);
         errorInPublishing.setOutputMarkupPlaceholderTag(true);
         errorInPublishing.setVisibilityAllowed(isErrorInPublishingVisible());
@@ -340,21 +397,31 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     }
 
     private IModel<String> getErrorInPublishingMessage() {
-        String status = ERROR_IN_PUBLISHING.equals(editForm.getModelObject().getStatus()) ? "publishing" : "unpublishing";
-        return Model.of(MessageFormat.format(getString("errorInPublishingTitle"), status));
+        String status = ERROR_IN_PUBLISHING.equals(
+            editForm.getModelObject().getStatus()
+        )
+            ? "publishing"
+            : "unpublishing";
+        return Model.of(
+            MessageFormat.format(getString("errorInPublishingTitle"), status)
+        );
     }
 
     private boolean isErrorInPublishingVisible() {
         String status = editForm.getModelObject().getStatus();
-        return ERROR_IN_PUBLISHING.equals(status) || ERROR_IN_UNPUBLISHING.equals(status);
+        return (
+            ERROR_IN_PUBLISHING.equals(status) ||
+            ERROR_IN_UNPUBLISHING.equals(status)
+        );
     }
 
     @Override
     protected void afterSaveEntity(final T saveable) {
         super.afterSaveEntity(saveable);
 
-        getPageParameters().set(WebConstants.V_POSITION, verticalPosition.getValue())
-                .set(WebConstants.MAX_HEIGHT, maxHeight.getValue());
+        getPageParameters()
+            .set(WebConstants.V_POSITION, verticalPosition.getValue())
+            .set(WebConstants.MAX_HEIGHT, maxHeight.getValue());
     }
 
     @Override
@@ -369,7 +436,9 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
         checkAndSendEventForDisableEditing();
 
-        this.statusLabel.setVisibilityAllowed(editForm.getModelObject().getVisibleStatusLabel());
+        this.statusLabel.setVisibilityAllowed(
+            editForm.getModelObject().getVisibleStatusLabel()
+        );
     }
 
     protected void checkAndSendEventForDisableEditing() {
@@ -379,9 +448,11 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     }
 
     public boolean isDisableEditingEvent() {
-        return !Strings.isEqual(editForm.getModelObject().getStatus(), DRAFT) || isViewMode();
+        return (
+            !Strings.isEqual(editForm.getModelObject().getStatus(), DRAFT) ||
+            isViewMode()
+        );
     }
-
 
     protected boolean isViewMode() {
         return false;
@@ -391,9 +462,13 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         if (getLockableResource().getCheckedOutUser() == null) {
             checkedOutToLabel = new Label("checkedOutTo", Model.of(""));
         } else {
-            checkedOutToLabel = new Label("checkedOutTo",
-                    new StringResourceModel("checkedOutToMessage", this)
-                            .setParameters(getCheckedOutUsername()));
+            checkedOutToLabel = new Label(
+                "checkedOutTo",
+                new StringResourceModel(
+                    "checkedOutToMessage",
+                    this
+                ).setParameters(getCheckedOutUsername())
+            );
             checkedOutToLabel.setOutputMarkupPlaceholderTag(true);
             checkedOutToLabel.setOutputMarkupId(true);
         }
@@ -402,16 +477,24 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
     private void addRemoveLock() {
         removeLock = new CheckBoxBootstrapFormComponent("removeLock");
-//        removeLock.setVisibilityAllowed(getLockableResource().getCheckedOutUser() != null);
+        //        removeLock.setVisibilityAllowed(getLockableResource().getCheckedOutUser() != null);
         removeLock.setVisibilityAllowed(false);
         editForm.add(removeLock);
-        MetaDataRoleAuthorizationStrategy.authorize(removeLock, Component.RENDER, SecurityConstants.Roles.ROLE_ADMIN);
+        MetaDataRoleAuthorizationStrategy.authorize(
+            removeLock,
+            Component.RENDER,
+            SecurityConstants.Roles.ROLE_ADMIN
+        );
     }
 
     private void addAutosaveLabel() {
         Integer autosaveTime = adminSettingsService.getAutosaveTime();
-        autoSaveLabel = new Label("autoSaveLabel",
-                new StringResourceModel("autoSaveLabelMessage", this).setParameters(autosaveTime));
+        autoSaveLabel = new Label(
+            "autoSaveLabel",
+            new StringResourceModel("autoSaveLabelMessage", this).setParameters(
+                autosaveTime
+            )
+        );
         autoSaveLabel.setVisibilityAllowed(false);
         autoSaveLabel.setOutputMarkupPlaceholderTag(true);
         autoSaveLabel.setOutputMarkupId(true);
@@ -419,7 +502,11 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     }
 
     private void addVerticalMaxPositionFields() {
-        verticalPosition = new HiddenField<>("verticalPosition", new Model<>(), Double.class);
+        verticalPosition = new HiddenField<>(
+            "verticalPosition",
+            new Model<>(),
+            Double.class
+        );
         verticalPosition.setOutputMarkupId(true);
         editForm.add(verticalPosition);
 
@@ -437,17 +524,27 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         saveSubmitButton.setEnabled(true);
 
         if (target != null) {
-            target.add(saveButton, saveSubmitButton, saveDraftContinueButton, submitAndNext);
+            target.add(
+                saveButton,
+                saveSubmitButton,
+                saveDraftContinueButton,
+                submitAndNext
+            );
         }
     }
 
     private void addAutosaveBehavior(final AjaxRequestTarget target) {
         // enable autosave
-        if (!ComponentUtil.isPrintMode() && adminSettingsService.getAutosaveTime() > 0
-                && Strings.isEqual(editForm.getModelObject().getStatus(), DRAFT)
-                && !editForm.getModelObject().isNew()) {
+        if (
+            !ComponentUtil.isPrintMode() &&
+            adminSettingsService.getAutosaveTime() > 0 &&
+            Strings.isEqual(editForm.getModelObject().getStatus(), DRAFT) &&
+            !editForm.getModelObject().isNew()
+        ) {
             saveDraftContinueButton.add(getAutosaveBehavior());
-            boolean isAutoSaveVisible = getPageParameters().get(PARAM_AUTO_SAVE).toBoolean(false);
+            boolean isAutoSaveVisible = getPageParameters()
+                .get(PARAM_AUTO_SAVE)
+                .toBoolean(false);
             autoSaveLabel.setVisibilityAllowed(isAutoSaveVisible);
             if (target != null) {
                 target.add(autoSaveLabel);
@@ -456,36 +553,64 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     }
 
     private AbstractAjaxTimerBehavior getAutosaveBehavior() {
-        final AbstractAjaxTimerBehavior ajaxTimerBehavior = new AbstractAjaxTimerBehavior(
-                Duration.ofMinutes(adminSettingsService.getAutosaveTime())) {
-            @Override
-            protected void onTimer(final AjaxRequestTarget target) {
-                // display block UI message until the page is reloaded
-                target.prependJavaScript(getShowBlockUICode());
+        final AbstractAjaxTimerBehavior ajaxTimerBehavior =
+            new AbstractAjaxTimerBehavior(
+                Duration.ofMinutes(adminSettingsService.getAutosaveTime())
+            ) {
+                @Override
+                protected void onTimer(final AjaxRequestTarget target) {
+                    // display block UI message until the page is reloaded
+                    target.prependJavaScript(getShowBlockUICode());
 
-                // disable all fields from js and lose focus (execute this javascript code before components processed)
-                target.prependJavaScript("$(document.activeElement).blur();");
+                    // disable all fields from js and lose focus (execute this javascript code before components processed)
+                    target.prependJavaScript(
+                        "$(document.activeElement).blur();"
+                    );
 
-                // invoke autosave from js (execute this javascript code before components processed)
-                target.prependJavaScript("$('#" + maxHeight.getMarkupId() + "').val($(document).height()); "
-                        + "$('#" + verticalPosition.getMarkupId() + "').val($(window).scrollTop()); "
-                        + "$('#" + saveDraftContinueButton.getMarkupId() + "').click();");
+                    // invoke autosave from js (execute this javascript code before components processed)
+                    target.prependJavaScript(
+                        "$('#" +
+                            maxHeight.getMarkupId() +
+                            "').val($(document).height()); " +
+                            "$('#" +
+                            verticalPosition.getMarkupId() +
+                            "').val($(window).scrollTop()); " +
+                            "$('#" +
+                            saveDraftContinueButton.getMarkupId() +
+                            "').click();"
+                    );
 
-                target.prependJavaScript(getShowBlockUICode());
+                    target.prependJavaScript(getShowBlockUICode());
 
-                // disable all buttons from js
-                target.prependJavaScript("$('#" + editForm.getMarkupId() + " button').prop('disabled', true);");
-                target.prependJavaScript("$('#modals button').prop('disabled', false);");
-            }
-        };
+                    // disable all buttons from js
+                    target.prependJavaScript(
+                        "$('#" +
+                            editForm.getMarkupId() +
+                            " button').prop('disabled', true);"
+                    );
+                    target.prependJavaScript(
+                        "$('#modals button').prop('disabled', false);"
+                    );
+                }
+            };
 
         return ajaxTimerBehavior;
     }
 
     private Label addStatusLabel() {
-        statusLabel = new Label("statusLabel", editForm.getModelObject().getStatus());
-        statusLabel.add(new AttributeModifier("class", new Model<>("badge " + getStatusLabelClass())));
-        statusLabel.setVisibilityAllowed(editForm.getModelObject().getVisibleStatusLabel());
+        statusLabel = new Label(
+            "statusLabel",
+            editForm.getModelObject().getStatus()
+        );
+        statusLabel.add(
+            new AttributeModifier(
+                "class",
+                new Model<>("badge " + getStatusLabelClass())
+            )
+        );
+        statusLabel.setVisibilityAllowed(
+            editForm.getModelObject().getVisibleStatusLabel()
+        );
         return statusLabel;
     }
 
@@ -513,51 +638,77 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
     private CheckBoxYesNoToggleBootstrapFormComponent getVisibleStatusComments() {
         final CheckBoxYesNoToggleBootstrapFormComponent checkBoxBootstrapFormComponent =
-                new CheckBoxYesNoToggleBootstrapFormComponent("visibleStatusComments") {
-                    @Override
-                    protected void onUpdate(final AjaxRequestTarget target) {
-                        statusCommentsWrapper.setVisibilityAllowed(editForm.getModelObject()
-                                .getVisibleStatusComments());
-                        target.add(statusCommentsWrapper);
-                    }
+            new CheckBoxYesNoToggleBootstrapFormComponent(
+                "visibleStatusComments"
+            ) {
+                @Override
+                protected void onUpdate(final AjaxRequestTarget target) {
+                    statusCommentsWrapper.setVisibilityAllowed(
+                        editForm.getModelObject().getVisibleStatusComments()
+                    );
+                    target.add(statusCommentsWrapper);
+                }
 
-                    @Override
-                    public void onEvent(final IEvent<?> event) {
-                        // do nothing - keep this field enabled
-                    }
-                };
+                @Override
+                public void onEvent(final IEvent<?> event) {
+                    // do nothing - keep this field enabled
+                }
+            };
         checkBoxBootstrapFormComponent.setVisibilityAllowed(!isViewMode());
         checkBoxBootstrapFormComponent.setVisibilityAllowed(false);
         return checkBoxBootstrapFormComponent;
     }
 
-    private TextAreaFieldBootstrapFormComponent<String> getNewStatusCommentField() {
+    private TextAreaFieldBootstrapFormComponent<
+        String
+    > getNewStatusCommentField() {
         final TextAreaFieldBootstrapFormComponent<String> comment =
-                new OptionallyRequiredTextAreaFieldComponent<String>("newStatusComment") {
-
-                    @Override
-                    public void onEvent(final IEvent<?> event) {
-                        // do nothing - keep this field enabled
-                    }
-                };
+            new OptionallyRequiredTextAreaFieldComponent<String>(
+                "newStatusComment"
+            ) {
+                @Override
+                public void onEvent(final IEvent<?> event) {
+                    // do nothing - keep this field enabled
+                }
+            };
         comment.setShowTooltip(true);
         comment.setVisibilityAllowed(false);
         return comment;
     }
 
     private ListView<StatusChangedComment> getStatusCommentsListView() {
-        final ListView<StatusChangedComment> statusComments = new ListView<StatusChangedComment>("statusComments") {
+        final ListView<StatusChangedComment> statusComments = new ListView<
+            StatusChangedComment
+        >("statusComments") {
             @Override
-            protected void populateItem(final ListItem<StatusChangedComment> item) {
+            protected void populateItem(
+                final ListItem<StatusChangedComment> item
+            ) {
                 item.setModel(new CompoundPropertyModel<>(item.getModel()));
                 item.add(new Label("commentIdx", item.getIndex()));
                 item.add(new Label("status"));
                 item.add(new Label("comment"));
-                item.add(new Label("createdBy", item.getModelObject().getCreatedBy().get()));
-                item.add(DateLabel.forDateStyle("created",
-                        Model.of(ComponentUtil
-                                .getDateFromLocalDate(item.getModelObject().getCreatedDate().get().toLocalDate())),
-                        "SS"));
+                item.add(
+                    new Label(
+                        "createdBy",
+                        item.getModelObject().getCreatedBy().get()
+                    )
+                );
+                item.add(
+                    DateLabel.forDateStyle(
+                        "created",
+                        Model.of(
+                            ComponentUtil.getDateFromLocalDate(
+                                item
+                                    .getModelObject()
+                                    .getCreatedDate()
+                                    .get()
+                                    .toLocalDate()
+                            )
+                        ),
+                        "SS"
+                    )
+                );
             }
         };
         statusComments.setReuseItems(true);
@@ -570,9 +721,15 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
      * Use this function to get the block UI message while the form is saved.
      */
     private String getShowBlockUICode() {
-        return "blockUI('"
-                + new StringResourceModel("autosave_message", AbstractEditStatusEntityPage.this, null).getString()
-                + "')";
+        return (
+            "blockUI('" +
+            new StringResourceModel(
+                "autosave_message",
+                AbstractEditStatusEntityPage.this,
+                null
+            ).getString() +
+            "')"
+        );
     }
 
     /*******************************************************************************
@@ -585,9 +742,10 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
     @Override
     protected SaveEditPageButton getSaveEditPageButton() {
-        final SaveEditPageButton button = new SaveEditPageButton("save",
-                new StringResourceModel("saveButton", this, null)) {
-
+        final SaveEditPageButton button = new SaveEditPageButton(
+            "save",
+            new StringResourceModel("saveButton", this, null)
+        ) {
             @Override
             protected String getOnClickScript() {
                 return WebConstants.DISABLE_FORM_LEAVING_JS;
@@ -595,8 +753,10 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
-                editForm.visitChildren(GenericBootstrapFormComponent.class,
-                        new AllowNullForCertainInvalidFieldsVisitor());
+                editForm.visitChildren(
+                    GenericBootstrapFormComponent.class,
+                    new AllowNullForCertainInvalidFieldsVisitor()
+                );
                 setStatusAppendComment(DRAFT);
                 super.onSubmit(target);
             }
@@ -606,8 +766,10 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     }
 
     private SaveEditPageButton getSaveSubmitPageButton() {
-        final SaveEditPageButton button = new SaveEditPageButton("saveSubmit",
-                new StringResourceModel("saveSubmit", this, null)) {
+        final SaveEditPageButton button = new SaveEditPageButton(
+            "saveSubmit",
+            new StringResourceModel("saveSubmit", this, null)
+        ) {
             @Override
             protected String getOnClickScript() {
                 return WebConstants.DISABLE_FORM_LEAVING_JS;
@@ -625,8 +787,10 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     }
 
     private SaveEditPageButton getSubmitAndNextPageButton() {
-        final SaveEditPageButton button = new SaveEditPageButton("submitAndNext",
-                new StringResourceModel("submitAndNext", this, null)) {
+        final SaveEditPageButton button = new SaveEditPageButton(
+            "submitAndNext",
+            new StringResourceModel("submitAndNext", this, null)
+        ) {
             @Override
             protected String getOnClickScript() {
                 return WebConstants.DISABLE_FORM_LEAVING_JS;
@@ -669,9 +833,10 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     }
 
     private SaveEditPageButton getSaveDraftAndContinueButton() {
-        final SaveEditPageButton button = new SaveEditPageButton("saveContinue",
-                new StringResourceModel("saveContinue", this, null)) {
-
+        final SaveEditPageButton button = new SaveEditPageButton(
+            "saveContinue",
+            new StringResourceModel("saveContinue", this, null)
+        ) {
             @Override
             protected String getOnClickScript() {
                 return WebConstants.DISABLE_FORM_LEAVING_JS;
@@ -679,8 +844,10 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
-                editForm.visitChildren(GenericBootstrapFormComponent.class,
-                        new AllowNullForCertainInvalidFieldsVisitor());
+                editForm.visitChildren(
+                    GenericBootstrapFormComponent.class,
+                    new AllowNullForCertainInvalidFieldsVisitor()
+                );
                 setStatusAppendComment(DRAFT);
                 super.onSubmit(target);
             }
@@ -701,9 +868,10 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     }
 
     private SaveEditPageButton getSaveApprovePageButton() {
-        final SaveEditPageButton saveEditPageButton = new SaveEditPageButton("saveApprove",
-                new StringResourceModel("saveApprove", this, null)) {
-
+        final SaveEditPageButton saveEditPageButton = new SaveEditPageButton(
+            "saveApprove",
+            new StringResourceModel("saveApprove", this, null)
+        ) {
             @Override
             protected String getOnClickScript() {
                 return WebConstants.DISABLE_FORM_LEAVING_JS;
@@ -726,9 +894,10 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     }
 
     private SaveEditPageButton getApprovePageButton() {
-        final SaveEditPageButton saveEditPageButton = new SaveEditPageButton("approve",
-                new StringResourceModel("approve", this, null)) {
-
+        final SaveEditPageButton saveEditPageButton = new SaveEditPageButton(
+            "approve",
+            new StringResourceModel("approve", this, null)
+        ) {
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
                 approveModal.show(true);
@@ -746,9 +915,10 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     }
 
     protected SaveEditPageButton getRevertToDraftPageButton() {
-        final SaveEditPageButton saveEditPageButton = new SaveEditPageButton("revertToDraft",
-                new StringResourceModel("revertToDraft", this, null)) {
-
+        final SaveEditPageButton saveEditPageButton = new SaveEditPageButton(
+            "revertToDraft",
+            new StringResourceModel("revertToDraft", this, null)
+        ) {
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
                 unpublishModal.show(true);
@@ -760,25 +930,96 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
                 super.onError(target);
                 target.add(feedbackPanel);
             }
-
         };
         saveEditPageButton.setIconType(FontAwesome5IconType.thumbs_down_s);
         return saveEditPageButton;
     }
 
-    protected void onAfterRevertToDraft(AjaxRequestTarget target) {
+    protected void onAfterRevertToDraft(AjaxRequestTarget target) {}
 
+    protected void onApprove(AjaxRequestTarget target) {}
+
+    /**
+     * Called when the user confirms cancellation of a stuck publishing job.
+     * Override this method in subclasses to implement the actual cancellation logic.
+     */
+    protected void onCancelPublishing(AjaxRequestTarget target) {}
+
+    protected TextContentModal createCancelPublishingModal() {
+        TextContentModal modal = new TextContentModal(
+            "cancelPublishingModal",
+            Model.of(
+                "Are you sure you want to cancel the publishing process? " +
+                    "This will mark the dataset as failed and allow you to retry the upload. " +
+                    "Note: You may need to clean up partial data on the remote service."
+            )
+        );
+        modal.header(Model.of("Cancel Publishing"));
+
+        LaddaAjaxButton cancelButton = new LaddaAjaxButton(
+            "button",
+            Buttons.Type.Danger
+        ) {
+            @Override
+            protected String getOnClickScript() {
+                return WebConstants.DISABLE_FORM_LEAVING_JS;
+            }
+
+            @Override
+            protected void onSubmit(final AjaxRequestTarget target) {
+                onCancelPublishing(target);
+                super.onSubmit(target);
+            }
+        };
+        cancelButton.setLabel(Model.of("Yes, Cancel Publishing"));
+        cancelButton.setType(Buttons.Type.Danger);
+        cancelButton.setIconType(FontAwesome5IconType.times_circle_s);
+        modal.addButton(cancelButton);
+        modal.addCloseButton(Model.of("No"));
+
+        return modal;
     }
 
-    protected void onApprove(AjaxRequestTarget target) {
+    protected SaveEditPageButton getCancelPublishingButton() {
+        final SaveEditPageButton button = new SaveEditPageButton(
+            "cancelPublishing",
+            new StringResourceModel("cancelPublishing", this, null)
+        ) {
+            @Override
+            protected void onSubmit(final AjaxRequestTarget target) {
+                cancelPublishingModal.show(true);
+                target.add(cancelPublishingModal);
+            }
 
+            @Override
+            protected void onError(final AjaxRequestTarget target) {
+                super.onError(target);
+                target.add(feedbackPanel);
+            }
+        };
+        button.setDefaultFormProcessing(false);
+        button.setIconType(FontAwesome5IconType.times_circle_s);
+        return button;
+    }
+
+    protected void addCancelPublishingButtonPermissions(
+        final Component button
+    ) {
+        addDefaultAllButtonsPermissions(button);
+        button.setVisibilityAllowed(
+            button.isVisibilityAllowed() &&
+                PUBLISHING.equals(editForm.getModelObject().getStatus())
+        );
     }
 
     protected void setStatusAppendComment(final String status) {
         final T saveable = editForm.getModelObject();
 
         // do not save an empty comment if previous status is same as current status and comment box is empty
-        if (status.equals(saveable.getStatus()) && ObjectUtils.isEmpty(saveable.getNewStatusComment())) {
+        if (
+            status.equals(saveable.getStatus()) &&
+            ObjectUtils.isEmpty(saveable.getNewStatusComment())
+        ) {
             saveable.setStatus(status);
             return;
         }
@@ -798,6 +1039,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         addSaveApproveButtonPermissions(saveApproveButton);
         addApproveButtonPermissions(approveButton);
         addSaveRevertButtonPermissions(revertToDraftPageButton);
+        addCancelPublishingButtonPermissions(cancelPublishingButton);
         addDeleteButtonPermissions(deleteButton);
 
         // no need to display the buttons on print view so we overwrite the above permissions
@@ -812,65 +1054,108 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     }
 
     protected void addDeleteButtonPermissions(final Component button) {
-        button.setVisibilityAllowed(entityId != null && !isViewMode()
-                && !(PUBLISHING.equals(editForm.getModelObject().getStatus())
-                || PUBLISHED.equals(editForm.getModelObject().getStatus())));
+        button.setVisibilityAllowed(
+            entityId != null &&
+                !isViewMode() &&
+                !(PUBLISHING.equals(editForm.getModelObject().getStatus()) ||
+                    PUBLISHED.equals(editForm.getModelObject().getStatus()))
+        );
     }
 
     protected void addSaveRevertButtonPermissions(final Component button) {
         addDefaultAllButtonsPermissions(button);
-        button.setVisibilityAllowed(button.isVisibilityAllowed()
-                && (PUBLISHED.equals(editForm.getModelObject().getStatus())
-                    || ERROR_IN_UNPUBLISHING.equals(editForm.getModelObject().getStatus())));
+        button.setVisibilityAllowed(
+            button.isVisibilityAllowed() &&
+                (PUBLISHED.equals(editForm.getModelObject().getStatus()) ||
+                    ERROR_IN_UNPUBLISHING.equals(
+                        editForm.getModelObject().getStatus()
+                    ))
+        );
     }
 
     protected void addSaveApproveButtonPermissions(final Component button) {
         addDefaultAllButtonsPermissions(button);
         MetaDataRoleAuthorizationStrategy.authorize(
-                button, Component.RENDER, getValidatorRole());
-        button.setVisibilityAllowed(button.isVisibilityAllowed()
-                && DRAFT.equals(editForm.getModelObject().getStatus()));
+            button,
+            Component.RENDER,
+            getValidatorRole()
+        );
+        button.setVisibilityAllowed(
+            button.isVisibilityAllowed() &&
+                DRAFT.equals(editForm.getModelObject().getStatus())
+        );
     }
 
     protected void addApproveButtonPermissions(final Component button) {
         addDefaultAllButtonsPermissions(button);
         MetaDataRoleAuthorizationStrategy.authorize(
-                button, Component.RENDER, getValidatorRole());
-        button.setVisibilityAllowed(button.isVisibilityAllowed()
-                && (SAVED.equals(editForm.getModelObject().getStatus())
-                || ERROR_IN_PUBLISHING.equals(editForm.getModelObject().getStatus())));
+            button,
+            Component.RENDER,
+            getValidatorRole()
+        );
+        button.setVisibilityAllowed(
+            button.isVisibilityAllowed() &&
+                (SAVED.equals(editForm.getModelObject().getStatus()) ||
+                    ERROR_IN_PUBLISHING.equals(
+                        editForm.getModelObject().getStatus()
+                    ))
+        );
     }
 
     protected void addSaveSubmitButtonPermissions(final Component button) {
         addDefaultAllButtonsPermissions(button);
-        MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, getCommaCombinedRoles());
-        button.setVisibilityAllowed(button.isVisibilityAllowed()
-                && DRAFT.equals(editForm.getModelObject().getStatus()));
+        MetaDataRoleAuthorizationStrategy.authorize(
+            button,
+            Component.RENDER,
+            getCommaCombinedRoles()
+        );
+        button.setVisibilityAllowed(
+            button.isVisibilityAllowed() &&
+                DRAFT.equals(editForm.getModelObject().getStatus())
+        );
     }
 
     protected void addSaveButtonsPermissions(final Component button) {
         addDefaultAllButtonsPermissions(button);
-        MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, getCommaCombinedRoles());
-        button.setVisibilityAllowed(button.isVisibilityAllowed()
-                && (DRAFT.equals(editForm.getModelObject().getStatus())
-                || SAVED.equals(editForm.getModelObject().getStatus())
-                || ERROR_IN_PUBLISHING.equals(editForm.getModelObject().getStatus())
-                || ERROR_IN_UNPUBLISHING.equals(editForm.getModelObject().getStatus())));
+        MetaDataRoleAuthorizationStrategy.authorize(
+            button,
+            Component.RENDER,
+            getCommaCombinedRoles()
+        );
+        button.setVisibilityAllowed(
+            button.isVisibilityAllowed() &&
+                (DRAFT.equals(editForm.getModelObject().getStatus()) ||
+                    SAVED.equals(editForm.getModelObject().getStatus()) ||
+                    ERROR_IN_PUBLISHING.equals(
+                        editForm.getModelObject().getStatus()
+                    ) ||
+                    ERROR_IN_UNPUBLISHING.equals(
+                        editForm.getModelObject().getStatus()
+                    ))
+        );
     }
-
 
     protected void addDefaultAllButtonsPermissions(final Component button) {
-        MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, SecurityConstants.Roles.ROLE_USER);
+        MetaDataRoleAuthorizationStrategy.authorize(
+            button,
+            Component.RENDER,
+            SecurityConstants.Roles.ROLE_USER
+        );
     }
 
-
     private void scrollToPreviousPosition(final IHeaderResponse response) {
-        response.render(OnDomReadyHeaderItem.forScript(String.format(
-                "var vPosition= +%s, mHeight = +%s, cmHeight=$(document).height();"
-                        + "if(mHeight!=0) $(window).scrollTop(vPosition*cmHeight/mHeight)",
-                getPageParameters().get(WebConstants.V_POSITION).toDouble(0),
-                getPageParameters().get(WebConstants.MAX_HEIGHT).toDouble(0)
-        )));
+        response.render(
+            OnDomReadyHeaderItem.forScript(
+                String.format(
+                    "var vPosition= +%s, mHeight = +%s, cmHeight=$(document).height();" +
+                        "if(mHeight!=0) $(window).scrollTop(vPosition*cmHeight/mHeight)",
+                    getPageParameters()
+                        .get(WebConstants.V_POSITION)
+                        .toDouble(0),
+                    getPageParameters().get(WebConstants.MAX_HEIGHT).toDouble(0)
+                )
+            )
+        );
     }
 
     protected PageParameters getParamsWithServiceInformation() {
@@ -881,7 +1166,9 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     public void renderHead(final IHeaderResponse response) {
         super.renderHead(response);
 
-        response.render(JavaScriptHeaderItem.forReference(BlockUiJavaScript.INSTANCE));
+        response.render(
+            JavaScriptHeaderItem.forReference(BlockUiJavaScript.INSTANCE)
+        );
 
         scrollToPreviousPosition(response);
     }
@@ -893,15 +1180,23 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
      * @author mpostelnicu
      */
     public class AllowNullForCertainInvalidFieldsVisitor
-            implements IVisitor<GenericBootstrapFormComponent<?, ?>, Void> {
+        implements IVisitor<GenericBootstrapFormComponent<?, ?>, Void>
+    {
+
         @Override
-        public void component(final GenericBootstrapFormComponent<?, ?> object, final IVisit<Void> visit) {
+        public void component(
+            final GenericBootstrapFormComponent<?, ?> object,
+            final IVisit<Void> visit
+        ) {
             // we found the GenericBootstrapFormComponent, stop doing useless
             // things like traversing inside the GenericBootstrapFormComponent itself
             visit.dontGoDeeper();
 
             // do not process disabled fields
-            if (!object.isEnabledInHierarchy() || object.getField() instanceof BootstrapCheckbox) {
+            if (
+                !object.isEnabledInHierarchy() ||
+                object.getField() instanceof BootstrapCheckbox
+            ) {
                 return;
             }
             object.getField().processInput();
@@ -913,13 +1208,18 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
             // of a certain type, we turn
             // the input into a null. This helps us to save empty REQUIRED
             // fields when saving as draft
-            if (!object.getField().isValid() && Strings.isEmpty(object.getField().getInput())) {
+            if (
+                !object.getField().isValid() &&
+                Strings.isEmpty(object.getField().getInput())
+            ) {
                 // for text/select fields we just make the object model null
-                if (object.getField() instanceof TextField<?> || object.getField() instanceof TextArea<?>
-                        || object.getField() instanceof Select2Choice<?>) {
+                if (
+                    object.getField() instanceof TextField<?> ||
+                    object.getField() instanceof TextArea<?> ||
+                    object.getField() instanceof Select2Choice<?>
+                ) {
                     object.getField().getModel().setObject(null);
                 }
-
             }
         }
     }
