@@ -1,0 +1,98 @@
+services:
+  # PostgreSQL database for the admin application
+  postgres:
+    image: postgis/postgis:15-3.3-alpine
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: postgres
+      POSTGRES_DB: tcdi_admin
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d tcdi_admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tcdi-network
+
+  # PostgreSQL database for the interference service (remote service)
+  postgres-interference:
+    image: postgis/postgis:15-3.3-alpine
+    restart: unless-stopped
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_interference_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: postgres
+      POSTGRES_DB: interference
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d interference"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tcdi-network
+
+  # Eureka service registry
+  eureka:
+    image: steeltoeoss/eureka-server:latest
+    restart: unless-stopped
+    ports:
+      - "8761:8761"
+    environment:
+      EUREKA_SERVER_ENABLE_SELF_PRESERVATION: "false"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "-q",
+          "--spider",
+          "http://localhost:8761/actuator/health",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - tcdi-network
+
+  # Mock interference service for testing CSV uploads
+  # This is a simple mock that simulates the remote interference service API
+  mock-interference-service:
+    image: mockserver/mockserver:5.15.0
+    restart: unless-stopped
+    ports:
+      - "8090:1080"
+    environment:
+      MOCKSERVER_INITIALIZATION_JSON_PATH: /config/mockserver-init.json
+      MOCKSERVER_LOG_LEVEL: INFO
+    volumes:
+      - ./mockserver-init.json:/config/mockserver-init.json:ro
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "-q",
+          "--spider",
+          "http://localhost:1080/mockserver/status",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tcdi-network
+
+networks:
+  tcdi-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  postgres_interference_data:

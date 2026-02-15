@@ -1,0 +1,127 @@
+[
+  {
+    "httpRequest": {
+      "method": "GET",
+      "path": "/health"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "headers": {
+        "Content-Type": ["application/json"]
+      },
+      "body": {
+        "status": "UP"
+      }
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/datasets"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "headers": {
+        "Content-Type": ["application/json"]
+      },
+      "body": {
+        "jobId": "test-job-123",
+        "status": "PROCESSING",
+        "message": "Dataset upload started"
+      }
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "GET",
+      "path": "/jobs/code/tcdi-.*"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "headers": {
+        "Content-Type": ["application/json"]
+      },
+      "body": {
+        "jobId": "test-job-123",
+        "status": "COMPLETED",
+        "message": "Dataset processed successfully",
+        "createdDate": "2025-01-01T00:00:00Z"
+      }
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "DELETE",
+      "path": "/datasets/tcdi-.*"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "headers": {
+        "Content-Type": ["application/json"]
+      },
+      "body": {
+        "jobId": "delete-job-456",
+        "status": "COMPLETED",
+        "message": "Dataset deleted successfully"
+      }
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "GET",
+      "path": "/template/download"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "headers": {
+        "Content-Type": ["text/csv"],
+        "Content-Disposition": ["attachment; filename=template.csv"]
+      },
+      "body": "Country,Year,Score,Ranking\nExample,2025,50,25"
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "GET",
+      "path": "/dimensions"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "headers": {
+        "Content-Type": ["application/json"]
+      },
+      "body": [
+        {
+          "name": "country",
+          "label": "Country"
+        },
+        {
+          "name": "year",
+          "label": "Year"
+        }
+      ]
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "GET",
+      "path": "/measures"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "headers": {
+        "Content-Type": ["application/json"]
+      },
+      "body": [
+        {
+          "name": "score",
+          "label": "Score"
+        },
+        {
+          "name": "ranking",
+          "label": "Ranking"
+        }
+      ]
+    }
+  }
+]
