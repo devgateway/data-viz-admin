@@ -36,7 +36,7 @@ jobs:
           tag_prefix: 'v'
           release_branches: 'production,release/*'
           pre_release_branches: 'main'
-          append_to_pre_release_tag: 'snapshot-${{steps.current_date.outputs.current_date}}'
+          append_to_pre_release_tag: 'rc'
           dry_run: 'true'
 
   build-and-push-docker-image:
@@ -62,8 +62,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ${{ vars.DOCKER_REGISTRY }}
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
@@ -78,7 +78,7 @@ jobs:
             TAG=${{ needs.prepare-a-release.outputs.new_tag }}
             GIT_BRANCH=${{ needs.prepare-a-release.outputs.new_tag }}
           tags: |
-            ${{ vars.DOCKER_REGISTRY }}/data-viz-admin:v${{ needs.prepare-a-release.outputs.new_version }}
+            ${{ vars.DOCKER_REGISTRY }}/devgateway/data-viz-admin:v${{ needs.prepare-a-release.outputs.new_version }}
 
   release-on-github:
     needs: build-and-push-docker-image
