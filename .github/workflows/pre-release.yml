@@ -69,8 +69,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64
-          cache-from: type=gha, scope=data-viz-admin
-          cache-to: type=gha, scope=data-viz-admin
+          cache-from: type=registry,ref=${{ vars.DOCKER_REGISTRY }}/devgateway/data-viz/admin:buildcache
+          cache-to: type=registry,ref=${{ vars.DOCKER_REGISTRY }}/devgateway/data-viz/admin:buildcache,mode=max 
           context: .
           push: true
           build-args: |
@@ -78,7 +78,8 @@ jobs:
             TAG=${{ needs.prepare-a-release.outputs.new_tag }}
             GIT_BRANCH=${{ needs.prepare-a-release.outputs.new_tag }}
           tags: |
-            ${{ vars.DOCKER_REGISTRY }}/devgateway/data-viz-admin:v${{ needs.prepare-a-release.outputs.new_version }}
+            ${{ vars.DOCKER_REGISTRY }}/devgateway/data-viz/admin:dev
+            ${{ vars.DOCKER_REGISTRY }}/devgateway/data-viz/admin:v${{ needs.prepare-a-release.outputs.new_version }}
 
   release-on-github:
     needs: build-and-push-docker-image
