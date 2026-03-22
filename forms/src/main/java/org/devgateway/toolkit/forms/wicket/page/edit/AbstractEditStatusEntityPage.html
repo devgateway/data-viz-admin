@@ -87,11 +87,13 @@
         <button wicket:id="submitAndNext" type="button" class="btn btn-info btn-form-action">Save & Next</button>
         <button wicket:id="saveApprove" type="button" class="btn btn-success btn-form-action">Save & Approve</button>
         <button wicket:id="approve" type="button" class="btn btn-success btn-form-action">Approve</button>
-        <button wicket:id="revertToDraft" type="button" class="btn btn-warning btn-form-action">Save & Validate</button>
+        <button wicket:id="revertToDraft" type="button" class="btn btn-warning btn-form-action">Unpublish</button>
+        <button wicket:id="forceFail" type="button" class="btn btn-danger btn-form-action">Force Fail</button>
     </wicket:fragment>
 
     <div wicket:id="approveModal"></div>
     <div wicket:id="unpublishModal"></div>
+    <div wicket:id="forceFailModal"></div>
 
     <wicket:fragment wicket:id="noButtons"></wicket:fragment>
 </wicket:extend>

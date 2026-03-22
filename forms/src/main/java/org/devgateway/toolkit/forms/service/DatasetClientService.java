@@ -3,6 +3,7 @@ package org.devgateway.toolkit.forms.service;
 import org.apache.commons.io.FileUtils;
 import org.devgateway.toolkit.forms.client.DataSetClientException;
 import org.devgateway.toolkit.forms.client.DatasetClient;
+import org.devgateway.toolkit.forms.client.DatasetJobStatus;
 import org.devgateway.toolkit.persistence.dao.data.CSVDataset;
 import org.devgateway.toolkit.persistence.dao.data.Dataset;
 import org.devgateway.toolkit.persistence.dao.data.TetsimDataset;
@@ -28,6 +29,7 @@ import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.ERROR_IN
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.ERROR_IN_UNPUBLISHING;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHED;
 import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.PUBLISHING;
+import static org.devgateway.toolkit.persistence.dao.DBConstants.Status.UNPUBLISHING;
 
 @Service
 public class DatasetClientService {
@@ -55,32 +57,64 @@ public class DatasetClientService {
 
     private void checkDatasetJobs(List<Dataset> datasets) {
         datasets.forEach(d -> {
-            ServiceMetadata serviceMetadata = eurekaClientService.findByName(d.getDestinationService());
-            DatasetClient client = new DatasetClient(serviceMetadata.getUrl());
-            String status = client.getDatasetJobStatus(CODE_PREFIX + d.getId()).getStatus();
-            String initialStatus = d.getStatus();
-            if (COMPLETED.equals(status)) {
-                String completedStatus = getCompletedStatus(initialStatus);
-                d.setStatus(completedStatus);
-                logger.info(String.format("The dataset with id %s changed the status from %s to %s",
-                        d.getId(), initialStatus, completedStatus));
-            } else if (ERROR.equals(status)) {
-                String errorStatus = getErrorStatus(initialStatus);
-                d.setStatus(errorStatus);
-                logger.info(String.format("The dataset with id %s changed the status from %s to %s",
-                        d.getId(), initialStatus, errorStatus));
-            }
+            try {
+                ServiceMetadata serviceMetadata = eurekaClientService.findByName(d.getDestinationService());
+                DatasetClient client = new DatasetClient(serviceMetadata.getUrl());
+                DatasetJobStatus jobStatus = client.getDatasetJobStatus(CODE_PREFIX + d.getId());
+                String initialStatus = d.getStatus();
 
-            if (!initialStatus.equals(d.getStatus())) {
-                if (d instanceof TetsimDataset) {
-                    tetsimDatasetService.save((TetsimDataset) d);
-                } else if (d instanceof CSVDataset) {
-                    csvDatasetService.save((CSVDataset) d);
+                if (jobStatus == null) {
+                    // Remote service returned a non-2xx response (job not found or server error) — auto-fail
+                    String errorStatus = getErrorStatus(initialStatus);
+                    d.setStatus(errorStatus);
+                    logger.warn("Dataset {} job not found on remote service, auto-failing from {} to {}",
+                            d.getId(), initialStatus, errorStatus);
                 } else {
-                    throw new RuntimeException("Invalid dataset class");
+                    String status = jobStatus.getStatus();
+                    if (COMPLETED.equals(status)) {
+                        String completedStatus = getCompletedStatus(initialStatus);
+                        d.setStatus(completedStatus);
+                        logger.info("The dataset with id {} changed the status from {} to {}",
+                                d.getId(), initialStatus, completedStatus);
+                    } else if (ERROR.equals(status)) {
+                        String errorStatus = getErrorStatus(initialStatus);
+                        d.setStatus(errorStatus);
+                        logger.info("The dataset with id {} changed the status from {} to {}",
+                                d.getId(), initialStatus, errorStatus);
+                    }
                 }
+
+                if (!initialStatus.equals(d.getStatus())) {
+                    if (d instanceof TetsimDataset) {
+                        tetsimDatasetService.save((TetsimDataset) d);
+                    } else if (d instanceof CSVDataset) {
+                        csvDatasetService.save((CSVDataset) d);
+                    } else {
+                        throw new RuntimeException("Invalid dataset class");
+                    }
+                }
+            } catch (Exception e) {
+                logger.error("Failed to check job status for dataset {}: {}", d.getId(), e.getMessage(), e);
             }
         });
+    }
+
+    public void forceFailPublishing(Dataset dataset) {
+        String status = dataset.getStatus();
+        if (!PUBLISHING.equals(status) && !UNPUBLISHING.equals(status)) {
+            throw new IllegalStateException("Dataset " + dataset.getId()
+                    + " is not in PUBLISHING or UNPUBLISHING state: " + status);
+        }
+        String errorStatus = getErrorStatus(status);
+        dataset.setStatus(errorStatus);
+        logger.info("Force failing dataset {} from status {} to {}", dataset.getId(), status, errorStatus);
+        if (dataset instanceof TetsimDataset) {
+            tetsimDatasetService.save((TetsimDataset) dataset);
+        } else if (dataset instanceof CSVDataset) {
+            csvDatasetService.save((CSVDataset) dataset);
+        } else {
+            throw new RuntimeException("Invalid dataset class");
+        }
     }
 
     private String getCompletedStatus(final String status) {

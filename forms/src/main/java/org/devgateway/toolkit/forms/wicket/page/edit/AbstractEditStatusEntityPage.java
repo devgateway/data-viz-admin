@@ -93,9 +93,13 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
 
     protected SaveEditPageButton revertToDraftPageButton;
 
+    protected SaveEditPageButton forceFailButton;
+
     protected TextContentModal approveModal;
 
     protected TextContentModal unpublishModal;
+
+    protected TextContentModal forceFailModal;
 
     private CheckBoxYesNoToggleBootstrapFormComponent visibleStatusComments;
 
@@ -316,8 +320,14 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         revertToDraftPageButton = getRevertToDraftPageButton();
         entityButtonsFragment.add(revertToDraftPageButton);
 
+        forceFailButton = getForceFailPageButton();
+        entityButtonsFragment.add(forceFailButton);
+
         unpublishModal = createUnpublishModal();
         editForm.add(unpublishModal);
+
+        forceFailModal = createForceFailModal();
+        editForm.add(forceFailModal);
 
         applyDraftSaveBehavior(saveButton);
         applyDraftSaveBehavior(saveDraftContinueButton);
@@ -766,11 +776,60 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         return saveEditPageButton;
     }
 
+    protected SaveEditPageButton getForceFailPageButton() {
+        final SaveEditPageButton button = new SaveEditPageButton("forceFail",
+                new StringResourceModel("forceFailButton", this, null)) {
+
+            @Override
+            protected void onSubmit(final AjaxRequestTarget target) {
+                forceFailModal.show(true);
+                target.add(forceFailModal);
+            }
+
+            @Override
+            protected void onError(final AjaxRequestTarget target) {
+                super.onError(target);
+                target.add(feedbackPanel);
+            }
+        };
+        button.setType(Buttons.Type.Danger);
+        button.setIconType(FontAwesome5IconType.exclamation_triangle_s);
+        return button;
+    }
+
+    protected TextContentModal createForceFailModal() {
+        final TextContentModal modal = new TextContentModal("forceFailModal",
+                new StringResourceModel("forceFailModal", this, null));
+
+        final SaveEditPageButton confirmButton = new SaveEditPageButton("button", Model.of("Yes")) {
+            @Override
+            protected String getOnClickScript() {
+                return WebConstants.DISABLE_FORM_LEAVING_JS;
+            }
+
+            @Override
+            protected void onSubmit(final AjaxRequestTarget target) {
+                onForceFailPublishing(target);
+                super.onSubmit(target);
+            }
+        };
+        confirmButton.setType(Buttons.Type.Danger);
+        confirmButton.setIconType(FontAwesome5IconType.exclamation_triangle_s);
+        modal.addButton(confirmButton);
+        modal.addCloseButton(Model.of("No"));
+
+        return modal;
+    }
+
     protected void onAfterRevertToDraft(AjaxRequestTarget target) {
 
     }
 
     protected void onApprove(AjaxRequestTarget target) {
+
+    }
+
+    protected void onForceFailPublishing(AjaxRequestTarget target) {
 
     }
 
@@ -798,6 +857,7 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         addSaveApproveButtonPermissions(saveApproveButton);
         addApproveButtonPermissions(approveButton);
         addSaveRevertButtonPermissions(revertToDraftPageButton);
+        addForceFailButtonPermissions(forceFailButton);
         addDeleteButtonPermissions(deleteButton);
 
         // no need to display the buttons on print view so we overwrite the above permissions
@@ -822,6 +882,12 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
         button.setVisibilityAllowed(button.isVisibilityAllowed()
                 && (PUBLISHED.equals(editForm.getModelObject().getStatus())
                     || ERROR_IN_UNPUBLISHING.equals(editForm.getModelObject().getStatus())));
+    }
+
+    protected void addForceFailButtonPermissions(final Component button) {
+        MetaDataRoleAuthorizationStrategy.authorize(button, Component.RENDER, SecurityConstants.Roles.ROLE_ADMIN);
+        button.setVisibilityAllowed(PUBLISHING.equals(editForm.getModelObject().getStatus())
+                || UNPUBLISHING.equals(editForm.getModelObject().getStatus()));
     }
 
     protected void addSaveApproveButtonPermissions(final Component button) {

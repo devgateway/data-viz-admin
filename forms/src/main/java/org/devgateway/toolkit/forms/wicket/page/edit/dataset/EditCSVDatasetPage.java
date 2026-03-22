@@ -226,6 +226,17 @@ public class EditCSVDatasetPage extends AbstractEditStatusEntityPage<CSVDataset>
         setResponsePage(listPageClass);
     }
 
+    @Override
+    protected void onForceFailPublishing(final AjaxRequestTarget target) {
+        try {
+            datasetClientService.forceFailPublishing(editForm.getModelObject());
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            failedModal.show(target);
+        }
+        setResponsePage(listPageClass, getSaveEditParameters());
+    }
+
     protected BootstrapCancelButton getCancelButton(final String id) {
         return new CancelEditPageButton(id, new StringResourceModel("cancelButton", this, null));
     }
