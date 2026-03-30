@@ -21,6 +21,14 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.fileinput.Boo
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.fileinput.FileInputConfig;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesome5IconType;
 import de.agilecoders.wicket.jquery.Key;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authroles.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
@@ -56,15 +64,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-
 /**
  * @author idobre
  * @since 11/13/14
@@ -72,19 +71,26 @@ import java.util.List;
  * Multi upload file component that acts as a form component
  */
 
-public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPanel<T> {
+public class FileInputBootstrapFormComponentWrapper<
+    T
+> extends FormComponentPanel<T> {
+
     private static final long serialVersionUID = 1L;
 
-    private final Logger logger = LoggerFactory.getLogger(FileInputBootstrapFormComponentWrapper.class);
+    private final Logger logger = LoggerFactory.getLogger(
+        FileInputBootstrapFormComponentWrapper.class
+    );
 
     private Collection<FileMetadata> filesModel;
 
     private int maxFiles = 0;
 
-    private final NotificationPanel fileUploadFeedback = new NotificationPanel("fileUploadFeedback");
+    private final NotificationPanel fileUploadFeedback = new NotificationPanel(
+        "fileUploadFeedback"
+    );
 
     private static final TooltipConfig TOOLTIP_CONFIG =
-            new TooltipConfig().withPlacement(TooltipConfig.Placement.bottom);
+        new TooltipConfig().withPlacement(TooltipConfig.Placement.bottom);
 
     private WebMarkupContainer alreadyUploadedFiles;
 
@@ -107,16 +113,19 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
 
     private transient IModel<List<FileUpload>> internalUploadModel;
 
-
-    public FileInputBootstrapFormComponentWrapper(final String id, final IModel<T> model) {
+    public FileInputBootstrapFormComponentWrapper(
+        final String id,
+        final IModel<T> model
+    ) {
         super(id, model);
-
         setOutputMarkupId(true);
         setRenderBodyOnly(true); // we need this because bootstrap is adding
         // unnecessary classes to the component
     }
 
-    public FileInputBootstrapFormComponentWrapper<T> maxFiles(final int maxFiles) {
+    public FileInputBootstrapFormComponentWrapper<T> maxFiles(
+        final int maxFiles
+    ) {
         this.maxFiles = maxFiles;
 
         return this;
@@ -138,7 +147,11 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
         addFileUploadFeedbackComponent();
         addBootstrapFileInputComponent();
 
-        bootstrapFileInput.withShowUpload(true).withShowRemove(false).withShowPreview(false).withShowCaption(true);
+        bootstrapFileInput
+            .withShowUpload(true)
+            .withShowRemove(false)
+            .withShowPreview(false)
+            .withShowCaption(true);
     }
 
     public boolean isVisibleAlreadyUploadedFiles() {
@@ -163,92 +176,142 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
         alreadyUploadedFiles.setOutputMarkupId(true);
         add(alreadyUploadedFiles);
 
-        alreadyUploadedFiles
-                .add(new Label("uploadedFilesTitle", new StringResourceModel("uploadedFilesTitle", this, null)));
+        alreadyUploadedFiles.add(
+            new Label(
+                "uploadedFilesTitle",
+                new StringResourceModel("uploadedFilesTitle", this, null)
+            )
+        );
 
-        IModel<List<FileMetadata>> alreadyUploadedFilesModel =
-                new IModel<List<FileMetadata>>() {
-                    private static final long serialVersionUID = 1L;
-
-                    @Override
-                    public List<FileMetadata> getObject() {
-                        List<FileMetadata> fileObject = new ArrayList<>();
-
-                        // get only the already uploaded files
-                        for (FileMetadata file : filesModel) {
-                            if (!file.isNew()) {
-                                fileObject.add(file);
-                            }
-                        }
-
-                        return fileObject;
-                    }
-                };
-
-        ListView<FileMetadata> list = new ListView<FileMetadata>("list", alreadyUploadedFilesModel) {
+        IModel<List<FileMetadata>> alreadyUploadedFilesModel = new IModel<
+            List<FileMetadata>
+        >() {
             private static final long serialVersionUID = 1L;
 
-            private List<IndicatingAjaxLink<Void>> deleteButtons = new ArrayList<>();
+            @Override
+            public List<FileMetadata> getObject() {
+                List<FileMetadata> fileObject = new ArrayList<>();
+
+                // get only the already uploaded files
+                for (FileMetadata file : filesModel) {
+                    if (!file.isNew()) {
+                        fileObject.add(file);
+                    }
+                }
+
+                return fileObject;
+            }
+        };
+
+        ListView<FileMetadata> list = new ListView<FileMetadata>(
+            "list",
+            alreadyUploadedFilesModel
+        ) {
+            private static final long serialVersionUID = 1L;
+
+            private List<IndicatingAjaxLink<Void>> deleteButtons =
+                new ArrayList<>();
 
             @Override
             protected void populateItem(final ListItem<FileMetadata> item) {
                 // make file name clickable
-                Link<FileMetadata> downloadLink = new Link<FileMetadata>("downloadLink", item.getModel()) {
+                Link<FileMetadata> downloadLink = new Link<FileMetadata>(
+                    "downloadLink",
+                    item.getModel()
+                ) {
                     private static final long serialVersionUID = 1L;
 
                     @Override
                     public void onClick() {
                         final FileMetadata modelObject = getModelObject();
 
-                        AbstractResourceStreamWriter rstream = new AbstractResourceStreamWriter() {
-                            private static final long serialVersionUID = 1L;
+                        AbstractResourceStreamWriter rstream =
+                            new AbstractResourceStreamWriter() {
+                                private static final long serialVersionUID = 1L;
 
-                            @Override
-                            public void write(final OutputStream output) throws IOException {
-                                output.write(modelObject.getContent().getBytes());
-                            }
+                                @Override
+                                public void write(final OutputStream output)
+                                    throws IOException {
+                                    output.write(
+                                        modelObject.getContent().getBytes()
+                                    );
+                                }
 
-                            @Override
-                            public String getContentType() {
-                                return modelObject.getContentType();
-                            }
-                        };
-
+                                @Override
+                                public String getContentType() {
+                                    return modelObject.getContentType();
+                                }
+                            };
 
                         ResourceStreamRequestHandler handler =
-                                new ResourceStreamRequestHandler(rstream, modelObject.getName());
-                        handler.setContentDisposition(ContentDisposition.ATTACHMENT);
-                        getRequestCycle().scheduleRequestHandlerAfterCurrent(handler);
+                            new ResourceStreamRequestHandler(
+                                rstream,
+                                modelObject.getName()
+                            );
+                        handler.setContentDisposition(
+                            ContentDisposition.ATTACHMENT
+                        );
+                        getRequestCycle().scheduleRequestHandlerAfterCurrent(
+                            handler
+                        );
                     }
 
                     @Override
                     public boolean isEnabledInHierarchy() {
-                        return isLinkEnabledInHierarchy(this, super.isEnabledInHierarchy());
+                        return isLinkEnabledInHierarchy(
+                            this,
+                            super.isEnabledInHierarchy()
+                        );
                     }
                 };
-                downloadLink.add(new Label("downloadText", item.getModelObject().getName()));
-                downloadLink.add(new TooltipBehavior(new StringResourceModel("downloadUploadedFileTooltip",
-                        FileInputBootstrapFormComponentWrapper.this, null), TOOLTIP_CONFIG));
+                downloadLink.add(
+                    new Label("downloadText", item.getModelObject().getName())
+                );
+                downloadLink.add(
+                    new TooltipBehavior(
+                        new StringResourceModel(
+                            "downloadUploadedFileTooltip",
+                            FileInputBootstrapFormComponentWrapper.this,
+                            null
+                        ),
+                        TOOLTIP_CONFIG
+                    )
+                );
                 item.add(downloadLink);
 
-                Link<FileMetadata> download = new CustomDownloadLink("download", item.getModel());
+                Link<FileMetadata> download = new CustomDownloadLink(
+                    "download",
+                    item.getModel()
+                );
                 item.add(download);
 
-                IndicatingAjaxLink<Void> delete = new IndicatingAjaxLink<Void>("delete") {
+                IndicatingAjaxLink<Void> delete = new IndicatingAjaxLink<Void>(
+                    "delete"
+                ) {
                     private static final long serialVersionUID = 1L;
 
                     @SuppressWarnings("unchecked")
                     @Override
                     public void onClick(final AjaxRequestTarget target) {
                         filesModel.remove(item.getModelObject());
-                        FileInputBootstrapFormComponentWrapper.this.getModel().setObject((T) filesModel);
+                        FileInputBootstrapFormComponentWrapper.this.getModel().setObject(
+                            (T) filesModel
+                        );
 
                         target.add(alreadyUploadedFiles);
                     }
                 };
                 delete.add(new IconBehavior(FontAwesome5IconType.trash_s));
-                delete.add(new TooltipBehavior(new StringResourceModel("removeUploadedFileTooltip",
-                        FileInputBootstrapFormComponentWrapper.this, null), TOOLTIP_CONFIG));
+                delete.add(
+                    new TooltipBehavior(
+                        new StringResourceModel(
+                            "removeUploadedFileTooltip",
+                            FileInputBootstrapFormComponentWrapper.this,
+                            null
+                        ),
+                        TOOLTIP_CONFIG
+                    )
+                );
 
                 delete.setVisible(true);
                 item.add(delete);
@@ -257,8 +320,11 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
                 // there are situation when we want to display the delete button
                 // only to admins
                 if (visibleOnlyToAdmin) {
-                    MetaDataRoleAuthorizationStrategy.authorize(delete, Component.RENDER,
-                            SecurityConstants.Roles.ROLE_ADMIN);
+                    MetaDataRoleAuthorizationStrategy.authorize(
+                        delete,
+                        Component.RENDER,
+                        SecurityConstants.Roles.ROLE_ADMIN
+                    );
                 }
                 if (disableDeleteButton) {
                     delete.setVisibilityAllowed(false);
@@ -315,9 +381,16 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
         pendingFiles.setOutputMarkupId(true);
         add(pendingFiles);
 
-        pendingFiles.add(new Label("pendingFilesTitle", new StringResourceModel("pendingFilesTitle", this, null)));
+        pendingFiles.add(
+            new Label(
+                "pendingFilesTitle",
+                new StringResourceModel("pendingFilesTitle", this, null)
+            )
+        );
 
-        IModel<List<FileMetadata>> pendingFilesModel = new IModel<List<FileMetadata>>() {
+        IModel<List<FileMetadata>> pendingFilesModel = new IModel<
+            List<FileMetadata>
+        >() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -336,29 +409,48 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
             }
         };
 
-        ListView<FileMetadata> list = new ListView<FileMetadata>("list", pendingFilesModel) {
+        ListView<FileMetadata> list = new ListView<FileMetadata>(
+            "list",
+            pendingFilesModel
+        ) {
             private static final long serialVersionUID = 1L;
 
             @Override
             protected void populateItem(final ListItem<FileMetadata> item) {
-                item.add(new Label("fileTitle", item.getModelObject().getName()));
+                item.add(
+                    new Label("fileTitle", item.getModelObject().getName())
+                );
 
-                IndicatingAjaxLink<Void> delete = new IndicatingAjaxLink<Void>("delete") {
+                IndicatingAjaxLink<Void> delete = new IndicatingAjaxLink<Void>(
+                    "delete"
+                ) {
                     private static final long serialVersionUID = 1L;
 
                     @SuppressWarnings("unchecked")
                     @Override
                     public void onClick(final AjaxRequestTarget target) {
                         filesModel.remove(item.getModelObject());
-                        FileInputBootstrapFormComponentWrapper.this.getModel().setObject((T) filesModel);
+                        FileInputBootstrapFormComponentWrapper.this.getModel().setObject(
+                            (T) filesModel
+                        );
 
                         target.add(pendingFiles);
-                        FileInputBootstrapFormComponentWrapper.this.onUpdate(target);
+                        FileInputBootstrapFormComponentWrapper.this.onUpdate(
+                            target
+                        );
                     }
                 };
                 delete.add(new IconBehavior(FontAwesome5IconType.trash_s));
-                delete.add(new TooltipBehavior(new StringResourceModel("removeUploadedFileTooltip",
-                        FileInputBootstrapFormComponentWrapper.this, null), TOOLTIP_CONFIG));
+                delete.add(
+                    new TooltipBehavior(
+                        new StringResourceModel(
+                            "removeUploadedFileTooltip",
+                            FileInputBootstrapFormComponentWrapper.this,
+                            null
+                        ),
+                        TOOLTIP_CONFIG
+                    )
+                );
 
                 delete.setVisible(true);
                 item.add(delete);
@@ -372,24 +464,35 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
         fileUploadFeedback.setOutputMarkupId(true);
 
         // show only the messages (fatal, success) generated by this component
-        fileUploadFeedback.setFilter(new IFeedbackMessageFilter() {
-            private static final long serialVersionUID = 1L;
+        fileUploadFeedback.setFilter(
+            new IFeedbackMessageFilter() {
+                private static final long serialVersionUID = 1L;
 
-            @Override
-            public boolean accept(final FeedbackMessage message) {
-                final Component reporter = message.getReporter();
+                @Override
+                public boolean accept(final FeedbackMessage message) {
+                    final Component reporter = message.getReporter();
 
-                // try to avoid displaying the error messages that comes from
-                // parent (GenericBootstrapFormComponent)
-                // for example errors like 'FIELD is required.'
-                if (message.getLevel() == FeedbackMessage.ERROR) {
-                    return false;
+                    // try to avoid displaying the error messages that comes from
+                    // parent (GenericBootstrapFormComponent)
+                    // for example errors like 'FIELD is required.'
+                    if (message.getLevel() == FeedbackMessage.ERROR) {
+                        return false;
+                    }
+
+                    return (
+                        reporter != null &&
+                        (FileInputBootstrapFormComponentWrapper.this.contains(
+                                reporter,
+                                true
+                            ) ||
+                            Objects.equal(
+                                FileInputBootstrapFormComponentWrapper.this,
+                                reporter
+                            ))
+                    );
                 }
-
-                return reporter != null && (FileInputBootstrapFormComponentWrapper.this.contains(reporter, true)
-                        || Objects.equal(FileInputBootstrapFormComponentWrapper.this, reporter));
             }
-        });
+        );
         add(fileUploadFeedback);
     }
 
@@ -401,14 +504,30 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
          * some customization of the BootstrapFileInput Component
          */
         FileInputConfig fileInputConfig = new FileInputConfig();
-        fileInputConfig.put(new Key<String>("browseLabel"),
-                new StringResourceModel("browseLabel", FileInputBootstrapFormComponentWrapper.this, null).getString());
+        fileInputConfig.put(
+            new Key<String>("browseLabel"),
+            new StringResourceModel(
+                "browseLabel",
+                FileInputBootstrapFormComponentWrapper.this,
+                null
+            ).getString()
+        );
         fileInputConfig.put(new Key<String>("uploadClass"), "btn btn-blue");
         fileInputConfig.put(new Key<String>("browseClass"), "btn btn-blue");
-        fileInputConfig.put(new Key<String>("browseIcon"), "<i class=\"fa fa-folder-open\"></i>");
-        fileInputConfig.put(new Key<String>("uploadIcon"), "<i class=\"fa fa-upload\"></i>");
+        fileInputConfig.put(
+            new Key<String>("browseIcon"),
+            "<i class=\"fa fa-folder-open\"></i>"
+        );
+        fileInputConfig.put(
+            new Key<String>("uploadIcon"),
+            "<i class=\"fa fa-upload\"></i>"
+        );
 
-        bootstrapFileInput = new BootstrapFileInput("bootstrapFileInput", internalUploadModel, fileInputConfig) {
+        bootstrapFileInput = new BootstrapFileInput(
+            "bootstrapFileInput",
+            internalUploadModel,
+            fileInputConfig
+        ) {
             private static final long serialVersionUID = 1L;
 
             @SuppressWarnings("unchecked")
@@ -418,28 +537,59 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
 
                 List<FileUpload> fileUploads = internalUploadModel.getObject();
                 try {
+                    // Clear any feedback messages accumulated from previous failed submissions
+                    // so errors do not stack up across multiple upload attempts.
+                    FileInputBootstrapFormComponentWrapper.this.getFeedbackMessages().clear();
+
                     if (fileUploads != null) {
                         // Existing validation checks
-                        if (maxFiles > 0 && filesModel.size() + fileUploads.size() > maxFiles) {
+                        if (
+                            maxFiles > 0 &&
+                            filesModel.size() + fileUploads.size() > maxFiles
+                        ) {
                             if (maxFiles == 1) {
-                                FileInputBootstrapFormComponentWrapper.this.fatal(new StringResourceModel("OneUpload",
-                                        FileInputBootstrapFormComponentWrapper.this, null).getString());
+                                FileInputBootstrapFormComponentWrapper.this.fatal(
+                                    new StringResourceModel(
+                                        "OneUpload",
+                                        FileInputBootstrapFormComponentWrapper.this,
+                                        null
+                                    ).getString()
+                                );
                             } else {
-                                FileInputBootstrapFormComponentWrapper.this.fatal(new StringResourceModel("tooManyFiles",
-                                        FileInputBootstrapFormComponentWrapper.this, Model.of(maxFiles)).getString());
+                                FileInputBootstrapFormComponentWrapper.this.fatal(
+                                    new StringResourceModel(
+                                        "tooManyFiles",
+                                        FileInputBootstrapFormComponentWrapper.this,
+                                        Model.of(maxFiles)
+                                    ).getString()
+                                );
                             }
                             FileInputBootstrapFormComponentWrapper.this.invalid();
-                        } else if (!fileContentsAndExtensionsAreValid(fileUploads)) {
-                            String error = new StringResourceModel("fileContentsDoNotMatchExtension",
-                                    FileInputBootstrapFormComponentWrapper.this, null).getString();
-                            FileInputBootstrapFormComponentWrapper.this.fatal(error);
+                        } else if (
+                            !fileContentsAndExtensionsAreValid(fileUploads)
+                        ) {
+                            String error = new StringResourceModel(
+                                "fileContentsDoNotMatchExtension",
+                                FileInputBootstrapFormComponentWrapper.this,
+                                null
+                            ).getString();
+                            FileInputBootstrapFormComponentWrapper.this.fatal(
+                                error
+                            );
                             FileInputBootstrapFormComponentWrapper.this.invalid();
                         } else if (!fileExtensionAreAllowed(fileUploads)) {
-                            String error = new StringResourceModel("fileTypeNotAllowed",
-                                    FileInputBootstrapFormComponentWrapper.this, null)
-                                    .setParameters(String.join(", ", allowedFileExtensions))
-                                    .getString();
-                            FileInputBootstrapFormComponentWrapper.this.fatal(error);
+                            String error = new StringResourceModel(
+                                "fileTypeNotAllowed",
+                                FileInputBootstrapFormComponentWrapper.this,
+                                null
+                            )
+                                .setParameters(
+                                    String.join(", ", allowedFileExtensions)
+                                )
+                                .getString();
+                            FileInputBootstrapFormComponentWrapper.this.fatal(
+                                error
+                            );
                             FileInputBootstrapFormComponentWrapper.this.invalid();
                         } else {
                             // Process uploads
@@ -449,21 +599,27 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
                         }
                     }
 
-
-
-                    FileInputBootstrapFormComponentWrapper.this.getModel().setObject((T) filesModel);
+                    FileInputBootstrapFormComponentWrapper.this.getModel().setObject(
+                        (T) filesModel
+                    );
 
                     target.add(fileUploadFeedback);
                     target.add(pendingFiles);
-                    target.appendJavaScript("$('.cover-buttons-div').css(\"z-index\", -1);");
-                    FileInputBootstrapFormComponentWrapper.this.onUpdate(target);
+                    target.appendJavaScript(
+                        "$('.cover-buttons-div').css(\"z-index\", -1);"
+                    );
+
+                    FileInputBootstrapFormComponentWrapper.this.onUpdate(
+                        target
+                    );
 
                     // Clear the upload model
                     internalUploadModel.setObject(null);
-
                 } catch (Exception e) {
                     logger.error("Error processing file upload", e);
-                    FileInputBootstrapFormComponentWrapper.this.error("Error processing upload: " + e.getMessage());
+                    FileInputBootstrapFormComponentWrapper.this.error(
+                        "Error processing upload: " + e.getMessage()
+                    );
                     target.add(fileUploadFeedback);
                 }
             }
@@ -486,21 +642,29 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
          * underlying fileInput element to the same model as the label used by
          * FileInputBootstrapFormComponentWrapper
          */
-        FormComponent<?> fileInput = (FormComponent<?>) bootstrapFileInput.get("fileInputForm").get("fileInput");
+        FormComponent<?> fileInput = (FormComponent<?>) bootstrapFileInput
+            .get("fileInputForm")
+            .get("fileInput");
         fileInput.setLabel(this.getLabel());
 
         // there are situation when we want to display the upload file componentadmin_settings_aud
         // only to admins
         if (visibleOnlyToAdmin) {
-            MetaDataRoleAuthorizationStrategy.authorize(bootstrapFileInput, Component.RENDER,
-                    SecurityConstants.Roles.ROLE_ADMIN);
+            MetaDataRoleAuthorizationStrategy.authorize(
+                bootstrapFileInput,
+                Component.RENDER,
+                SecurityConstants.Roles.ROLE_ADMIN
+            );
         }
 
         // for download the documents when you're already signed in as admin and
         // want to read only
         if (disableDeleteButton) {
-            MetaDataRoleAuthorizationStrategy.authorize(bootstrapFileInput, Component.RENDER,
-                    MetaDataRoleAuthorizationStrategy.NO_ROLE);
+            MetaDataRoleAuthorizationStrategy.authorize(
+                bootstrapFileInput,
+                Component.RENDER,
+                MetaDataRoleAuthorizationStrategy.NO_ROLE
+            );
         }
     }
 
@@ -520,29 +684,47 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
             logger.error("Error processing file upload", e);
             throw e;
         } finally {
-            upload.closeStreams();  // Clean up resources
+            upload.closeStreams(); // Clean up resources
         }
     }
+
     private boolean fileExtensionAreAllowed(List<FileUpload> fileUploads) {
         if (allowedFileExtensions.isEmpty()) {
             return true;
         }
-        return fileUploads.stream().allMatch(
-                u -> allowedFileExtensions.contains(getExtension(u.getClientFileName()).toLowerCase()));
+        return fileUploads
+            .stream()
+            .allMatch(u ->
+                allowedFileExtensions.contains(
+                    getExtension(u.getClientFileName()).toLowerCase()
+                )
+            );
     }
 
-    private boolean fileContentsAndExtensionsAreValid(List<FileUpload> fileUploads) {
+    private boolean fileContentsAndExtensionsAreValid(
+        List<FileUpload> fileUploads
+    ) {
         try {
             for (FileUpload upload : fileUploads) {
                 String fileName = upload.getClientFileName();
-                InputStream inputStream = new ByteArrayInputStream(upload.getBytes());
-                if (!FileTypeUtil.extensionMatchesContents(fileName, inputStream)) {
+                InputStream inputStream = new ByteArrayInputStream(
+                    upload.getBytes()
+                );
+                if (
+                    !FileTypeUtil.extensionMatchesContents(
+                        fileName,
+                        inputStream
+                    )
+                ) {
                     return false;
                 }
             }
             return true;
         } catch (IOException e) {
-            logger.error("Failed to check if file contents match file name.", e);
+            logger.error(
+                "Failed to check if file contents match file name.",
+                e
+            );
             return false;
         }
     }
@@ -573,6 +755,13 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
 
         addPendingFilesComponent();
         addFileUploadFeedbackComponent();
+
+        // Ensure the newly-created components reach the browser.
+        // For FileInputBootstrapFormComponent the override also adds the outer
+        // wrapper to the target, which covers these, but for standalone use of
+        // this class the explicit add below is required.
+        target.add(fileUploadFeedback);
+        target.add(pendingFiles);
     }
 
     public void setVisibleOnlyToAdmin(final Boolean visibleOnlyToAdmin) {
@@ -591,7 +780,6 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
         return alreadyUploadedFiles;
     }
 
-
     public void requireAtLeastOneItem() {
         requireAtLeastOneItem = true;
     }
@@ -600,11 +788,16 @@ public class FileInputBootstrapFormComponentWrapper<T> extends FormComponentPane
         return allowDownloadWhenReadonly;
     }
 
-    public void setAllowDownloadWhenReadonly(final boolean allowDownloadWhenReadonly) {
+    public void setAllowDownloadWhenReadonly(
+        final boolean allowDownloadWhenReadonly
+    ) {
         this.allowDownloadWhenReadonly = allowDownloadWhenReadonly;
     }
 
-    private boolean isLinkEnabledInHierarchy(final Component component, final boolean defaultState) {
+    private boolean isLinkEnabledInHierarchy(
+        final Component component,
+        final boolean defaultState
+    ) {
         if (allowDownloadWhenReadonly) {
             return component.isEnableAllowed() && component.isEnabled();
         }
