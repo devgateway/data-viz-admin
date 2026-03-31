@@ -21,6 +21,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authroles.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
+import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.event.Broadcast;
 import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.head.IHeaderResponse;
@@ -872,9 +873,27 @@ public abstract class AbstractEditStatusEntityPage<T extends AbstractStatusAudit
     }
 
     protected void addDeleteButtonPermissions(final Component button) {
-        button.setVisibilityAllowed(entityId != null && !isViewMode()
+        boolean canDelete = entityId != null && !isViewMode()
                 && !(PUBLISHING.equals(editForm.getModelObject().getStatus())
-                || PUBLISHED.equals(editForm.getModelObject().getStatus())));
+                || PUBLISHED.equals(editForm.getModelObject().getStatus()));
+        button.setVisibilityAllowed(canDelete);
+        if (canDelete) {
+            // Wicket calls behaviors' onEvent *after* the component's own onEvent.
+            // This behavior runs after BootstrapDeleteButton.onEvent() sets enabled=false
+            // in response to EditingDisabledEvent, and re-enables the button so that
+            // deletion remains possible in states like ERROR_IN_PUBLISHING where it is
+            // explicitly permitted.
+            button.add(new Behavior() {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public void onEvent(final Component component, final IEvent<?> event) {
+                    if (event.getPayload() instanceof EditingDisabledEvent) {
+                        component.setEnabled(true);
+                    }
+                }
+            });
+        }
     }
 
     protected void addSaveRevertButtonPermissions(final Component button) {
