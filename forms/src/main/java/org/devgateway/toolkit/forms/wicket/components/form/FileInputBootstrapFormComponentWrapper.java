@@ -535,6 +535,15 @@ public class FileInputBootstrapFormComponentWrapper<
             protected void onSubmit(final AjaxRequestTarget target) {
                 super.onSubmit(target);
 
+                // internalUploadModel is transient; after page deserialization it will
+                // be null. Re-sync it from this component's own (non-transient) model
+                // slot, where the same ListModel instance is still stored.
+                if (internalUploadModel == null) {
+                    internalUploadModel = (IModel<
+                        List<FileUpload>
+                    >) getDefaultModel();
+                }
+
                 List<FileUpload> fileUploads = internalUploadModel.getObject();
                 try {
                     // Clear any feedback messages accumulated from previous failed submissions
